@@ -1,12 +1,13 @@
 <script setup>
-import Homepage from './pages/homepage.vue'
-import login from './pages/login.vue'
+// import Homepage from './pages/homepage.vue'
+// import login from './pages/login.vue'
 </script>
 
 <template>
   <div id="home">
-    <!-- <login /> -->
-    <Homepage />
+    <!-- <router-link to="/login">Login</router-link> |
+    <router-link to="/">Homepage</router-link> -->
+    <router-view></router-view>
   </div>
 </template>
 
