@@ -27,3 +27,7 @@ npm run dev
 ```sh
 npm run build
 ```
+### install useful packages
+npm install element-plus
+npm install vuex@4.0.2
+npm install vue-router@4.0.12
