@@ -1,32 +1,19 @@
 <script setup>
-import HelloWorld from './components/HelloWorld.vue'
-import TheWelcome from './components/TheWelcome.vue'
-import login from './pages/login.vue';
+import Homepage from './pages/homepage.vue'
+import login from './pages/login.vue'
 </script>
 
 <template>
-  <!-- <header>
-    <img alt="Vue logo" class="logo" src="./assets/logo.svg" width="125" height="125" />
-
-    <div class="wrapper">
-      <HelloWorld msg="You did it!" />
-    </div>
-  </header>
-
-  <main>
-    <TheWelcome />
-  </main> -->
   <div id="home">
-    <login />
-
+    <!-- <login /> -->
+    <Homepage />
   </div>
-
 </template>
 
 <style scoped>
-#all{
-    width: 100%;
-    height: 100%;
+#all {
+  width: 100%;
+  height: 100%;
 }
 
 /* header {
