@@ -3,8 +3,22 @@
     <el-main>
       <div class="container">
         <div class="login-wrapper">
-          <div class="header">Login</div>
+          <div class="header">Account Register</div>
           <div class="form-wrapper">
+            <input
+              type="text"
+              name="Name"
+              placeholder="your name"
+              v-model="name"
+              class="input-item"
+              required />
+              <input
+              type="number"
+              name="Sfaff ID"
+              placeholder="your staff ID"
+              v-model="id"
+              class="input-item"
+              required />
             <input
               type="text"
               name="username"
@@ -19,16 +33,18 @@
               v-model="password"
               class="input-item"
               required />
-            <div class="btn" @click.native.prevent="handleStaffLogin">
-              Staff Login
+              <input
+              type="password"
+              name="confirm password"
+              placeholder="confirm password"
+              v-model="confirm_password"
+              class="input-item"
+              required />
+
+            <div class="btn" @click.native.prevent="handleStaffRegister">
+              Staff Register
             </div>
-            <div class="btn" @click.native.prevent="handleAdminLogin">
-              Admin Login
-            </div>
-          </div>
-          <div class="msg">
-            Don't have account?
-            <a href="#" @click.native.prevent="handleStaffRegister">Sign up</a>
+            
           </div>
         </div>
       </div>
@@ -44,10 +60,13 @@ export default {
     return {
       username: '',
       password: '',
+      name:"",
+      id:"",
+      confirm_password:""
     }
   },
   methods: {
-    async handleStaffLogin() {
+    async handleStaffRegister() {
       //   api
       //     .StaffLogin(this.username, this.password)
       //     .then((res) => {
@@ -61,36 +80,6 @@ export default {
       //       console.log(error)
       //     })
       this.$router.push('/')
-    },
-    async handleAdminLogin() {
-      //   api
-      //     .AdminLogin(this.username, this.password)
-      //     .then((res) => {
-      //       if (res.ok) {
-      //         this.$router.push('/')
-      //       } else {
-      //         alert('Invalid username or password')
-      //       }
-      //     })
-      //     .catch((error) => {
-      //       console.log(error)
-      //     })
-      this.$router.push('/')
-    },
-    async handleStaffRegister() {
-      //   api
-      //     .AdminLogin(this.username, this.password)
-      //     .then((res) => {
-      //       if (res.ok) {
-      //         this.$router.push('/')
-      //       } else {
-      //         alert('Invalid username or password')
-      //       }
-      //     })
-      //     .catch((error) => {
-      //       console.log(error)
-      //     })
-      this.$router.push('/login/register')
     },
   },
 }
@@ -124,10 +113,10 @@ body {
   transform: translate(-50%, 0%); /*self's relative postion*/
 }
 .header {
-  font-size: 38px;
+  font-size: 30px;
   font-weight: bold;
   text-align: center;
-  line-height: 200px;
+  line-height: 60px;
   color: #000;
 }
 .input-item {
