@@ -7,10 +7,10 @@
           <div class="form-wrapper">
             <input
               type="text"
-              name="username"
-              placeholder="username"
+              name="email"
+              placeholder="email"
               class="input-item"
-              v-model="username"
+              v-model="email"
               required />
             <input
               type="password"
@@ -42,25 +42,20 @@ import api from '../utils/api.js'
 export default {
   data() {
     return {
-      username: '',
+      email: '',
       password: '',
     }
   },
   methods: {
     async handleStaffLogin() {
-      //   api
-      //     .StaffLogin(this.username, this.password)
-      //     .then((res) => {
-      //       if (res.ok) {
-      //         this.$router.push('/')
-      //       } else {
-      //         alert('Invalid username or password')
-      //       }
-      //     })
-      //     .catch((error) => {
-      //       console.log(error)
-      //     })
-      this.$router.push('/')
+      await api.StaffLogin(this.email, this.password).then((res) => {
+        if (res.code === 500) {
+          alert(res.msg)
+        } else if (res.code === 200) {
+          this.$router.push('/')
+        }
+        console.log(res)
+      })
     },
     async handleAdminLogin() {
       //   api
