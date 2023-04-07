@@ -7,12 +7,12 @@
           <div class="form-wrapper">
             <input
               type="text"
-              name="Name"
-              placeholder="your name"
-              v-model="name"
+              name="Email"
+              placeholder="your eamil"
+              v-model="email"
               class="input-item"
               required />
-              <input
+            <input
               type="number"
               name="Sfaff ID"
               placeholder="your staff ID"
@@ -33,18 +33,19 @@
               v-model="password"
               class="input-item"
               required />
-              <input
+            <input
               type="password"
               name="confirm password"
               placeholder="confirm password"
               v-model="confirm_password"
               class="input-item"
               required />
-
-            <div class="btn" @click.native.prevent="handleStaffRegister">
-              Staff Register
-            </div>
-            
+            <el-button class="btn" @click.native.prevent="handleStaffRegister"
+              >Staff Register</el-button
+            >
+            <router-link to="/login" class="login-link" style="display: center"
+              >Already have an account?</router-link
+            >
           </div>
         </div>
       </div>
@@ -58,28 +59,33 @@ import api from '../utils/api.js'
 export default {
   data() {
     return {
-      username: '',
+      email: '',
       password: '',
-      name:"",
-      id:"",
-      confirm_password:""
+      username: '',
+      id: '',
+      confirm_password: '',
     }
   },
   methods: {
     async handleStaffRegister() {
-      //   api
-      //     .StaffLogin(this.username, this.password)
-      //     .then((res) => {
-      //       if (res.ok) {
-      //         this.$router.push('/')
-      //       } else {
-      //         alert('Invalid username or password')
-      //       }
-      //     })
-      //     .catch((error) => {
-      //       console.log(error)
-      //     })
-      this.$router.push('/')
+      if (!this.password) {
+        alert('Please input your password')
+        return
+      }
+      if (this.password !== this.confirm_password) {
+        alert('Please confirm your password')
+        return
+      }
+      await api
+        .StaffRegister(this.email, this.username, this.password)
+        .then((res) => {
+          if (res.code === 500) {
+            alert(res.msg)
+          } else if (res.code === 200) {
+            this.$router.push('/')
+          }
+          console.log(res)
+        })
     },
   },
 }
