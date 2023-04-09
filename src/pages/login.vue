@@ -50,26 +50,24 @@ export default {
     async handleStaffLogin() {
       await api.StaffLogin(this.email, this.password).then((res) => {
         if (res.code === 500) {
-          alert(res.msg)
+            alert(res.msg)
         } else if (res.code === 200) {
-          this.$router.push('/')
+            this.$cookies.set("token",res.data.tokenValue,res.data.tokenTimeout)
+            this.$router.push('/')
         }
         console.log(res)
       })
     },
     async handleAdminLogin() {
-      //   api
-      //     .AdminLogin(this.username, this.password)
-      //     .then((res) => {
-      //       if (res.ok) {
-      //         this.$router.push('/')
-      //       } else {
-      //         alert('Invalid username or password')
-      //       }
-      //     })
-      //     .catch((error) => {
-      //       console.log(error)
-      //     })
+        await api.AdminLogin(this.email, this.password).then((res) => {
+        if (res.code === 500) {
+            alert(res.msg)
+        } else if (res.code === 200) {
+            this.$cookies.set("token",res.data.tokenValue,res.data.tokenTimeout)
+            this.$router.push('/')
+        }
+        console.log(res)
+      })
       this.$router.push('/')
     },
     async handleStaffRegister() {

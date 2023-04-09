@@ -19,13 +19,45 @@ export default {
       return console.error(error)
     }
   },
-  async AdminLogin (username, password) {
-    const response = await fetch(`${BASE_URL}/?username=${username}&password=${password}`)
-    return await response.json()
+  async AdminLogin (email, password) {
+    try {
+      const response = await fetch(`${BASE_URL}/admin/LoginEmail`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          email: email,
+          pwd: password
+        })
+      })
+      const data = await response.json()
+      return data
+    } catch (error) {
+      return console.error(error)
+    }
   },
   async StaffRegister (email, username, password) {
     try {
       const response = await fetch(`${BASE_URL}/user/register`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          email: email,
+          name: username,
+          pwd: password
+        })
+      })
+      const data = await response.json()
+      return data
+    } catch (error) {
+      return console.error(error)
+    }
+  },async AdminRegister (email, username, password) {
+    try {
+      const response = await fetch(`${BASE_URL}/admin/register`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'

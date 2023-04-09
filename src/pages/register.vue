@@ -43,6 +43,9 @@
             <el-button class="btn" @click.native.prevent="handleStaffRegister"
               >Staff Register</el-button
             >
+            <el-button class="btn" @click.native.prevent="handleAdminRegister"
+              >Admin Register</el-button
+            >
             <router-link to="/login" class="login-link" style="display: center"
               >Already have an account?</router-link
             >
@@ -78,6 +81,25 @@ export default {
       }
       await api
         .StaffRegister(this.email, this.username, this.password)
+        .then((res) => {
+          if (res.code === 500) {
+            alert(res.msg)
+          } else if (res.code === 200) {
+            this.$router.push('/')
+          }
+          console.log(res)
+        })
+    },
+    async handleAdminRegister() {
+      if (!this.password) {
+        alert('Please input your password')
+        return
+      }
+      if (this.password !== this.confirm_password) {
+        alert('Please confirm your password')
+        return
+      }
+      await api.AdminRegister(this.email, this.username, this.password)
         .then((res) => {
           if (res.code === 500) {
             alert(res.msg)
