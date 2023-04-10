@@ -20,10 +20,6 @@ const form = reactive({
   phoneNumber: '',
 })
 const activeIndex = ref('1')
-<<<<<<< HEAD
-=======
-
->>>>>>> 57e3234f6181dc3b8014fd0fd2f28b4516cba45b
 const handleSelect = (key, keyPath) => {
   console.log(key, keyPath)
 }
