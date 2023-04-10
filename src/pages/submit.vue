@@ -44,10 +44,7 @@ const handleSelect = (key: string, keyPath: string[]) => {
         </el-menu>
       </el-header>
       <el-main>
-        <div>
-            
-            
-        </div>
+        <div></div>
       </el-main>
       <el-footer style="color: #000">Powered By Vue @SE黑奴 2023</el-footer>
       <el-backtop :right="100" :bottom="100" />
