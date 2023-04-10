@@ -3,7 +3,7 @@ const BASE_URL = 'http://106.55.104.82:8080'
 export default {
   async StaffLogin (email, password) {
     try {
-      const response = await fetch(`${BASE_URL}/user/LoginEmail`, {
+      const response = await fetch(`${BASE_URL}/user/LoginEmail?identity=0`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
@@ -21,7 +21,7 @@ export default {
   },
   async AdminLogin (email, password) {
     try {
-      const response = await fetch(`${BASE_URL}/admin/LoginEmail`, {
+      const response = await fetch(`${BASE_URL}/user/LoginEmail?identity=1`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'

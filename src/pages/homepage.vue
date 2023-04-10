@@ -3,7 +3,6 @@ import { ref, reactive, onMounted, inject, VueElement } from 'vue'
 import { useRoute } from 'vue-router'
 // import { Sunny, Moon } from '@element-plus/icons-vue'
 import api from '../utils/api'
-
 const router = useRoute()
 const $cookies = inject('$cookies')
 const dialogFormVisible = ref(false)
@@ -100,12 +99,6 @@ async function UpdateInfo() {
       <el-main >
         <div>
           <el-row :gutter="15">
-            <!-- <el-col :span="4" :push="1">
-              <el-avatar
-                style="--el-avatar-size: 200px; --el-avatar-text-size: 50px">
-                user
-              </el-avatar>
-            </el-col> -->
             <el-col :span="10" :push="1">
               <el-descriptions border column="1">
                 <template #title>
