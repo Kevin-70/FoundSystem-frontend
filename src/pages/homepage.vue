@@ -174,7 +174,6 @@ async function UpdateInfo() {
 
           <el-button @click="openJoinWindow">Join Research Group</el-button>
           <el-dialog v-model="dialogFormVisible2" title="Join Group">
-            <el-label>Please select a group to join</el-label>
             <el-select v-model="value" placeholder="请选择">
                 <el-option
                 v-for="item in options"
@@ -212,8 +211,7 @@ export default {
             this.handleAllGroups()
         }, 
         async handleAllGroups() {
-            console.log(this.email,this.password)
-        await api.GetAllGroups(this.email, this.password).then((res) => {
+        await api.GetAllGroups().then((res) => {
             if (res.code === 500) {
             ElMessage.error(res.msg)
             console.log(res)
@@ -228,8 +226,7 @@ export default {
         })
         },
         async handleJoinGroup() {
-            console.log(this.email,this.password)
-        await api.StaffJoinGroup(this.email, this.password).then((res) => {
+        await api.StaffJoinGroup(this.email).then((res) => {
             if (res.code === 500) {
             ElMessage.error(res.msg)
             console.log(res)
