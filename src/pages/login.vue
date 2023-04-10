@@ -48,9 +48,12 @@ export default {
   },
   methods: {
     async handleStaffLogin() {
+        console.log(this.email,this.password)
+
       await api.StaffLogin(this.email, this.password).then((res) => {
         if (res.code === 500) {
           ElMessage.error(res.msg)
+          console.log(res)
         } else if (res.code === 200) {
           this.$cookies.set(
             'satoken',
@@ -71,7 +74,7 @@ export default {
             res.data.tokenValue,
             `${res.data.tokenTimeout}s`
           )
-          this.$router.push('/admin')
+          this.$router.push(`/admin/${this.email}`)
         }
       })
       this.$router.push('/')

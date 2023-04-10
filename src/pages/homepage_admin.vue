@@ -1,5 +1,5 @@
 <script setup>
-import { ref, reactive, onMounted, inject, VueElement } from 'vue'
+import { ref, reactive, onMounted, inject } from 'vue'
 import { useRoute } from 'vue-router'
 // import { Sunny, Moon } from '@element-plus/icons-vue'
 import api from '../utils/api'
@@ -60,7 +60,15 @@ async function UpdateInfo() {
     console.error(error)
   }
 }
-
+// return {
+//   dialogFormVisible,
+//   formLabelWidth,
+//   info,
+//   form,
+//   activeIndex,
+//   handleSelect,
+//   UpdateInfo,
+// }
 </script>
 
 <template>
@@ -73,7 +81,7 @@ async function UpdateInfo() {
           mode="horizontal"
           @select="handleSelect">
           <el-menu-item index="1">Homepage</el-menu-item>
-          <!-- <el-menu-item index="2">Group Info</el-menu-item> -->
+          <el-menu-item index="2">Group Info</el-menu-item>
           <!-- <el-sub-menu index="3">
             <template #title>Workspace</template>
             <el-menu-item index="3-1">item one</el-menu-item>
@@ -97,7 +105,7 @@ async function UpdateInfo() {
           </el-menu-item> -->
         </el-menu>
       </el-header>
-      <el-main >
+      <el-main>
         <div>
           <el-row :gutter="15">
             <!-- <el-col :span="4" :push="1">
@@ -169,16 +177,6 @@ async function UpdateInfo() {
               </span>
             </template>
           </el-dialog>
-
-          <el-button @click="dialogFormVisible2=true">Join Research Group</el-button>
-          <el-dialog v-model="dialogFormVisible2" title="Join Group">
-
-            <template #footer>
-                <span class="dialog-footer">
-                  <el-button @click="dialogFormVisible2 = false">Confirm</el-button>
-                </span>
-              </template>
-          </el-dialog>
         </div>
       </el-main>
       <el-footer style="color: #000">Powered By Vue @SE黑奴 2023</el-footer>
@@ -186,21 +184,6 @@ async function UpdateInfo() {
     </el-container>
   </div>
 </template>
-<script>
-export default {
-    data(){
-        return {
-        dialogFormVisible:false,
-        formLabelWidth,
-        info,
-        form,
-        activeIndex,
-        dialogFormVisible2:false
-        }
-    }
-}
-
-</script>
 
 <style>
 .el-container {
