@@ -59,7 +59,15 @@ async function UpdateInfo() {
     console.error(error)
   }
 }
-
+// return {
+//   dialogFormVisible,
+//   formLabelWidth,
+//   info,
+//   form,
+//   activeIndex,
+//   handleSelect,
+//   UpdateInfo,
+// }
 </script>
 
 <template>
@@ -184,11 +192,7 @@ export default {
     data(){
         return {
         dialogFormVisible:false,
-        formLabelWidth,
-        info,
-        form,
-        activeIndex,
-        dialogFormVisible2:false
+        dialogFormVisible2:false,
         }
     }
 }
