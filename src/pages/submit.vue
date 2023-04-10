@@ -1,10 +1,10 @@
-<script lang="ts" setup>
+<script lang setup>
 import { ref } from 'vue'
 // import { Sunny, Moon } from '@element-plus/icons-vue'
 
 const activeIndex = ref('1')
 
-const handleSelect = (key: string, keyPath: string[]) => {
+const handleSelect = (key, keyPath) => {
   console.log(key, keyPath)
 }
 </script>
@@ -51,7 +51,7 @@ const handleSelect = (key: string, keyPath: string[]) => {
     </el-container>
   </div>
 </template>
-<!-- <script>
+<script>
 export default{
     data(){
         return{
@@ -59,7 +59,7 @@ export default{
         }
     }
 }
-</script> -->
+</script>
 
 <style>
 .el-container {
