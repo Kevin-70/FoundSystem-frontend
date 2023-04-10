@@ -3,6 +3,7 @@ import { ref, reactive, onMounted, inject, VueElement } from 'vue'
 import { useRoute } from 'vue-router'
 // import { Sunny, Moon } from '@element-plus/icons-vue'
 import api from '../utils/api'
+
 const router = useRoute()
 const $cookies = inject('$cookies')
 const dialogFormVisible = ref(false)
@@ -171,9 +172,18 @@ async function UpdateInfo() {
             </template>
           </el-dialog>
 
-          <el-button @click="dialogFormVisible2=true">Join Research Group</el-button>
+          <el-button @click="openJoinWindow">Join Research Group</el-button>
           <el-dialog v-model="dialogFormVisible2" title="Join Group">
-
+            <el-label>Please select a group to join</el-label>
+            <el-select v-model="value" placeholder="请选择">
+                <el-option
+                v-for="item in options"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value">
+                </el-option>
+            </el-select>
+         <el-button @click="handleJoinGroup">Join</el-button>
             <template #footer>
                 <span class="dialog-footer">
                   <el-button @click="dialogFormVisible2 = false">Confirm</el-button>
@@ -193,9 +203,51 @@ export default {
         return {
         dialogFormVisible:false,
         dialogFormVisible2:false,
+        options:[]
         }
     }
+    ,methods:{
+        openJoinWindow(){
+            this.dialogFormVisible2=true;
+            this.handleAllGroups()
+        }, 
+        async handleAllGroups() {
+            console.log(this.email,this.password)
+        await api.GetAllGroups(this.email, this.password).then((res) => {
+            if (res.code === 500) {
+            ElMessage.error(res.msg)
+            console.log(res)
+            } else if (res.code === 200) {
+            this.$cookies.set(
+                'satoken',
+                res.data.tokenValue,
+                `${res.data.tokenTimeout}s`
+            )
+            this.options=res.data;
+            }
+        })
+        },
+        async handleJoinGroup() {
+            console.log(this.email,this.password)
+        await api.StaffJoinGroup(this.email, this.password).then((res) => {
+            if (res.code === 500) {
+            ElMessage.error(res.msg)
+            console.log(res)
+            } else if (res.code === 200) {
+            this.$cookies.set(
+                'satoken',
+                res.data.tokenValue,
+                `${res.data.tokenTimeout}s`
+            )
+            ElMessage.success("加入成功")
+
+            }
+        })
+        },
+
+    }
 }
+
 
 </script>
 

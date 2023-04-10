@@ -104,5 +104,34 @@ export default {
       return console.error(error)
     }
   },
-
+  async GetAllGroups(){
+    try {
+        const response = await fetch(`${BASE_URL}/group/view/getAllGroups`, {
+          method: 'POST',
+          credentials: 'include',
+          headers: {
+            'satoken': satoken,
+          },
+        })
+        const data = await response.json()
+        return data
+      } catch (error) {
+        return console.error(error)
+      }
+    },
+    async StaffJoinGroup(){
+        try {
+            const response = await fetch(`${BASE_URL}/group/edit/joinGroup`, {
+              method: 'POST',
+              credentials: 'include',
+              headers: {
+                'satoken': satoken,
+              },
+            })
+            const data = await response.json()
+            return data
+          } catch (error) {
+            return console.error(error)
+          }
+        },
 }
