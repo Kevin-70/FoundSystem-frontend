@@ -8,7 +8,7 @@ export default {
       this.$router.push('/login/register')
     },
     async SignIn() {
-      this.$router.push('/Login')
+      this.$router.push('/login')
     },
   },
 }

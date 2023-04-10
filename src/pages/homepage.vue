@@ -3,7 +3,6 @@ import { ref, reactive, onMounted, inject } from 'vue'
 import { useRoute } from 'vue-router'
 // import { Sunny, Moon } from '@element-plus/icons-vue'
 import api from '../utils/api'
-
 const router = useRoute()
 const $cookies = inject('$cookies')
 const dialogFormVisible = ref(false)
@@ -60,15 +59,6 @@ async function UpdateInfo() {
     console.error(error)
   }
 }
-return {
-  dialogFormVisible,
-  formLabelWidth,
-  info,
-  form,
-  activeIndex,
-  handleSelect,
-  UpdateInfo,
-}
 </script>
 
 <template>
@@ -81,39 +71,11 @@ return {
           mode="horizontal"
           @select="handleSelect">
           <el-menu-item index="1">Homepage</el-menu-item>
-          <!-- <el-menu-item index="2">Info</el-menu-item> -->
-          <!-- <el-sub-menu index="3">
-            <template #title>Workspace</template>
-            <el-menu-item index="3-1">item one</el-menu-item>
-            <el-menu-item index="3-2">item two</el-menu-item>
-            <el-menu-item index="3-3">item three</el-menu-item>
-          </el-sub-menu> -->
-          <!-- <el-menu-item index="4">
-            <client-only
-              ><el-switch
-                v-model="light_style"
-                class="ml-2"
-                size="large"
-                inline-prompt
-                :active-icon="Sunny"
-                :inactive-icon="Moon"
-                style="
-                  --el-switch-on-color: #fbc2eb;
-                  --el-switch-off-color: #000;
-                "
-            /></client-only>
-          </el-menu-item> -->
         </el-menu>
       </el-header>
       <el-main>
         <div>
           <el-row :gutter="15">
-            <!-- <el-col :span="4" :push="1">
-              <el-avatar
-                style="--el-avatar-size: 200px; --el-avatar-text-size: 50px">
-                user
-              </el-avatar>
-            </el-col> -->
             <el-col :span="10" :push="1">
               <el-descriptions border column="1">
                 <template #title>
