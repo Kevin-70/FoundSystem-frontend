@@ -19,7 +19,7 @@ export default {
     <el-container>
       <el-main class="welcome-main">
         <el-space direction="vertical">
-          <el-text class="w-200px" truncated> FundSystem </el-text>
+          <el-text class="welcome-text" truncated> FundSystem </el-text>
           <el-row :gutter="70">
             <el-col :span="12">
               <el-button class="main-button" @click.native.prevent="SignUp"
@@ -56,7 +56,8 @@ export default {
 .welcome-main {
   align-self: center;
 }
-.el-text {
+.welcome-text {
+  align-self: center;
   font-size: 200px;
 }
 .main-button {

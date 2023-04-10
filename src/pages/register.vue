@@ -1,82 +1,119 @@
+<script setup>
+import api from '../utils/api'
+import { reactive } from 'vue'
+import { useRouter } from 'vue-router'
+const register = reactive({
+  email: '',
+  identity: '',
+  name: '',
+  pwd: '',
+  checkpwd: '',
+})
+const router = useRouter()
+
+async function handleRegister() {
+  if (register.pwd === '') {
+    ElMessage.error('Please input your password')
+    return
+  }
+  if (register.pwd != register.checkpwd) {
+    ElMessage.error('Please confirm your password')
+    return
+  }
+  try {
+    const response = await api.Register(
+      register.email,
+      register.name,
+      register.pwd,
+      register.identity
+    )
+    if (response.code === 200) {
+      router.push(
+        register.identity === '1'
+          ? `/admin/${register.email}`
+          : `/staff/${register.email}`
+      )
+    } else {
+      console.log(response)
+    }
+  } catch (error) {
+    console.error(error)
+  }
+}
+</script>
 <template>
   <el-container>
     <el-main>
       <div class="container">
-        <div class="login-wrapper">
-          <div class="header">Account Register</div>
-          <div class="form-wrapper">
-            <input
-              type="text"
-              name="Email"
-              placeholder="your eamil"
-              v-model="email"
-              class="input-item"
-              required />
-            <input
-              type="number"
-              name="Sfaff ID"
-              placeholder="your staff ID"
-              v-model="id"
-              class="input-item"
-              required />
-            <input
-              type="text"
-              name="username"
-              placeholder="username"
-              class="input-item"
-              v-model="username"
-              required />
-            <input
-              type="password"
-              name="password"
-              placeholder="password"
-              v-model="password"
-              class="input-item"
-              required />
-            <input
-              type="password"
-              name="confirm password"
-              placeholder="confirm password"
-              v-model="confirm_password"
-              class="input-item"
-              required />
-            <el-button class="btn" @click.native.prevent="handleStaffRegister"
-              >Staff Register</el-button
-            >
-            <el-button class="btn" @click.native.prevent="handleAdminRegister"
-              >Admin Register</el-button
-            >
-            <router-link to="/login" class="login-link" style="display: center"
-              >Already have an account?</router-link
-            >
-          </div>
+        <div class="form-wrapper">
+          <el-text class="register-text" truncated>Register</el-text>
+          <el-form :model="register" label-position="top">
+            <el-form-item label="Email">
+              <el-input
+                clearable
+                v-model="register.email"
+                placeholder="please input valid email address" />
+            </el-form-item>
+            <el-form-item label="Register as">
+              <el-radio-group v-model="register.identity" label="Identity">
+                <el-radio-button label="0">Staff</el-radio-button>
+                <el-radio-button label="1">Manager</el-radio-button>
+              </el-radio-group>
+            </el-form-item>
+            <el-form-item label="Name">
+              <el-input
+                v-model="register.name"
+                placeholder="please input your name" />
+            </el-form-item>
+            <el-form-item label="Password">
+              <el-input
+                show-password
+                v-model="register.pwd"
+                placeholder="please input your password" />
+            </el-form-item>
+            <el-form-item label="Confirm Password">
+              <el-input
+                show-password
+                v-model="register.checkpwd"
+                placeholder="please confirm your password" />
+            </el-form-item>
+            <el-form-item>
+              <el-button type="primary" @click="handleRegister"
+                >Sign Up</el-button
+              >
+            </el-form-item>
+            <el-form-item>
+              <router-link
+                to="/login"
+                class="login-link"
+                style="display: center"
+                >Already have an account?</router-link
+              >
+            </el-form-item>
+          </el-form>
         </div>
       </div>
     </el-main>
     <el-footer style="color: #000">Powered By Vue @SE黑奴 2023</el-footer>
   </el-container>
 </template>
-
+<!-- 
 <script>
 import api from '../utils/api.js'
 export default {
   data() {
     return {
-      email: '',
-      password: '',
-      username: '',
-      id: '',
-      confirm_password: '',
+      register: [],
     }
   },
   methods: {
     async handleStaffRegister() {
       if (!this.password) {
-        alert('Please input your password')
+        ElMessage.error('Please input your password')
         return
       }
       if (this.password !== this.confirm_password) {
-        alert('Please confirm your password')
+        ElMessage.error('Please confirm your password')
         return
       }
       await api
@@ -107,12 +144,11 @@ export default {
           } else if (res.code === 200) {
             this.$router.push('/')
           }
-          console.log(res)
         })
     },
   },
 }
-</script>
+</script> -->
 
 <style>
 * {
@@ -123,6 +159,10 @@ export default {
 body {
   height: 100%;
 }
+.register-text {
+  left: 15%;
+  font-size: 50px;
+}
 .container {
   height: 100%;
   width: 100%;
@@ -130,16 +170,17 @@ body {
   /* background-size: 100% 100%; */
   background-image: linear-gradient(to right, #fbc2eb, #a6c1ee);
 }
-.login-wrapper {
+.form-wrapper {
   background-color: #faf9f9;
+  display: inline-block;
   width: 358px;
   height: 588px;
   border-radius: 15px;
   padding: 0 50px;
   position: relative;
-  left: 50%; /*the relative position in the */
+  left: 50%;
   top: 10%;
-  transform: translate(-50%, 0%); /*self's relative postion*/
+  transform: translate(-50%, 0%);
 }
 .header {
   font-size: 30px;

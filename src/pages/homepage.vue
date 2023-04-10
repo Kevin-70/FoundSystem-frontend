@@ -1,12 +1,12 @@
 <script setup>
-import { ref, reactive, onMounted, inject, VueElement } from 'vue'
+import { ref, reactive, onMounted, inject } from 'vue'
 import { useRoute } from 'vue-router'
 // import { Sunny, Moon } from '@element-plus/icons-vue'
 import api from '../utils/api'
-
-const router = useRoute()
+const route = useRoute()
 const $cookies = inject('$cookies')
 const dialogFormVisible = ref(false)
+const groups = ref([])
 const formLabelWidth = '140px'
 const info = reactive({
   sex: '',
@@ -17,6 +17,7 @@ const info = reactive({
 const form = reactive({
   sex: '',
   bio: '',
+  name: '',
   phoneNumber: '',
 })
 const activeIndex = ref('1')
@@ -25,12 +26,34 @@ const handleSelect = (key, keyPath) => {
 }
 onMounted(async () => {
   await api
-    .GetUserInfo(router.params.email, $cookies.get('satoken'))
+    .GetUserInfo(route.params.email, $cookies.get('satoken'))
     .then((res) => {
       info.name = res.data.name
       info.sex = res.data.sex
       info.bio = res.data.bio
       info.phoneNumber = res.data.phoneNumber
+      form.sex = res.data.sex ? '女' : '男'
+      form.bio = res.data.bio
+      form.phoneNumber = res.data.phoneNumber
+      form.name = res.data.name
+    })
+    .catch((error) => {
+      console.log(error)
+    })
+  await api
+    .GetUserInfo(route.params.email, $cookies.get('satoken'))
+    .then((res) => {
+      info.name = res.data.name
+      info.sex = res.data.sex
+      info.bio = res.data.bio
+      info.phoneNumber = res.data.phoneNumber
+      form.sex = res.data.sex ? '女' : '男'
+      form.bio = res.data.bio
+      form.phoneNumber = res.data.phoneNumber
+      form.name = res.data.name
+    })
+    .catch((error) => {
+      console.log(error)
     })
 })
 async function UpdateInfo() {
@@ -39,36 +62,30 @@ async function UpdateInfo() {
       form.bio,
       form.phoneNumber,
       form.sex,
+      form.name,
       $cookies.get('satoken')
     )
     dialogFormVisible.value = false
     if (response.code === 200) {
       const res = await api.GetUserInfo(
-        router.params.email,
+        route.params.email,
         $cookies.get('satoken')
       )
       info.sex = res.data.sex
       info.bio = res.data.bio
       info.phoneNumber = res.data.phoneNumber
-      form.sex = ''
-      form.bio = ''
-      form.phoneNumber = ''
+      info.name = res.data.name
+      form.sex = res.data.sex
+      form.bio = res.data.bio
+      form.phoneNumber = res.data.phoneNumber
+      form.name = res.data.name
     } else {
-      console.log('error')
+      console.log(response)
     }
   } catch (error) {
     console.error(error)
   }
 }
-// return {
-//   dialogFormVisible,
-//   formLabelWidth,
-//   info,
-//   form,
-//   activeIndex,
-//   handleSelect,
-//   UpdateInfo,
-// }
 </script>
 
 <template>
@@ -81,31 +98,9 @@ async function UpdateInfo() {
           mode="horizontal"
           @select="handleSelect">
           <el-menu-item index="1">Homepage</el-menu-item>
-          <!-- <el-menu-item index="2">Group Info</el-menu-item> -->
-          <!-- <el-sub-menu index="3">
-            <template #title>Workspace</template>
-            <el-menu-item index="3-1">item one</el-menu-item>
-            <el-menu-item index="3-2">item two</el-menu-item>
-            <el-menu-item index="3-3">item three</el-menu-item>
-          </el-sub-menu> -->
-          <!-- <el-menu-item index="4">
-            <client-only
-              ><el-switch
-                v-model="light_style"
-                class="ml-2"
-                size="large"
-                inline-prompt
-                :active-icon="Sunny"
-                :inactive-icon="Moon"
-                style="
-                  --el-switch-on-color: #fbc2eb;
-                  --el-switch-off-color: #000;
-                "
-            /></client-only>
-          </el-menu-item> -->
         </el-menu>
       </el-header>
-      <el-main >
+      <el-main>
         <div>
           <el-row :gutter="15">
             <el-col :span="10" :push="1">
@@ -130,15 +125,33 @@ async function UpdateInfo() {
                 <el-descriptions-item label="Bio">{{
                   info.bio
                 }}</el-descriptions-item>
-                <!-- <el-descriptions-item label="School">
-                  <el-tag>Sustech</el-tag>
-                </el-descriptions-item>
-                <el-descriptions-item label="Address"
-                  >Example Address..</el-descriptions-item
-                > -->
               </el-descriptions>
             </el-col>
           </el-row>
+          <el-row :gutter="15">
+            <el-col :span="10" :push="1">
+              <el-card class="box-card">
+                <template #header>
+                  <div class="card-header">
+                    <span>All Group</span>
+                    <el-button class="button" text @click="handleAllGroups"
+                      >Sync</el-button
+                    >
+                  </div>
+                </template>
+                <div v-for="item in this.options" :key="item.value">
+                  {{ item.groupName }}
+                </div>
+              </el-card>
+            </el-col></el-row
+          >
+          <el-row :gutter="15">
+            <el-col :span="10" :push="1"
+              ><el-button @click="openJoinWindow"
+                >Join Research Group</el-button
+              >
+            </el-col></el-row
+          >
           <el-dialog v-model="dialogFormVisible" title="Update Info">
             <el-form :inline="true" :model="form">
               <el-form-item label="phone number" :label-width="formLabelWidth">
@@ -151,13 +164,23 @@ async function UpdateInfo() {
                 </el-select>
               </el-form-item>
               <el-form-item
+                label="name"
+                :inline="false"
+                :label-width="formLabelWidth">
+                <el-input
+                  v-model="form.name"
+                  placeholder="Please input your name"
+                  show-word-limit
+                  autocomplete="off" />
+              </el-form-item>
+              <el-form-item
                 label="bio"
                 :inline="false"
                 :label-width="formLabelWidth">
                 <el-input
                   v-model="form.bio"
                   maxlength="200"
-                  placeholder="Please input"
+                  placeholder="Please input your bio"
                   show-word-limit
                   autocomplete="off" />
               </el-form-item>
@@ -172,23 +195,22 @@ async function UpdateInfo() {
             </template>
           </el-dialog>
 
-          <el-button @click="openJoinWindow">Join Research Group</el-button>
           <el-dialog v-model="dialogFormVisible2" title="Join Group">
-            <el-label>Please select a group to join</el-label>
-            <el-select v-model="value" placeholder="请选择">
-                <el-option
-                v-for="item in options"
+            <el-select v-model="choice" placeholder="请选择">
+              <el-option
+                v-for="item in this.options"
                 :key="item.value"
-                :label="item.label"
-                :value="item.value">
-                </el-option>
+                :label="item.groupName"
+                :value="item.groupName">
+              </el-option>
             </el-select>
-         <el-button @click="handleJoinGroup">Join</el-button>
+            <el-button @click="handleApplyGroup">Apply</el-button>
+            <el-button @click="handleJoinGroup">Join(just for test)</el-button>
             <template #footer>
-                <span class="dialog-footer">
-                  <el-button @click="dialogFormVisible2 = false">Confirm</el-button>
-                </span>
-              </template>
+              <span class="dialog-footer">
+                <el-button @click="dialogFormVisible2 = false">Close</el-button>
+              </span>
+            </template>
           </el-dialog>
         </div>
       </el-main>
@@ -199,56 +221,54 @@ async function UpdateInfo() {
 </template>
 <script>
 export default {
-    data(){
-        return {
-        dialogFormVisible:false,
-        dialogFormVisible2:false,
-        options:[]
+  data() {
+    return {
+      dialogFormVisible: false,
+      dialogFormVisible2: false,
+      options: [],
+      choice: '',
+      groups: [],
+    }
+  },
+  methods: {
+    openJoinWindow() {
+      this.dialogFormVisible2 = true
+      this.handleAllGroups()
+    },
+    async handleAllGroups() {
+      await api.GetAllGroups(this.$cookies.get('satoken')).then((res) => {
+        if (res.code === 500) {
+          ElMessage.error(res.msg)
+        } else if (res.code === 200) {
+          this.options = res.data
         }
-    }
-    ,methods:{
-        openJoinWindow(){
-            this.dialogFormVisible2=true;
-            this.handleAllGroups()
-        }, 
-        async handleAllGroups() {
-            console.log(this.email,this.password)
-        await api.GetAllGroups(this.email, this.password).then((res) => {
-            if (res.code === 500) {
+      })
+    },
+    async handleApplyGroup() {
+      await api.StaffJoinGroup(this.$cookies.get('satoken')).then((res) => {
+        if (res.code === 500) {
+          ElMessage.error(res.msg)
+        } else if (res.code === 200) {
+          console.log(res)
+          ElMessage.success('加入成功')
+        }
+      })
+    },
+    async handleJoinGroup() {
+      await api
+        .ForceJoinGroup(this.choice, this.$cookies.get('satoken'))
+        .then((res) => {
+          if (res.code === 500) {
             ElMessage.error(res.msg)
             console.log(res)
-            } else if (res.code === 200) {
-            this.$cookies.set(
-                'satoken',
-                res.data.tokenValue,
-                `${res.data.tokenTimeout}s`
-            )
-            this.options=res.data;
-            }
-        })
-        },
-        async handleJoinGroup() {
-            console.log(this.email,this.password)
-        await api.StaffJoinGroup(this.email, this.password).then((res) => {
-            if (res.code === 500) {
-            ElMessage.error(res.msg)
+          } else if (res.code === 200) {
             console.log(res)
-            } else if (res.code === 200) {
-            this.$cookies.set(
-                'satoken',
-                res.data.tokenValue,
-                `${res.data.tokenTimeout}s`
-            )
-            ElMessage.success("加入成功")
-
-            }
+            ElMessage.success('加入成功')
+          }
         })
-        },
-
-    }
+    },
+  },
 }
-
-
 </script>
 
 <style>
@@ -263,5 +283,13 @@ export default {
 }
 .el-row:last-child {
   margin-bottom: 0;
+}
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.box-card {
+  width: 480px;
 }
 </style>
