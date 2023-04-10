@@ -19,12 +19,12 @@
               v-model="password"
               class="input-item"
               required />
-            <div class="btn" @click.native.prevent="handleStaffLogin">
+            <el-button class="btn" @click.native.prevent="handleStaffLogin">
               Staff Login
-            </div>
-            <div class="btn" @click.native.prevent="handleAdminLogin">
+            </el-button>
+            <el-button class="btn" @click.native.prevent="handleAdminLogin">
               Admin Login
-            </div>
+            </el-button>
           </div>
           <div class="msg">
             Don't have account?
@@ -52,8 +52,12 @@ export default {
         if (res.code === 500) {
           ElMessage.error(res.msg)
         } else if (res.code === 200) {
-          this.$cookies.set('token', res.data.tokenValue, res.data.tokenTimeout)
-          this.$router.push('/user')
+          this.$cookies.set(
+            'satoken',
+            res.data.tokenValue,
+            `${res.data.tokenTimeout}s`
+          )
+          this.$router.push(`/staff/${this.email}`)
         }
       })
     },
@@ -62,8 +66,12 @@ export default {
         if (res.code === 500) {
           ElMessage.error(res.msg)
         } else if (res.code === 200) {
-          this.$cookies.set('token', res.data.tokenValue, res.data.tokenTimeout)
-          this.$router.push('/user')
+          this.$cookies.set(
+            'satoken',
+            res.data.tokenValue,
+            `${res.data.tokenTimeout}s`
+          )
+          this.$router.push('/admin')
         }
       })
       this.$router.push('/')
@@ -124,6 +132,7 @@ body {
 }
 .btn {
   text-align: center;
+  align-content: center;
   padding: 10px;
   width: 100%;
   margin-top: 40px;

@@ -5,18 +5,11 @@
 
 <template>
   <div id="home">
-    <!-- <router-link to="/login">Login</router-link> |
-    <router-link to="/">Homepage</router-link> -->
     <router-view></router-view>
   </div>
 </template>
 
 <style scoped>
-#all {
-  width: 100%;
-  height: 100%;
-}
-
 /* header {
   line-height: 1.5;
 }
