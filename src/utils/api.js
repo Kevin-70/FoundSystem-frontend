@@ -55,7 +55,8 @@ export default {
     } catch (error) {
       return console.error(error)
     }
-  },async AdminRegister (email, username, password) {
+  },
+  async AdminRegister (email, username, password) {
     try {
       const response = await fetch(`${BASE_URL}/admin/register`, {
         method: 'POST',
@@ -73,5 +74,35 @@ export default {
     } catch (error) {
       return console.error(error)
     }
-  }
+  },
+  async GetUserInfo (email, satoken) {
+    try {
+      const response = await fetch(`${BASE_URL}/user/getUserByMail?mail=${email}`, {
+        credentials: 'include',
+        headers: {
+          'satoken': satoken,
+        },
+      })
+      const data = await response.json()
+      return data
+    } catch (error) {
+      return console.error(error)
+    }
+  },
+  async UpdateUserInfo (bio, phoneNumber, sex, satoken) {
+    try {
+      const response = await fetch(`${BASE_URL}/user/editMyInfo?bio=${bio}&phoneNumber=${phoneNumber}&sex=${sex}`, {
+        method: 'POST',
+        credentials: 'include',
+        headers: {
+          'satoken': satoken,
+        },
+      })
+      const data = await response.json()
+      return data
+    } catch (error) {
+      return console.error(error)
+    }
+  },
+
 }

@@ -99,7 +99,8 @@ export default {
         alert('Please confirm your password')
         return
       }
-      await api.AdminRegister(this.email, this.username, this.password)
+      await api
+        .AdminRegister(this.email, this.username, this.password)
         .then((res) => {
           if (res.code === 500) {
             alert(res.msg)
@@ -162,6 +163,7 @@ body {
 }
 .btn {
   text-align: center;
+  align-self: center;
   padding: 10px;
   width: 100%;
   margin-top: 40px;
