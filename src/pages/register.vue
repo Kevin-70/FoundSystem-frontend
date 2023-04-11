@@ -16,7 +16,7 @@ async function handleRegister() {
     ElMessage.error('Please input your password')
     return
   }
-  if (register.pwd != register.checkpwd) {
+  if (register.pwd !== register.checkpwd) {
     ElMessage.error('Please confirm your password')
     return
   }

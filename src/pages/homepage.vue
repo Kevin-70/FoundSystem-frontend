@@ -6,7 +6,6 @@ import api from '../utils/api'
 const route = useRoute()
 const $cookies = inject('$cookies')
 const dialogFormVisible = ref(false)
-const groups = ref([])
 const formLabelWidth = '140px'
 const info = reactive({
   sex: '',
@@ -32,7 +31,7 @@ onMounted(async () => {
       info.sex = res.data.sex
       info.bio = res.data.bio
       info.phoneNumber = res.data.phoneNumber
-      form.sex = res.data.sex ? '女' : '男'
+      form.sex = res.data.sex
       form.bio = res.data.bio
       form.phoneNumber = res.data.phoneNumber
       form.name = res.data.name
@@ -75,7 +74,7 @@ async function UpdateInfo() {
       info.bio = res.data.bio
       info.phoneNumber = res.data.phoneNumber
       info.name = res.data.name
-      form.sex = res.data.sex
+      form.sex = res.data.sex ? '女' : '男'
       form.bio = res.data.bio
       form.phoneNumber = res.data.phoneNumber
       form.name = res.data.name
