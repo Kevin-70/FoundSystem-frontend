@@ -39,6 +39,7 @@ async function handleLogin() {
       )
       if (login.identity) {
         router.push(`/staff/${login.email}`)
+        
       } else {
         router.push(`/admin/${login.email}`)
       }

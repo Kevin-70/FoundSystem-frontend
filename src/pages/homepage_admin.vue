@@ -1,5 +1,5 @@
 <script setup>
-import { ref, reactive, onMounted, inject } from 'vue'
+import { ref, reactive, onMounted, inject, VueElement } from 'vue'
 import { useRoute } from 'vue-router'
 // import { Sunny, Moon } from '@element-plus/icons-vue'
 import api from '../utils/api'
@@ -81,7 +81,7 @@ async function UpdateInfo() {
           mode="horizontal"
           @select="handleSelect">
           <el-menu-item index="1">Homepage</el-menu-item>
-          <el-menu-item index="2">Group Info</el-menu-item>
+          <!-- <el-menu-item index="2">Group Info</el-menu-item> -->
           <!-- <el-sub-menu index="3">
             <template #title>Workspace</template>
             <el-menu-item index="3-1">item one</el-menu-item>
@@ -105,15 +105,9 @@ async function UpdateInfo() {
           </el-menu-item> -->
         </el-menu>
       </el-header>
-      <el-main>
+      <el-main >
         <div>
           <el-row :gutter="15">
-            <!-- <el-col :span="4" :push="1">
-              <el-avatar
-                style="--el-avatar-size: 200px; --el-avatar-text-size: 50px">
-                user
-              </el-avatar>
-            </el-col> -->
             <el-col :span="10" :push="1">
               <el-descriptions border column="1">
                 <template #title>
@@ -177,6 +171,19 @@ async function UpdateInfo() {
               </span>
             </template>
           </el-dialog>
+
+          <el-button @click="openGroupsWindow">Join Requests</el-button>
+          <el-dialog v-model="dialogFormVisible2" title="Join Group">
+            <el-table>
+
+            </el-table>
+            
+            <template #footer>
+                <span class="dialog-footer">
+                  <el-button @click="dialogFormVisible2 = false">Confirm</el-button>
+                </span>
+              </template>
+          </el-dialog>
         </div>
       </el-main>
       <el-footer style="color: #000">Powered By Vue @SE黑奴 2023</el-footer>
@@ -184,6 +191,41 @@ async function UpdateInfo() {
     </el-container>
   </div>
 </template>
+<script>
+export default {
+    data(){
+        return {
+        dialogFormVisible:false,
+        dialogFormVisible2:false,
+        options:[]
+        }
+    }
+    ,methods:{
+        openGroupsWindow(){
+            this.dialogFormVisible2=true;
+        }, 
+        async handleApproveGroup() {
+        await api.StaffJoinGroup(this.email).then((res) => {
+            if (res.code === 500) {
+            ElMessage.error(res.msg)
+            console.log(res)
+            } else if (res.code === 200) {
+            this.$cookies.set(
+                'satoken',
+                res.data.tokenValue,
+                `${res.data.tokenTimeout}s`
+            )
+            ElMessage.success("加入成功")
+
+            }
+        })
+        },
+
+    }
+}
+
+
+</script>
 
 <style>
 .el-container {
