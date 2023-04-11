@@ -3,27 +3,33 @@
     <el-main>
       <div class="container">
         <div class="login-wrapper">
-          <div class="header">Login</div>
           <div class="form-wrapper">
-            <input
-              type="text"
-              name="email"
-              placeholder="email"
-              class="input-item"
-              v-model="email"
-              required />
-            <input
-              type="password"
-              name="password"
-              placeholder="password"
-              v-model="password"
-              class="input-item"
-              required />
-            <el-button class="btn" @click.native.prevent="handleStaffLogin">
-              Staff Login
-            </el-button>
-            <el-button class="btn" @click.native.prevent="handleAdminLogin">
-              Admin Login
+            <el-text class="login-text" truncated>Login</el-text>
+            <el-form :model="register" label-position="left" :label-width="70">
+              <el-form-item label="Email"
+                ><el-input
+                  name="email"
+                  placeholder="email"
+                  v-model="email"
+                  required
+              /></el-form-item>
+              <el-form-item label="Password"
+                ><el-input
+                  name="password"
+                  placeholder="password"
+                  show-password
+                  v-model="password"
+                  required
+              /></el-form-item>
+              <el-form-item label="Login as">
+                <el-radio-group v-model="identity" label="Identity">
+                  <el-radio-button label="0">Staff</el-radio-button>
+                  <el-radio-button label="1">Manager</el-radio-button>
+                </el-radio-group>
+              </el-form-item>
+            </el-form>
+            <el-button class="btn" @click.native.prevent="handleLogin">
+              Login
             </el-button>
           </div>
           <div class="msg">
@@ -44,28 +50,12 @@ export default {
     return {
       email: '',
       password: '',
+      identity: '',
     }
   },
   methods: {
-    async handleStaffLogin() {
-        console.log(this.email,this.password)
-
-      await api.StaffLogin(this.email, this.password).then((res) => {
-        if (res.code === 500) {
-          ElMessage.error(res.msg)
-          console.log(res)
-        } else if (res.code === 200) {
-          this.$cookies.set(
-            'satoken',
-            res.data.tokenValue,
-            `${res.data.tokenTimeout}s`
-          )
-          this.$router.push(`/staff/${this.email}`)
-        }
-      })
-    },
-    async handleAdminLogin() {
-      await api.AdminLogin(this.email, this.password).then((res) => {
+    async handleLogin() {
+      await api.Login(this.email, this.password, this.identity).then((res) => {
         if (res.code === 500) {
           ElMessage.error(res.msg)
         } else if (res.code === 200) {
@@ -74,10 +64,13 @@ export default {
             res.data.tokenValue,
             `${res.data.tokenTimeout}s`
           )
-          this.$router.push(`/admin/${this.email}`)
+          if (this.identity) {
+            this.$router.push(`/staff/${this.email}`)
+          } else {
+            this.$router.push(`/admin/${this.email}`)
+          }
         }
       })
-      this.$router.push('/')
     },
     async handleStaffRegister() {
       this.$router.push('/login/register')
@@ -94,6 +87,10 @@ export default {
 
 body {
   height: 100%;
+}
+.login-text {
+  left: 25%;
+  font-size: 50px;
 }
 .container {
   height: 100%;
