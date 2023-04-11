@@ -10,16 +10,36 @@ const register = reactive({
   checkpwd: '',
 })
 const router = useRouter()
-
-async function handleRegister() {
+const validation = () => {
+  const emailPattern = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/
+  if (!emailPattern.test(register.email)) {
+    ElMessage.error('Please use valid email address')
+    return false
+  }
+  if (register.identity === '') {
+    ElMessage.error('Please choose your identity')
+    return false
+  }
+  if (register.name === '') {
+    ElMessage.error('Please input your name')
+    return false
+  }
   if (register.pwd === '') {
     ElMessage.error('Please input your password')
-    return
+    return false
   }
+
   if (register.pwd !== register.checkpwd) {
     ElMessage.error('Please confirm your password')
+    return false
+  }
+  return true
+}
+async function handleRegister() {
+  if (!validation()) {
     return
   }
+
   try {
     const response = await api.Register(
       register.email,
@@ -97,58 +117,6 @@ async function handleRegister() {
     <el-footer style="color: #000">Powered By Vue @SE黑奴 2023</el-footer>
   </el-container>
 </template>
-<!-- 
-<script>
-import api from '../utils/api.js'
-export default {
-  data() {
-    return {
-      register: [],
-    }
-  },
-  methods: {
-    async handleStaffRegister() {
-      if (!this.password) {
-        ElMessage.error('Please input your password')
-        return
-      }
-      if (this.password !== this.confirm_password) {
-        ElMessage.error('Please confirm your password')
-        return
-      }
-      await api
-        .StaffRegister(this.email, this.username, this.password)
-        .then((res) => {
-          if (res.code === 500) {
-            alert(res.msg)
-          } else if (res.code === 200) {
-            this.$router.push('/')
-          }
-          console.log(res)
-        })
-    },
-    async handleAdminRegister() {
-      if (!this.password) {
-        alert('Please input your password')
-        return
-      }
-      if (this.password !== this.confirm_password) {
-        alert('Please confirm your password')
-        return
-      }
-      await api
-        .AdminRegister(this.email, this.username, this.password)
-        .then((res) => {
-          if (res.code === 500) {
-            alert(res.msg)
-          } else if (res.code === 200) {
-            this.$router.push('/')
-          }
-        })
-    },
-  },
-}
-</script> -->
 
 <style>
 * {

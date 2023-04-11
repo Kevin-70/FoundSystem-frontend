@@ -1,3 +1,54 @@
+<script setup>
+import api from '../utils/api.js'
+import { reactive } from 'vue'
+import { useRouter } from 'vue-router'
+const login = reactive({
+  email: '',
+  identity: '',
+  password: '',
+})
+const router = useRouter()
+const validation = () => {
+  const emailPattern = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/
+  if (!emailPattern.test(login.email)) {
+    ElMessage.error('Please use valid email address')
+    return false
+  }
+  if (login.password === '') {
+    ElMessage.error('Please input your password')
+    return false
+  }
+  if (login.identity === '') {
+    ElMessage.error('Please choose your identity')
+    return false
+  }
+  return true
+}
+async function handleLogin() {
+  if (!validation()) {
+    return
+  }
+  await api.Login(login.email, login.password, login.identity).then((res) => {
+    if (res.code === 500) {
+      ElMessage.error(res.msg)
+    } else if (res.code === 200) {
+      this.$cookies.set(
+        'satoken',
+        res.data.tokenValue,
+        `${res.data.tokenTimeout}s`
+      )
+      if (login.identity) {
+        router.push(`/staff/${login.email}`)
+      } else {
+        router.push(`/admin/${login.email}`)
+      }
+    }
+  })
+}
+async function handleStaffRegister() {
+  router.push('/login/register')
+}
+</script>
 <template>
   <el-container>
     <el-main>
@@ -10,7 +61,7 @@
                 ><el-input
                   name="email"
                   placeholder="email"
-                  v-model="email"
+                  v-model="login.email"
                   required
               /></el-form-item>
               <el-form-item label="Password"
@@ -18,11 +69,11 @@
                   name="password"
                   placeholder="password"
                   show-password
-                  v-model="password"
+                  v-model="login.password"
                   required
               /></el-form-item>
               <el-form-item label="Login as">
-                <el-radio-group v-model="identity" label="Identity">
+                <el-radio-group v-model="login.identity" label="Identity">
                   <el-radio-button label="0">Staff</el-radio-button>
                   <el-radio-button label="1">Manager</el-radio-button>
                 </el-radio-group>
@@ -42,42 +93,6 @@
     <el-footer style="color: #000">Powered By Vue @SE黑奴 2023</el-footer>
   </el-container>
 </template>
-
-<script>
-import api from '../utils/api.js'
-export default {
-  data() {
-    return {
-      email: '',
-      password: '',
-      identity: '',
-    }
-  },
-  methods: {
-    async handleLogin() {
-      await api.Login(this.email, this.password, this.identity).then((res) => {
-        if (res.code === 500) {
-          ElMessage.error(res.msg)
-        } else if (res.code === 200) {
-          this.$cookies.set(
-            'satoken',
-            res.data.tokenValue,
-            `${res.data.tokenTimeout}s`
-          )
-          if (this.identity) {
-            this.$router.push(`/staff/${this.email}`)
-          } else {
-            this.$router.push(`/admin/${this.email}`)
-          }
-        }
-      })
-    },
-    async handleStaffRegister() {
-      this.$router.push('/login/register')
-    },
-  },
-}
-</script>
 
 <style>
 * {
