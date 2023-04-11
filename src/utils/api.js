@@ -135,7 +135,22 @@ export default {
   },
   async ForceJoinGroup (groupname, satoken) {
     try {
-      const response = await fetch(`${BASE_URL}/group/edit/JoinApi?groupname=${groupname}`, {
+      const response = await fetch(`${BASE_URL}/group/edit/JoinApi?groupName=${groupname}`, {
+        method: 'POST',
+        credentials: 'include',
+        headers: {
+          'satoken': satoken,
+        },
+      })
+      const data = await response.json()
+      return data
+    } catch (error) {
+      return console.error(error)
+    }
+  },
+  async QuitLogin (satoken) {
+    try {
+      const response = await fetch(`${BASE_URL}/user/logout`, {
         method: 'POST',
         credentials: 'include',
         headers: {
