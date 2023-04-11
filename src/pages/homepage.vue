@@ -19,6 +19,7 @@ const form = reactive({
   name: '',
   phoneNumber: '',
 })
+const groups = ref([])
 const activeIndex = ref('1')
 const handleSelect = (key, keyPath) => {
   console.log(key, keyPath)
@@ -132,7 +133,7 @@ async function UpdateInfo() {
               <el-card class="box-card">
                 <template #header>
                   <div class="card-header">
-                    <span>All Group</span>
+                    <span>My Groups</span>
                     <el-button class="button" text @click="handleAllGroups"
                       >Sync</el-button
                     >
@@ -213,7 +214,7 @@ async function UpdateInfo() {
           </el-dialog>
         </div>
       </el-main>
-      <el-footer style="color: #000">Powered By Vue @SE黑奴 2023</el-footer>
+      <el-footer style="color: #000">Powered By Vue @SE 2023</el-footer>
       <el-backtop :right="100" :bottom="100" />
     </el-container>
   </div>
