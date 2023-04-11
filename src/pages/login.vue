@@ -1,12 +1,13 @@
 <script setup>
 import api from '../utils/api.js'
-import { reactive } from 'vue'
+import { reactive, inject } from 'vue'
 import { useRouter } from 'vue-router'
 const login = reactive({
   email: '',
   identity: '',
   password: '',
 })
+const $cookies = inject('$cookies')
 const router = useRouter()
 const validation = () => {
   const emailPattern = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/
@@ -32,11 +33,7 @@ async function handleLogin() {
     if (res.code === 500) {
       ElMessage.error(res.msg)
     } else if (res.code === 200) {
-      this.$cookies.set(
-        'satoken',
-        res.data.tokenValue,
-        `${res.data.tokenTimeout}s`
-      )
+      $cookies.set('satoken', res.data.tokenValue, `${res.data.tokenTimeout}s`)
       if (login.identity) {
         router.push(`/staff/${login.email}`)
         
@@ -91,7 +88,7 @@ async function handleStaffRegister() {
         </div>
       </div>
     </el-main>
-    <el-footer style="color: #000">Powered By Vue @SE黑奴 2023</el-footer>
+    <el-footer style="color: #000">Powered By Vue @SE 2023</el-footer>
   </el-container>
 </template>
 

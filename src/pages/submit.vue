@@ -46,18 +46,18 @@ const handleSelect = (key, keyPath) => {
       <el-main>
         <div></div>
       </el-main>
-      <el-footer style="color: #000">Powered By Vue @SE黑奴 2023</el-footer>
+      <el-footer style="color: #000">Powered By Vue @SE 2023</el-footer>
       <el-backtop :right="100" :bottom="100" />
     </el-container>
   </div>
 </template>
 <script>
-export default{
-    data(){
-        return{
-            writeable:false
-        }
+export default {
+  data() {
+    return {
+      writeable: false,
     }
+  },
 }
 </script>
 
