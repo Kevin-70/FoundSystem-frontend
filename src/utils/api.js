@@ -1,4 +1,4 @@
-const BASE_URL = 'http://106.55.104.82:8080'
+const BASE_URL = 'http://120.79.200.84:8080'
 
 export default {
   async Login (email, password, identity) {
@@ -71,9 +71,37 @@ export default {
       return console.error(error)
     }
   },
+  async GetUserInfo (email, identity, satoken) {
+    try {
+      const response = await fetch(`${BASE_URL}/user/getUserByMailAndIdentity?identity=${identity}&mail=${email}`, {
+        credentials: 'include',
+        headers: {
+          'satoken': satoken,
+        },
+      })
+      const data = await response.json()
+      return data
+    } catch (error) {
+      return console.error(error)
+    }
+  },
+  async GetMyInfo(satoken){
+    try {
+      const response = await fetch(`${BASE_URL}/user/getMyInfo`, {
+        credentials: 'include',
+        headers: {
+          'satoken': satoken,
+        },
+      })
+      const data = await response.json()
+      return data
+    } catch (error) {
+      return console.error(error)
+    }
+  },
   async UpdateUserInfo (bio, phoneNumber, sex, name, satoken) {
     try {
-      const response = await fetch(`${BASE_URL}/user/editMyInfo?bio=${bio}&phoneNumber=${phoneNumber}&sex=${sex}&name=${name}`, {
+      const response = await fetch(`${BASE_URL}/user/editMyInfo?bio=${bio}&name=${name}&phoneNumber=${phoneNumber}&sex=${sex}`, {
         method: 'POST',
         credentials: 'include',
         headers: {

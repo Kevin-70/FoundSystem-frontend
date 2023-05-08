@@ -68,17 +68,18 @@ async function UpdateInfo() {
     dialogFormVisible.value = false
     if (response.code === 200) {
       const res = await api.GetUserInfo(
-        route.params.email,
+        // route.params.email,
         $cookies.get('satoken')
       )
-      info.sex = res.data.sex
       info.bio = res.data.bio
+      info.sex = res.data.sex
       info.phoneNumber = res.data.phoneNumber
       info.name = res.data.name
       form.sex = res.data.sex ? '女' : '男'
       form.bio = res.data.bio
       form.phoneNumber = res.data.phoneNumber
       form.name = res.data.name
+      console.log(response)
     } else {
       console.log(response)
     }
