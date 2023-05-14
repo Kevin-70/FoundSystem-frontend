@@ -1,4 +1,4 @@
-const BASE_URL = 'http://120.79.200.84:8080'
+const BASE_URL = 'http://43.139.159.107:8080'
 
 export default {
   async Login (email, password, identity) {
@@ -116,7 +116,7 @@ export default {
   },
   async GetAllGroups (satoken) {
     try {
-      const response = await fetch(`${BASE_URL}/group/view/getAllGroups`, {
+      const response = await fetch(`${BASE_URL}/group/getAllGroups`, {
         method: 'GET',
         credentials: 'include',
         headers: {
@@ -129,7 +129,6 @@ export default {
       return console.error(error)
     }
   },
-
   async GetUserByGroupName (groupName, satoken) {
     try {
       const response = await fetch(`${BASE_URL}/group/view/getAllGroups?groupName=${groupName}`, {
@@ -148,7 +147,7 @@ export default {
 
   async StaffJoinGroup (satoken) {
     try {
-      const response = await fetch(`${BASE_URL}/group/edit/joinGroup`, {
+      const response = await fetch(`${BASE_URL}/group/joinGroup`, {
         method: 'POST',
         credentials: 'include',
         headers: {
