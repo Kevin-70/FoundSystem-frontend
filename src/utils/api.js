@@ -144,7 +144,6 @@ export default {
       return console.error(error)
     }
   },
-
   async StaffJoinGroup (satoken) {
     try {
       const response = await fetch(`${BASE_URL}/group/joinGroup`, {
