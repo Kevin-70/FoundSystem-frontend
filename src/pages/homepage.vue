@@ -61,10 +61,11 @@ onMounted(async () => {
 })
 async function UpdateInfo() {
   try {
+    info.sex = form.sex === '女' ? 1 : 0
     const response = await api.UpdateUserInfo(
       form.bio,
       form.phoneNumber,
-      form.sex,
+      info.sex,
       form.name,
       $cookies.get('satoken')
     )
