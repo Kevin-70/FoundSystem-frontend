@@ -1,4 +1,5 @@
-const BASE_URL = 'http://120.79.200.84:8080'
+// const BASE_URL = 'http://120.79.200.84:8080'
+const BASE_URL = 'http://43.139.159.107:8080'
 
 export default {
   async Login (email, password, identity) {
@@ -85,7 +86,7 @@ export default {
       return console.error(error)
     }
   },
-  async GetMyInfo(satoken){
+  async GetMyInfo (satoken) {
     try {
       const response = await fetch(`${BASE_URL}/user/getMyInfo`, {
         credentials: 'include',

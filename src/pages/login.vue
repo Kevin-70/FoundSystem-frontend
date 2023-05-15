@@ -34,9 +34,9 @@ async function handleLogin() {
       ElMessage.error(res.msg)
     } else if (res.code === 200) {
       $cookies.set('satoken', res.data.tokenValue, `${res.data.tokenTimeout}s`)
-      if (login.identity) {
+      if (login.identity === '0') {
+        console.log(login.identity)
         router.push(`/staff/${login.email}`)
-        
       } else {
         router.push(`/admin/${login.email}`)
       }
