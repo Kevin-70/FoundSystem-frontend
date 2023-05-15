@@ -1,7 +1,3 @@
-<<<<<<< HEAD
-// const BASE_URL = 'http://120.79.200.84:8080'
-=======
->>>>>>> 199f053f46173432f3a84e23129c5108055c5e6e
 const BASE_URL = 'http://43.139.159.107:8080'
 
 export default {
