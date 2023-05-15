@@ -1,4 +1,7 @@
+<<<<<<< HEAD
 // const BASE_URL = 'http://120.79.200.84:8080'
+=======
+>>>>>>> 199f053f46173432f3a84e23129c5108055c5e6e
 const BASE_URL = 'http://43.139.159.107:8080'
 
 export default {
@@ -117,7 +120,7 @@ export default {
   },
   async GetAllGroups (satoken) {
     try {
-      const response = await fetch(`${BASE_URL}/group/view/getAllGroups`, {
+      const response = await fetch(`${BASE_URL}/group/getAllGroups`, {
         method: 'GET',
         credentials: 'include',
         headers: {
@@ -130,7 +133,6 @@ export default {
       return console.error(error)
     }
   },
-
   async GetUserByGroupName (groupName, satoken) {
     try {
       const response = await fetch(`${BASE_URL}/group/view/getAllGroups?groupName=${groupName}`, {
@@ -146,10 +148,9 @@ export default {
       return console.error(error)
     }
   },
-
   async StaffJoinGroup (satoken) {
     try {
-      const response = await fetch(`${BASE_URL}/group/edit/joinGroup`, {
+      const response = await fetch(`${BASE_URL}/group/joinGroup`, {
         method: 'POST',
         credentials: 'include',
         headers: {
@@ -180,6 +181,21 @@ export default {
   async QuitLogin (satoken) {
     try {
       const response = await fetch(`${BASE_URL}/user/logout`, {
+        method: 'POST',
+        credentials: 'include',
+        headers: {
+          'satoken': satoken,
+        },
+      })
+      const data = await response.json()
+      return data
+    } catch (error) {
+      return console.error(error)
+    }
+  },
+  async IfLogin (satoken) {
+    try {
+      const response = await fetch(`${BASE_URL}/user/isLogin`, {
         method: 'POST',
         credentials: 'include',
         headers: {

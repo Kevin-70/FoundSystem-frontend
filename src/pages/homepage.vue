@@ -26,12 +26,14 @@ const handleSelect = (key, keyPath) => {
 }
 onMounted(async () => {
   await api
-    .GetUserInfo(route.params.email, $cookies.get('satoken'))
+    // .GetUserInfo(route.params.email, $cookies.get('satoken'))
+    .GetMyInfo($cookies.get('satoken'))
     .then((res) => {
       info.name = res.data.name
       info.sex = res.data.sex
       info.bio = res.data.bio
       info.phoneNumber = res.data.phoneNumber
+
       form.sex = res.data.sex
       form.bio = res.data.bio
       form.phoneNumber = res.data.phoneNumber
@@ -41,7 +43,8 @@ onMounted(async () => {
       console.log(error)
     })
   await api
-    .GetUserInfo(route.params.email, $cookies.get('satoken'))
+    // .GetUserInfo(route.params.email, $cookies.get('satoken'))
+    .GetMyInfo($cookies.get('satoken'))
     .then((res) => {
       info.name = res.data.name
       info.sex = res.data.sex
@@ -67,7 +70,7 @@ async function UpdateInfo() {
     )
     dialogFormVisible.value = false
     if (response.code === 200) {
-      const res = await api.GetUserInfo(
+      const res = await api.GetMyInfo(
         // route.params.email,
         $cookies.get('satoken')
       )
@@ -75,6 +78,7 @@ async function UpdateInfo() {
       info.sex = res.data.sex
       info.phoneNumber = res.data.phoneNumber
       info.name = res.data.name
+      
       form.sex = res.data.sex ? '女' : '男'
       form.bio = res.data.bio
       form.phoneNumber = res.data.phoneNumber

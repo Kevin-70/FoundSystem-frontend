@@ -71,9 +71,10 @@ async function handleStaffRegister() {
                   required
               /></el-form-item>
               <el-form-item label="Login as">
-                <el-radio-group v-model="login.identity" label="Identity">
-                  <el-radio-button label="0">Staff</el-radio-button>
-                  <el-radio-button label="1">Manager</el-radio-button>
+                <el-radio-group v-model="login.identity" label="Identity" >
+                  <el-radio-button label="0" size="small">Staff</el-radio-button>
+                  <el-radio-button label="1" size="small">Manager</el-radio-button>
+                  <el-radio-button label="2" size="small">President</el-radio-button>
                 </el-radio-group>
               </el-form-item>
             </el-form>
