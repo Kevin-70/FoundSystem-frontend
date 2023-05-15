@@ -26,7 +26,8 @@ const handleSelect = (key, keyPath) => {
 }
 onMounted(async () => {
   await api
-    .GetUserInfo(route.params.email, $cookies.get('satoken'))
+    // .GetUserInfo(route.params.email, $cookies.get('satoken'))
+    .GetMyInfo($cookies.get('satoken'))
     .then((res) => {
       info.name = res.data.name
       info.sex = res.data.sex
@@ -42,7 +43,8 @@ onMounted(async () => {
       console.log(error)
     })
   await api
-    .GetUserInfo(route.params.email, $cookies.get('satoken'))
+    // .GetUserInfo(route.params.email, $cookies.get('satoken'))
+    .GetMyInfo($cookies.get('satoken'))
     .then((res) => {
       info.name = res.data.name
       info.sex = res.data.sex

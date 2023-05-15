@@ -189,4 +189,19 @@ export default {
       return console.error(error)
     }
   },
+  async IfLogin (satoken) {
+    try {
+      const response = await fetch(`${BASE_URL}/user/isLogin`, {
+        method: 'POST',
+        credentials: 'include',
+        headers: {
+          'satoken': satoken,
+        },
+      })
+      const data = await response.json()
+      return data
+    } catch (error) {
+      return console.error(error)
+    }
+  },
 }
