@@ -226,7 +226,7 @@ export default {
     },
     async GetOneExpenditureAllInfo(satoken, expenditureNumber) {
         try {
-            const response = await fetch(`${BASE_URL}expenditure/view/getOneExpenditureAllInfo?expenditureNumber=${expenditureNumber}`, {
+            const response = await fetch(`${BASE_URL}/expenditure/view/getOneExpenditureAllInfo?expenditureNumber=${expenditureNumber}`, {
                 method: 'GET',
                 credentials: 'include',
                 headers: {

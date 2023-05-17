@@ -105,7 +105,7 @@ async function UpdateInfo() {
           @select="handleSelect">
           <el-menu-item index="1">Homepage</el-menu-item>
         <el-menu-item index="2"><el-button @click="handleQuitLogin">退出登录</el-button></el-menu-item>
-        <el-menu-item index="3"><el-button @click="handleCheckExpenditure">查看基金</el-button></el-menu-item>
+        <!-- <el-menu-item index="3"><el-button @click="handleCheckExpenditure">查看基金</el-button></el-menu-item> -->
         </el-menu>
       </el-header>
 
@@ -138,7 +138,7 @@ async function UpdateInfo() {
             </el-col>
           </el-row>
 
-          
+
           <el-row :gutter="15">
             <el-col :span="10" :push="1">
               <el-card class="box-card">
@@ -156,6 +156,7 @@ async function UpdateInfo() {
               </el-card>
             </el-col></el-row
           >
+
           <el-row :gutter="15">
             <el-col :span="10" :push="1"
               ><el-button @click="openJoinWindow"
@@ -163,6 +164,7 @@ async function UpdateInfo() {
               >
             </el-col></el-row
           >
+          
           <el-dialog v-model="dialogFormVisible" title="Update Info">
             <el-form :inline="true" :model="form">
               <el-form-item label="phone number" :label-width="formLabelWidth">
