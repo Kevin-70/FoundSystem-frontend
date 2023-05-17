@@ -26,12 +26,14 @@ const handleSelect = (key, keyPath) => {
 }
 onMounted(async () => {
   await api
-    .GetUserInfo(route.params.email, $cookies.get('satoken'))
+    // .GetUserInfo(route.params.email, $cookies.get('satoken'))
+    .GetMyInfo($cookies.get('satoken'))
     .then((res) => {
       info.name = res.data.name
       info.sex = res.data.sex
       info.bio = res.data.bio
       info.phoneNumber = res.data.phoneNumber
+
       form.sex = res.data.sex
       form.bio = res.data.bio
       form.phoneNumber = res.data.phoneNumber
@@ -41,7 +43,8 @@ onMounted(async () => {
       console.log(error)
     })
   await api
-    .GetUserInfo(route.params.email, $cookies.get('satoken'))
+    // .GetUserInfo(route.params.email, $cookies.get('satoken'))
+    .GetMyInfo($cookies.get('satoken'))
     .then((res) => {
       info.name = res.data.name
       info.sex = res.data.sex
@@ -58,27 +61,30 @@ onMounted(async () => {
 })
 async function UpdateInfo() {
   try {
+    info.sex = form.sex === '女' ? 1 : 0
     const response = await api.UpdateUserInfo(
       form.bio,
       form.phoneNumber,
-      form.sex,
+      info.sex,
       form.name,
       $cookies.get('satoken')
     )
     dialogFormVisible.value = false
     if (response.code === 200) {
-      const res = await api.GetUserInfo(
-        route.params.email,
+      const res = await api.GetMyInfo(
+        // route.params.email,
         $cookies.get('satoken')
       )
-      info.sex = res.data.sex
       info.bio = res.data.bio
+      info.sex = res.data.sex
       info.phoneNumber = res.data.phoneNumber
       info.name = res.data.name
+      
       form.sex = res.data.sex ? '女' : '男'
       form.bio = res.data.bio
       form.phoneNumber = res.data.phoneNumber
       form.name = res.data.name
+      console.log(response)
     } else {
       console.log(response)
     }
@@ -99,8 +105,10 @@ async function UpdateInfo() {
           @select="handleSelect">
           <el-menu-item index="1">Homepage</el-menu-item>
         <el-menu-item index="2"><el-button @click="handleQuitLogin">退出登录</el-button></el-menu-item>
+        <el-menu-item index="3"><el-button @click="handleCheckExpenditure">查看基金</el-button></el-menu-item>
         </el-menu>
       </el-header>
+
       <el-main>
         <div>
           <el-row :gutter="15">
@@ -129,6 +137,8 @@ async function UpdateInfo() {
               </el-descriptions>
             </el-col>
           </el-row>
+
+          
           <el-row :gutter="15">
             <el-col :span="10" :push="1">
               <el-card class="box-card">
@@ -215,6 +225,7 @@ async function UpdateInfo() {
           </el-dialog>
         </div>
       </el-main>
+
       <el-footer style="color: #000">Powered By Vue @SE 2023</el-footer>
       <el-backtop :right="100" :bottom="100" />
     </el-container>
