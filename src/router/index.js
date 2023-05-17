@@ -7,6 +7,7 @@ import register from "../pages/register.vue"
 import submit from "../pages/submit.vue"
 import welcome from "../pages/welcome.vue"
 import notfound from "../pages/notfound.vue"
+import expenditure from "../pages/staff/expenditures"
 // import store from '@/store/index'
 import api from '../utils/api'
 import { ref, reactive, onMounted, inject } from 'vue'
@@ -22,7 +23,7 @@ const routes = [
   { path: "/login/register", component: register },
   { path: "/staff/submit", component: submit },
   { path: "/notfound", component: notfound },
-  // { path: "/expenditure/:expenditureNumber", component: expenditure }
+  { path: "/expenditure/", component: expenditure }
 ]
 
 const router = createRouter({
