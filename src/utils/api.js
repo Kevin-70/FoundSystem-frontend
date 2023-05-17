@@ -255,7 +255,8 @@ export default {
     },
     async submitExpend (beginTime, endTime, expenditureName, expenditureNumber, expenditureTotalAmount,groupName,satoken) {
         try {
-          const response = await fetch(`${BASE_URL}/application/edit/newExpenditureApplication?
+            console.log(beginTime);
+          const response = await fetch(`${BASE_URL}/application/edit/submitExpend?
           beginTime=${beginTime}&endTime=${endTime}&expenditureName=${expenditureName}
           &expenditureNumber=${expenditureNumber}&expenditureTotalAmount=${expenditureTotalAmount}&groupName=${groupName}`, {
             method: 'POST',
@@ -270,11 +271,9 @@ export default {
           return console.error(error)
         }
       },
-      async getAllExpend (beginTime, endTime, expenditureName, expenditureNumber, expenditureTotalAmount,groupName,satoken) {
+      async getAllExpend (satoken) {
         try {
-          const response = await fetch(`${BASE_URL}/application/edit/newExpenditureApplication?
-          beginTime=${beginTime}&endTime=${endTime}&expenditureName=${expenditureName}
-          &expenditureNumber=${expenditureNumber}&expenditureTotalAmount=${expenditureTotalAmount}&groupName=${groupName}`, {
+          const response = await fetch(`${BASE_URL}/`, {
             method: 'POST',
             credentials: 'include',
             headers: {
