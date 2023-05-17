@@ -79,7 +79,7 @@ async function UpdateInfo() {
       info.sex = res.data.sex
       info.phoneNumber = res.data.phoneNumber
       info.name = res.data.name
-      
+
       form.sex = res.data.sex ? '女' : '男'
       form.bio = res.data.bio
       form.phoneNumber = res.data.phoneNumber
@@ -104,8 +104,16 @@ async function UpdateInfo() {
           mode="horizontal"
           @select="handleSelect">
           <el-menu-item index="1">Homepage</el-menu-item>
-        <el-menu-item index="2"><el-button @click="handleQuitLogin">退出登录</el-button></el-menu-item>
-        <el-menu-item index="3"><el-button @click="handleCheckExpenditure">查看基金</el-button></el-menu-item>
+          <el-menu-item index="2"
+            ><el-button @click="handleQuitLogin"
+              >退出登录</el-button
+            ></el-menu-item
+          >
+          <el-menu-item index="3"
+            ><el-button @click="handleCheckExpenditure"
+              >查看基金</el-button
+            ></el-menu-item
+          >
         </el-menu>
       </el-header>
 
@@ -138,7 +146,6 @@ async function UpdateInfo() {
             </el-col>
           </el-row>
 
-          
           <el-row :gutter="15">
             <el-col :span="10" :push="1">
               <el-card class="box-card">
@@ -280,18 +287,16 @@ export default {
         })
     },
     async handleQuitLogin() {
-      await api
-        .QuitLogin( this.$cookies.get('satoken'))
-        .then((res) => {
-          if (res.code === 500) {
-            ElMessage.error(res.msg)
-            console.log(res)
-          } else if (res.code === 200) {
-            console.log(res)
-            ElMessage.success('退出登录成功')
-            this.$router.push("/login")
-          }
-        })
+      await api.QuitLogin(this.$cookies.get('satoken')).then((res) => {
+        if (res.code === 500) {
+          ElMessage.error(res.msg)
+          console.log(res)
+        } else if (res.code === 200) {
+          console.log(res)
+          ElMessage.success('退出登录成功')
+          this.$router.push('/login')
+        }
+      })
     },
   },
 }
