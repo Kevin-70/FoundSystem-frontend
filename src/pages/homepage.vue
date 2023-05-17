@@ -78,7 +78,7 @@ async function UpdateInfo() {
       info.sex = res.data.sex
       info.phoneNumber = res.data.phoneNumber
       info.name = res.data.name
-      
+
       form.sex = res.data.sex ? '女' : '男'
       form.bio = res.data.bio
       form.phoneNumber = res.data.phoneNumber

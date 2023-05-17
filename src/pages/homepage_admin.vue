@@ -12,8 +12,24 @@
           <el-menu-item index="1">Homepage</el-menu-item>
         </el-menu>
       </el-header>
+
       <el-main>
-        <div><el-button>Apply for Research Group</el-button></div>
+        <div>
+          <!-- <el-button>Apply for Research Group</el-button> -->
+          <el-card class="box-card">
+            <template #header>
+              <div class="card-header">
+                <span>All Groups</span>
+                <el-button class="button" text @click="handleAllGroups"
+                  >Sync</el-button
+                >
+              </div>
+            </template>
+            <div v-for="item in this.groups" :key="item.value">
+              {{ item.groupName }}
+            </div>
+          </el-card>
+        </div>
       </el-main>
       <el-footer style="color: #000">Powered By Vue @SE 2023</el-footer>
       <el-backtop :right="100" :bottom="100" />
@@ -21,7 +37,25 @@
   </div>
 </template>
 <script>
-export default {}
+import api from '../utils/api'
+export default {
+  data() {
+    return {
+      groups: [],
+    }
+  },
+  methods: {
+    async handleAllGroups() {
+      await api.GetAllGroups(this.$cookies.get('satoken')).then((res) => {
+        if (res.code === 500) {
+          ElMessage.error(res.msg)
+        } else if (res.code === 200) {
+          this.groups = res.data
+        }
+      })
+    },
+  },
+}
 </script>
 
 <style>

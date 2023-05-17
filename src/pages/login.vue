@@ -31,14 +31,21 @@ async function handleLogin() {
   }
   await api.Login(login.email, login.password, login.identity).then((res) => {
     if (res.code === 500) {
-      ElMessage.error(res.msg)
+      if (res.msg === 'this account is abnormal') {
+        ElMessage.error('You need to verify your email first')
+        router.push(`/login/verify/${login.email}/${login.identity}`)
+      } else {
+        ElMessage.error(res.msg)
+      }
     } else if (res.code === 200) {
       $cookies.set('satoken', res.data.tokenValue, `${res.data.tokenTimeout}s`)
       if (login.identity === '0') {
         console.log(login.identity)
         router.push(`/staff/${login.email}`)
-      } else {
+      } else if (login.identity === '1') {
         router.push(`/admin/${login.email}`)
+      } else if (login.identity === '2') {
+        router.push(`/admins/${login.email}`)
       }
     }
   })
@@ -71,10 +78,16 @@ async function handleStaffRegister() {
                   required
               /></el-form-item>
               <el-form-item label="Login as">
-                <el-radio-group v-model="login.identity" label="Identity" >
-                  <el-radio-button label="0" size="small">Staff</el-radio-button>
-                  <el-radio-button label="1" size="small">Manager</el-radio-button>
-                  <el-radio-button label="2" size="small">President</el-radio-button>
+                <el-radio-group v-model="login.identity" label="Identity">
+                  <el-radio-button label="0" size="small"
+                    >Staff</el-radio-button
+                  >
+                  <el-radio-button label="1" size="small"
+                    >Manager</el-radio-button
+                  >
+                  <el-radio-button label="2" size="small"
+                    >President</el-radio-button
+                  >
                 </el-radio-group>
               </el-form-item>
             </el-form>
