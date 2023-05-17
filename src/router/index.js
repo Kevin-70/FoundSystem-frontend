@@ -4,10 +4,11 @@ import homepage_admin from "../pages/homepage_admin.vue"
 import homepage_adminS from "../pages/homepage_adminS.vue"
 import login from '../pages/login.vue'
 import register from "../pages/register.vue"
-import submit from "../pages/submit.vue"
+// import submit from "../pages/submit.vue"
 import welcome from "../pages/welcome.vue"
 import notfound from "../pages/notfound.vue"
 import verify from "../pages/verify.vue"
+import expenditure from "../pages/staff/expenditures.vue"
 // import store from '@/store/index'
 import api from '../utils/api'
 import { inject } from 'vue'
@@ -24,6 +25,8 @@ const routes = [
   { path: "/login/verify/:email/:identity", component: verify },
   { path: "/staff/submit", component: submit },
   { path: "/notfound", component: notfound },
+  { path: "/expenditure/", component: expenditure }
+
 ]
 
 const router = createRouter({
@@ -31,36 +34,26 @@ const router = createRouter({
   routes
 })
 
-router.beforeEach((to, from, next) => {
-  console.log(to.path)
-  console.log(from.path)
-  if (JSON.stringify($cookies) == "{}") {
-    next('/')
+router.beforeEach(async (to, from, next) => {
+  console.log(to.name)
+  console.log(from.name)
+  if (to.matched.length === 0) {
+    // from.path ? next({name: from.name}) : next('/notfound')
+    next('/notfound')
   } else {
     next()
   }
+  // await api.IfLogin($cookies.get('satoken')).then((res) => {
+
+
+  // next()
+  // if (!res && to.name !== '/login') {
+  //   next('/login')
+  // }
+  // })
+
+  next()
 
 })
-
-async function GetIfLogin () {
-  try {
-    const response = await api.IfLogin(
-
-      $cookies.get('satoken')
-    )
-    dialogFormVisible.value = false
-    if (response.code === 200) {
-      const res = await api.GetMyInfo(
-        $cookies.get('satoken')
-      )
-
-      console.log(response)
-    } else {
-      console.log(response)
-    }
-  } catch (error) {
-    console.error(error)
-  }
-}
 
 export default router

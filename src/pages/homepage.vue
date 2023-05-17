@@ -61,10 +61,11 @@ onMounted(async () => {
 })
 async function UpdateInfo() {
   try {
+    info.sex = form.sex === '女' ? 1 : 0
     const response = await api.UpdateUserInfo(
       form.bio,
       form.phoneNumber,
-      form.sex,
+      info.sex,
       form.name,
       $cookies.get('satoken')
     )
@@ -108,8 +109,14 @@ async function UpdateInfo() {
               >退出登录</el-button
             ></el-menu-item
           >
+          <el-menu-item index="3"
+            ><el-button @click="handleCheckExpenditure"
+              >查看基金</el-button
+            ></el-menu-item
+          >
         </el-menu>
       </el-header>
+
       <el-main>
         <div>
           <el-row :gutter="15">
@@ -138,6 +145,7 @@ async function UpdateInfo() {
               </el-descriptions>
             </el-col>
           </el-row>
+
           <el-row :gutter="15">
             <el-col :span="10" :push="1">
               <el-card class="box-card">
@@ -224,6 +232,7 @@ async function UpdateInfo() {
           </el-dialog>
         </div>
       </el-main>
+
       <el-footer style="color: #000">Powered By Vue @SE 2023</el-footer>
       <el-backtop :right="100" :bottom="100" />
     </el-container>
