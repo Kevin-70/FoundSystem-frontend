@@ -21,7 +21,6 @@ const routes = [
   { path: '/admins/:email',component:homepage_adminS},
   { path: '/login', component: login },
   { path: "/login/register", component: register },
-//   { path: "/staff/submit", component: submit },
   { path: "/notfound", component: notfound },
   { path: "/expenditure/", component: expenditure }
 ]
