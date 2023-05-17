@@ -156,9 +156,9 @@ export default {
       })
         this.centerDialogVisible = true;
     },
-    async submitExpend() {
+    submitExpend() {
     try {
-    const response = await api.submitExpend(
+    const response = api.submitExpend(
         this.form.beginTime1.toString.toString()+this.form.beginTime2.toString(),
         this.form.endTime1.toString()+this.form.endTime2.toString(),
         this.form.expenditurename,
