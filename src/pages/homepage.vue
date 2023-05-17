@@ -108,6 +108,7 @@ async function UpdateInfo() {
         <el-menu-item index="3"><el-button @click="handleCheckExpenditure">查看基金</el-button></el-menu-item>
         </el-menu>
       </el-header>
+
       <el-main>
         <div>
           <el-row :gutter="15">
@@ -136,6 +137,8 @@ async function UpdateInfo() {
               </el-descriptions>
             </el-col>
           </el-row>
+
+          
           <el-row :gutter="15">
             <el-col :span="10" :push="1">
               <el-card class="box-card">
@@ -222,6 +225,7 @@ async function UpdateInfo() {
           </el-dialog>
         </div>
       </el-main>
+
       <el-footer style="color: #000">Powered By Vue @SE 2023</el-footer>
       <el-backtop :right="100" :bottom="100" />
     </el-container>
