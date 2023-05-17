@@ -105,6 +105,7 @@ async function UpdateInfo() {
           @select="handleSelect">
           <el-menu-item index="1">Homepage</el-menu-item>
         <el-menu-item index="2"><el-button @click="handleQuitLogin">退出登录</el-button></el-menu-item>
+        <el-menu-item index="3"><el-button @click="handleCheckExpenditure">查看基金</el-button></el-menu-item>
         </el-menu>
       </el-header>
       <el-main>

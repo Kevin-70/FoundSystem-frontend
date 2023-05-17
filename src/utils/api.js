@@ -1,3 +1,5 @@
+// import { da } from "element-plus/es/locale"
+
 const BASE_URL = 'http://43.139.159.107:8080'
 
 export default {
@@ -199,7 +201,25 @@ export default {
         },
       })
       const data = await response.json()
-      return data
+      if (data.code === 200) {
+        return data.data==='isLogin: true'
+      }else {
+        return false
+      }
+    } catch (error) {
+      return console.error(error)
+    }
+  },
+  async GetAllExpenditure(satoken){
+    try {
+      const response = await fetch(`${BASE_URL}/view/getAllExpenditureInfo`, {
+        method: 'GET',
+        credentials: 'include',
+        headers: {
+          'satoken': satoken,
+        },
+      })
+      return await response.json()
     } catch (error) {
       return console.error(error)
     }

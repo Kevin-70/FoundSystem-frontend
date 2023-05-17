@@ -21,7 +21,8 @@ const routes = [
   { path: '/login', component: login },
   { path: "/login/register", component: register },
   { path: "/staff/submit", component: submit },
-  { path: "/notfound", component: notfound }
+  { path: "/notfound", component: notfound },
+  // { path: "/expenditure/:expenditureNumber", component: expenditure }
 ]
 
 const router = createRouter({
@@ -29,36 +30,26 @@ const router = createRouter({
   routes
 })
 
-router.beforeEach((to, from, next) => {
-  console.log(to.path)
-  console.log(from.path)
-  if(JSON.stringify($cookies) == "{}"){
-    next('/')
+router.beforeEach(async (to, from, next) => {
+  console.log(to.name)
+  console.log(from.name)  
+  if(to.matched.length === 0){
+    // from.path ? next({name: from.name}) : next('/notfound')
+    next('/notfound')
   }else{
-    next()
+      next()
   }
+  // await api.IfLogin($cookies.get('satoken')).then((res) => {
+
+ 
+  // next()
+  // if (!res && to.name !== '/login') {
+  //   next('/login')
+  // }
+  // })
+ 
+  next()
   
 })
-
-async function GetIfLogin() {
-  try {
-    const response = await api.IfLogin(
-
-      $cookies.get('satoken')
-    )
-    dialogFormVisible.value = false
-    if (response.code === 200) {
-      const res = await api.GetMyInfo(
-        $cookies.get('satoken')
-      )
-     
-      console.log(response)
-    } else {
-      console.log(response)
-    }
-  } catch (error) {
-    console.error(error)
-  }
-}
 
 export default router
