@@ -2,7 +2,7 @@
     <!-- 申请founds，查看found申请状态 -->
 <script setup>
 import { useRoute } from 'vue-router'
-import api from '../../utils/api_app.js'
+import api from '../../utils/api.js'
 import { ref } from 'vue'
 import { ElButton, ElDialog } from 'element-plus'
 import { reactive, onMounted, inject } from 'vue'
@@ -119,7 +119,6 @@ async function submitExpend() {
 export default {
     data() {
         return {
-    form,
     tableData :[{
     expenditureNumber: "NN30845KH",
     expenditureName: "national nature",
@@ -130,9 +129,31 @@ export default {
     remainingAmount: 98900.0,
     tag: '审核中',
     },]
+        
+}
+},onMounted(){//get all the expenditures
+    try {
+    const response =  api.submitExpend(
+        form.beginTime,
+        form.endTime,
+        form.expenditurename,
+        form.expenditurenumber,
+        form.totalamount,
+        form.groupName,
+        $cookies.get('satoken')
+    )
+    if (response.code === 200) {
+        this.centerDialogVisible=false
+        
+    } else {
+        console.log('error')
+    }
+    } catch (error) {
+    console.error(error)
+    
+}
 
-        }
-    },
+}
 }
 
 </script>
