@@ -190,16 +190,18 @@ import {
               <el-table-column fixed="right" label="Operations" width="120">
                 <template #default="scope">
                   <el-button
+                    v-if="scope.row.status !== 'Reject'"
                     type="primary"
                     :icon="Check"
                     circle
-                    @click="PassApp(scope.row.groupAppId)"
+                    @click="PassGroupApp(scope.row.groupAppId)"
                     :disabled="scope.row.status !== 'Unread'" />
                   <el-button
+                    v-if="scope.row.status !== 'Pass'"
                     type="danger"
                     :icon="Close"
                     circle
-                    @click="RejectApp(scope.row.groupAppId)"
+                    @click="RejectGroupApp(scope.row.groupAppId)"
                     :disabled="scope.row.status !== 'Unread'" />
                 </template>
               </el-table-column>
@@ -397,8 +399,9 @@ export default {
           }
         })
       this.feedbackVisible = false
+      this.passFeedback = ''
     },
-    async RejectApp(appId) {
+    async RejectApp(appId, comment) {
       await api
         .rejectApp(appId, comment, this.$cookies.get('satoken'))
         .then((res) => {
@@ -409,6 +412,7 @@ export default {
           }
         })
       this.feedbackVisible = false
+      this.passFeedback = ''
     },
     async PassFund(appId) {
       await api.passFund(appId, this.$cookies.get('satoken')).then((res) => {
