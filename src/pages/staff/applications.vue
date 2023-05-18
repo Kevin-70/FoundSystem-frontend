@@ -47,65 +47,30 @@ const $cookies = inject('$cookies');
     align-center>
     <span>Apply for a application</span>
     <el-form :model="form" label-width="120px">
-    <el-form-item label="Application name">
-      <el-input v-model="form.expenditurename" />
+    
+    <el-form-item label="基金编号">
+      <el-input v-model="form2.expenditureNumber" placeholder="Expenditure Number" />
     </el-form-item>
-    <el-form-item label="Application Number">
-      <el-input v-model="form.expenditurenumber" />
+
+    <el-form-item label="申请名称">
+      <el-input v-model="form2.abstrac" placeholder="abstract"/>        
     </el-form-item>
-    <el-form-item label="Group name">
-      <el-select v-model="form.groupName" placeholder="Group name">
+    <el-form-item label="类别">
+        <el-select v-model="form2.cate" placeholder="Group name">
         <el-option
-        v-for="(item) in options"
+        v-for="(item) in categories"
         :key="item.groupName"
         :label="item.groupName"
         :value="item.groupName"
         >
       </el-option>
-      </el-select>
+      </el-select> 
     </el-form-item>
-    <el-form-item label="Expected Start time">
-      <el-col :span="11">
-        <el-date-picker
-          v-model="form.beginTime1"
-          type="date"
-          placeholder="Start date"
-          style="width: 100%"
-        />
-      </el-col>
-      <el-col :span="2" class="text-center">
-        <span class="text-gray-500">-</span>
-      </el-col>
-      <el-col :span="11">
-        <el-time-picker
-          v-model="form.beginTime2"
-          placeholder="End date"
-          style="width: 100%"
-        />
-      </el-col>
+    <el-form-item label="申请金额">
+      <el-input v-model="form2.applyAmount" type="number" />
     </el-form-item>
-    <el-form-item label="Expected end time">
-      <el-col :span="11">
-        <el-date-picker
-          v-model="form.endTime1"
-          type="date"
-          placeholder="Start date"
-          style="width: 100%"
-        />
-      </el-col>
-      <el-col :span="2" class="text-center">
-        <span class="text-gray-500">-</span>
-      </el-col>
-      <el-col :span="11">
-        <el-time-picker
-          v-model="form.endTime2"
-          placeholder="End date"
-          style="width: 100%"
-        />
-      </el-col>
-    </el-form-item>
-    <el-form-item label="Total Amount">
-      <el-input v-model="form.totalamount" type="number" />
+    <el-form-item label="详细说明">
+      <el-input v-model="form2.comment" type="number" />
     </el-form-item>
   </el-form>
     <template #footer>
@@ -136,6 +101,7 @@ export default {
     tag: '审核中',
     },],
     options: [],
+    categories:["打印份","人工费"],
     centerDialogVisible:false,
     form :{
     expenditurename:"",
@@ -144,6 +110,13 @@ export default {
     endTime1:"",endTime2:"",
     groupName:"",
     totalamount:""
+},
+form2 :{
+    abstrac,
+    applyAmount, 
+    cate, 
+    comment, 
+    expenditureNumber
 },
 
     }
@@ -160,13 +133,8 @@ export default {
     },
     submitApplication() {
     try {
-    const response = api.submitExpend(
-        this.form.beginTime1.toString()+this.form.beginTime2.toString(),
-        this.form.endTime1.toString()+this.form.endTime2.toString(),
-        this.form.expenditurename,
-        this.form.expenditurenumber,
-        this.form.totalamount,
-        this.form.groupName,
+    const response = api.submitApplication(
+        form2.abstrac, form2.applyAmount, this.form2.cate,form2.comment,form2.expenditureNumber,
         $cookies.get('satoken')
     )
     if (response.code === 200) {
@@ -186,15 +154,9 @@ WidthdrawApplication(){
     this.centerDialogVisible=true;
 }
 },
-onMounted(){//get all the expenditures
+mounted(){//get all the expenditures
     try {
     const response =  api.getAllExpend(
-        form.beginTime1.toString.toString()+form.beginTime2.toString(),
-        form.endTime1.toString()+form.endTime2.toString(),
-        form.expenditurename,
-        form.expenditurenumber,
-        form.totalamount,
-        form.groupName,
         $cookies.get('satoken')
     )
     if (response.code === 200) {

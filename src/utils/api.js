@@ -936,8 +936,8 @@ export default {
     },
     async getAllExpend(satoken) {
         try {
-            const response = await fetch(`${BASE_URL}/`, {
-                method: 'POST',
+            const response = await fetch(`${BASE_URL}/expenditure/view/getAllExpenditureInfo`, {
+                method: 'GET',
                 credentials: 'include',
                 headers: {
                     'satoken': satoken,
@@ -949,4 +949,21 @@ export default {
             return console.error(error)
         }
     },
+    async submitApplication(abstrac,applyAmount, cate, comment, expenditureNumber,satoken){
+        try{
+            const response = await fetch(`${BASE_URL}/application/edit/submitApplication?abstrac=${abstrac}
+            applyAmount=${applyAmount}&cate=${cate}&comment=${comment}&expenditureNumber=${expenditureNumber}`,{
+            method:"POST",
+            credentials:"include",
+            headers:{
+                'satoken':satoken,
+            }
+        })
+        const data = await response.json()
+        return data
+        }catch(error){
+            return console.log(Error)
+        }
+
+    }
 }

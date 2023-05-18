@@ -34,8 +34,9 @@ const $cookies = inject('$cookies');
     <el-table-column prop="totalAmount" label="全部金额" width="600"/>
     <el-table-column prop="remainingAmount" label="剩余金额" width="600"/>
     <el-table-column fixed="right" label="Operations" width="120">
-      <template #default>
-        <el-button link type="primary" size="small" @click="CreateNewApplication">Create an application</el-button>
+      <template #default="scope" >
+        <el-button link type="primary" size="small" @click="CreateNewApplication(scope.row)">Create an application</el-button>
+        <el-button link type="primary" size="small" @click="CheckApplication(scope.row)">Check its application</el-button>
       </template>
     </el-table-column>
   </el-table>
@@ -120,77 +121,41 @@ const $cookies = inject('$cookies');
 
   <el-dialog
     v-model="appDialogVisible"
-    title="Warning"
+    title="Apply for a application"
     width="30%"
     align-center>
-    <span>Apply for a application</span>
-    <el-form :model="form2" label-width="120px">
-    <el-form-item label="Expenditure name">
-      <el-input v-model="form2.expenditurename" />
+    <el-form :model="form" label-width="120px">
+    
+    <el-form-item label="基金编号">
+      <el-input v-model="form2.expenditureNumber" placeholder="Expenditure Number"  />
     </el-form-item>
-    <el-form-item label="Expenditure Number">
-      <el-input v-model="form2.expenditurenumber" />
+
+    <el-form-item label="使用项目名称">
+      <el-input v-model="form2.abstrac" placeholder="abstract"/>        
     </el-form-item>
-    <el-form-item label="Group name">
-      <el-select v-model="form2.groupName" placeholder="Group name">
+    <el-form-item label="使用项目类别">
+        <el-select v-model="form2.cate" placeholder="types of funds">
         <el-option
-        v-for="(item) in options"
-        :key="item.groupName"
-        :label="item.groupName"
-        :value="item.groupName"
+        v-for="(item) in categories"
+        :key="item"
+        :label="item"
+        :value="item"
         >
       </el-option>
-      </el-select>
+      </el-select> 
     </el-form-item>
-    <el-form-item label="Expected Start time">
-      <el-col :span="11">
-        <el-date-picker
-          v-model="form2.beginTime1"
-          type="date"
-          placeholder="Start date"
-          style="width: 100%"
-        />
-      </el-col>
-      <el-col :span="2" class="text-center">
-        <span class="text-gray-500">-</span>
-      </el-col>
-      <el-col :span="11">
-        <el-time-picker
-          v-model="form2.beginTime2"
-          placeholder="End date"
-          style="width: 100%"
-        />
-      </el-col>
+    <el-form-item label="申请金额">
+      <el-input v-model="form2.applyAmount" type="number" />
     </el-form-item>
-    <el-form-item label="Expected end time">
-      <el-col :span="11">
-        <el-date-picker
-          v-model="form2.endTime1"
-          type="date"
-          placeholder="Start date"
-          style="width: 100%"
-        />
-      </el-col>
-      <el-col :span="2" class="text-center">
-        <span class="text-gray-500">-</span>
-      </el-col>
-      <el-col :span="11">
-        <el-time-picker
-          v-model="form2.endTime2"
-          placeholder="End date"
-          style="width: 100%"
-        />
-      </el-col>
-    </el-form-item>
-    <el-form-item label="Total Amount">
-      <el-input v-model="form2.totalamount" type="number" />
+    <el-form-item label="申请详细说明">
+      <el-input v-model="form2.comment"  />
     </el-form-item>
   </el-form>
     <template #footer>
       <span class="dialog-footer">
         <el-button @click="appDialogVisible = false">Cancel</el-button>
-        <el-button type="primary" @click="submitApp">
-          Submit Expenditure apply
+        <el-button type="primary" @click="submitApplication">
+          Submit Application apply
         </el-button>
       </span>
     </template>
@@ -214,6 +179,7 @@ export default {
     tag: '审核中',
     },],
     options: [],
+    categories:["打印份","人工费"],
     centerDialogVisible:false,
     appDialogVisible:false,
     form :{
@@ -223,15 +189,13 @@ export default {
     endTime1:"",endTime2:"",
     groupName:"",
     totalamount:""
-},  form2:{
-    expenditurename:"",
-    expenditurenumber:"",
-    beginTime1:"",beginTime2:"",
-    endTime1:"",endTime2:"",
-    groupName:"",
-    totalamount:""
-}
-
+},  form2 :{
+    abstrac:"",
+    applyAmount:"", 
+    cate:"", 
+    comment:"", 
+    expenditureNumber:""
+},
     }
 },methods:{
    handleNewExpend(){
@@ -265,22 +229,17 @@ export default {
     } catch (error) {
     console.error(error)
     }
-},submitApp() {
+},submitApplication() {
     try {
-    const response = api.submitExpend(
-        this.form2.beginTime1.toString()+this.form2.beginTime2.toString(),
-        this.form2.endTime1.toString()+this.form2.endTime2.toString(),
-        this.form2.expenditurename,
-        this.form2.expenditurenumber,
-        this.form2.totalamount,
-        this.form2.groupName,
+    const response = api.submitApplication(
+        this.form2.abstrac, this.form2.applyAmount, this.form2.cate,this.form2.comment,this.form2.expenditureNumber,
         $cookies.get('satoken')
     )
     if (response.code === 200) {
-        this.centerDialogVisible=false
-        
+        this.appDialogVisible=false;
+        ElMessage.success("申请完成");
     } else {
-        console.log('error')
+        ElMessage.error("申请基金失败，请更改信息后重试");
         console.log(response);
     }
     } catch (error) {
@@ -288,34 +247,36 @@ export default {
     }
 },
 handleSelect(){},
-CreateNewApplication(){
+ CreateNewApplication(row){
+    this.form2.expenditureNumber=row.expenditureNumber
+    console.log(row.expenditureNumber)
+
     this.appDialogVisible=true;
+},
+CheckApplication(row){
+    this.$router.push("/expenditureShow/"+row.expenditureNumber)
 }
 },
-onMounted(){//get all the expenditures
-    try {
+mounted(){//get all the expenditures
+    
     const response =  api.getAllExpend(
-        form.beginTime1.toString.toString()+form.beginTime2.toString(),
-        form.endTime1.toString()+form.endTime2.toString(),
-        form.expenditurename,
-        form.expenditurenumber,
-        form.totalamount,
-        form.groupName,
         $cookies.get('satoken')
     )
-    if (response.code === 200) {
-        this.centerDialogVisible=false
-        ElMessage.success("申请完成");
+    response.then((res)=>{
+    if (res.code === 200) {
+        this.tableData=res.data;
+        console.log(res.data);
+        console.log("success");
+        
     } else {
-        ElMessage.error("申请基金失败，请更改信息后重试");
-        console.log('error')
+        ElMessage("加载基金信息失败")
+        console.log(res)
     }
-    } catch (error) {
-    console.error(error)
+})
+
 }
 
 
-}
 }
 
 </script>
