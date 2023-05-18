@@ -468,10 +468,7 @@ export default {
     },
     async submitExpend(beginTime, endTime, expenditureName, expenditureNumber, expenditureTotalAmount, groupName, satoken) {
         try {
-            console.log(beginTime);
-            const response = await fetch(`${BASE_URL}/application/edit/submitExpend?
-          beginTime=${beginTime}&endTime=${endTime}&expenditureName=${expenditureName}
-          &expenditureNumber=${expenditureNumber}&expenditureTotalAmount=${expenditureTotalAmount}&groupName=${groupName}`, {
+            const response = await fetch(`${BASE_URL}/application/edit/submitExpend?endTime=${endTime}&expName=${expenditureName}&expNumber=${expenditureNumber}&groupName=${groupName}&startTime=${beginTime}&totalAmound=${expenditureTotalAmount}`, {
                 method: 'POST',
                 credentials: 'include',
                 headers: {
@@ -515,8 +512,7 @@ export default {
     },
     async submitApplication(abstrac,applyAmount, cate, comment, expenditureNumber,satoken){
         try{
-            const response = await fetch(`${BASE_URL}/application/edit/submitApplication?abstrac=${abstrac}
-            applyAmount=${applyAmount}&cate=${cate}&comment=${comment}&expenditureNumber=${expenditureNumber}`,{
+            const response = await fetch(`${BASE_URL}/application/edit/submitApplication?abstrac=${abstrac}&applyAmount=${applyAmount}&cate=${cate}&comment=${comment}&expenditureNumber=${expenditureNumber}`,{
             method:"POST",
             credentials:"include",
             headers:{
