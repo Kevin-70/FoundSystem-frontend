@@ -466,39 +466,36 @@ export default {
       return console.error(error)
     }
   },
-  async submitExpend (beginTime, endTime, expenditureName, expenditureNumber, expenditureTotalAmount, groupName, satoken) {
+  async submitExpend(beginTime, endTime, expenditureName, expenditureNumber, expenditureTotalAmount, groupName, satoken) {
     try {
-      console.log(beginTime)
-      const response = await fetch(`${BASE_URL}/application/edit/submitExpend?
-          beginTime=${beginTime}&endTime=${endTime}&expenditureName=${expenditureName}
-          &expenditureNumber=${expenditureNumber}&expenditureTotalAmount=${expenditureTotalAmount}&groupName=${groupName}`, {
-        method: 'POST',
-        credentials: 'include',
-        headers: {
-          'satoken': satoken,
-        },
-      })
-      const data = await response.json()
-      return data
+        const response = await fetch(`${BASE_URL}/application/edit/submitExpend?endTime=${endTime}&expName=${expenditureName}&expNumber=${expenditureNumber}&groupName=${groupName}&startTime=${beginTime}&totalAmound=${expenditureTotalAmount}`, {
+            method: 'POST',
+            credentials: 'include',
+            headers: {
+                'satoken': satoken,
+            },
+        })
+        const data = await response.json()
+        return data
     } catch (error) {
-      return console.error(error)
+        return console.error(error)
     }
-  },
-  async getAllExpend (satoken) {
+},
+async getAllExpend(satoken) {
     try {
-      const response = await fetch(`${BASE_URL}/`, {
-        method: 'POST',
-        credentials: 'include',
-        headers: {
-          'satoken': satoken,
-        },
-      })
-      const data = await response.json()
-      return data
+        const response = await fetch(`${BASE_URL}/expenditure/view/getAllExpenditureInfo`, {
+            method: 'GET',
+            credentials: 'include',
+            headers: {
+                'satoken': satoken,
+            },
+        })
+        const data = await response.json()
+        return data
     } catch (error) {
-      return console.error(error)
+        return console.error(error)
     }
-  },
+},
   async GetOneExpenditureAllInfo (satoken, expenditureNumber) {
     try {
       const response = await fetch(`${BASE_URL}/expenditure/view/getOneExpenditureAllInfo?expenditureNumber=${expenditureNumber}`, {
@@ -513,4 +510,20 @@ export default {
       return console.error(error)
     }
   },
+  async submitApplication(abstrac,applyAmount, cate, comment, expenditureNumber,satoken){
+    try{
+        const response = await fetch(`${BASE_URL}/application/edit/submitApplication?abstrac=${abstrac}&applyAmount=${applyAmount}&cate=${cate}&comment=${comment}&expenditureNumber=${expenditureNumber}`,{
+        method:"POST",
+        credentials:"include",
+        headers:{
+            'satoken':satoken,
+        }
+    })
+    const data = await response.json()
+    return data
+    }catch(error){
+        return console.log(Error)
+    }
+
+}
 }
