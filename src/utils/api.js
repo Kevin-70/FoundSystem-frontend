@@ -309,9 +309,9 @@ export default {
       return console.error(error)
     }
   },
-  async passApp (appId, satoken) {
+  async passApp (appId, comment, satoken) {
     try {
-      const response = await fetch(`${BASE_URL}/application/edit/passApplication?appId=${appId}`, {
+      const response = await fetch(`${BASE_URL}/application/edit/passApplication?appId=${appId}&comment=${comment}`, {
         method: 'POST',
         credentials: 'include',
         headers: {
@@ -324,9 +324,9 @@ export default {
       return console.error(error)
     }
   },
-  async rejectApp (appId, satoken) {
+  async rejectApp (appId, comment, satoken) {
     try {
-      const response = await fetch(`${BASE_URL}/application/edit/rejectApplication?appId=${appId}`, {
+      const response = await fetch(`${BASE_URL}/application/edit/rejectApplication?appId=${appId}&comment=${comment}`, {
         method: 'POST',
         credentials: 'include',
         headers: {
