@@ -34,6 +34,7 @@ const $cookies = inject('$cookies');
     <el-table-column prop="totalAmount" label="全部金额" width="120"/>
     <el-table-column prop="remainingAmount" label="剩余金额" width="120"/>
     <el-table-column prop="quota" label="限额" width="120"/>
+    <el-table-column prop="status" label="基金状态" width="120"/>
     <el-table-column fixed="right" label="Operations" width="200">
       <template #default="scope" >
         <el-button link type="primary" size="small" @click="CreateNewApplication(scope.row)">Create an application</el-button>
@@ -139,8 +140,7 @@ const $cookies = inject('$cookies');
         v-for="(item) in categories"
         :key="item"
         :label="item"
-        :value="item"
-        >
+        :value="item">
       </el-option>
       </el-select> 
     </el-form-item>
@@ -246,7 +246,7 @@ export default {
         ElMessage.success("申请完成");
         } else {
         ElMessage.error("申请发起失败，请更改信息后重试");
-        // console.log(res);
+        console.log(res);
         }
     })
     
@@ -254,7 +254,19 @@ export default {
     console.error(error)
     }
 },
-handleSelect(){},
+handleSelect(){
+    const response =  api.getEmail(
+        $cookies.get('satoken')
+    )
+    response.then((res)=>{
+    if (res.code === 200) {
+        this.$router.push("/staff/"+res.data);
+    } else {
+        ElMessage("返回主页失败")
+        console.log(res)
+    }})
+    this.$router.push("/staff/"+email);
+},
  CreateNewApplication(row){
     this.form2.expenditureNumber=row.expenditureNumber
     this.appDialogVisible=true;
@@ -269,7 +281,18 @@ mounted(){//get all the expenditures
     )
     response.then((res)=>{
     if (res.code === 200) {
-        this.tableData=res.data;        
+        this.tableData=res.data;
+        console.log(this.tableData)
+        for (let index = 0; index < this.tableData.length; index++) {
+            let element = this.tableData[index].status;
+            if( element==1){
+                this.tableData[index].status="可使用";
+            }else if(element==2){
+                this.tableData[index].status="被拒绝";
+            }else{
+                this.tableData[index].status="未被审阅";
+            }
+        }        
     } else {
         ElMessage("加载基金信息失败")
         console.log(res)

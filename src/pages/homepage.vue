@@ -152,7 +152,7 @@ async function UpdateInfo() {
                 <template #header>
                   <div class="card-header">
                     <span>My Groups</span>
-                    <el-button class="button" text @click="handleAllGroups"
+                    <el-button class="button" text @click="handleJoinedGroups"
                       >Sync</el-button
                     >
                   </div>
@@ -168,8 +168,7 @@ async function UpdateInfo() {
               ><el-button @click="openJoinWindow"
                 >Join Research Group</el-button
               >
-            </el-col></el-row
-          >
+            </el-col></el-row>
           <el-dialog v-model="dialogFormVisible" title="Update Info">
             <el-form :inline="true" :model="form">
               <el-form-item label="phone number" :label-width="formLabelWidth">
