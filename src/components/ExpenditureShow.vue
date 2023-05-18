@@ -2,6 +2,8 @@
 import { ref, reactive, onMounted, inject } from 'vue'
 import { useRoute } from 'vue-router'
 import api from '../utils/api'
+import graphHelper from '../utils/graphHelper'
+import BarGraph from "@/components/BarGraph.vue";
 const route = useRoute()
 const $cookies = inject('$cookies')
 const dialogFormVisible = ref(false)
@@ -15,7 +17,9 @@ const info = reactive({
   startTime: '',
   endTime: '',
   quota: 0,
-  applications: []
+  applications: [],
+  x_data: [],
+  y_data: []
 })
 
 // const expenditures = ref([])
@@ -40,7 +44,7 @@ onMounted(async () => {
         info.endTime = res.data.endTime
         info.quota = res.data.quota
         info.applications = res.data.applications
-        console.log(info.expenditureName)
+        console.log(info.applications)
         console.log("update info")
       }else{
         console.error(res)
@@ -50,6 +54,10 @@ onMounted(async () => {
     .catch((error) => {
       console.log(error)
     })
+
+   info.x_data, info.y_data = graphHelper.applications2Line(info.applications)
+   console.log(info.x_data)
+
 })
 </script>
 
@@ -98,58 +106,60 @@ onMounted(async () => {
               :data=info.applications
               style="width: 100%">
               <el-table-column
-                prop="appId"
-                label="appId"
-                width="180">
-              </el-table-column>
-              <el-table-column
-                prop="expendId"
-                label="expendId"
-                width="180">
-              </el-table-column>
-              <el-table-column
-                prop="expendName"
-                label="expendName"
-                width="180">
-              </el-table-column>
-              <el-table-column
-                prop="groupName"
-                label="groupName"
-                width="180">
-              </el-table-column>
-              <el-table-column
-                prop="totalAmount"
-                label="totalAmount"
-                width="180">
-              </el-table-column>
-              <el-table-column
-                prop="remainAmount"
-                label="remainAmount"
+                prop="userName"
+                label="User Name"
                 width="180">
               </el-table-column>
               <el-table-column
                 prop="availAmount"
-                label="availAmount"
+                label="Avail Amount"
                 width="180">
               </el-table-column>
+              <!-- <el-table-column
+                prop="appId"
+                label="appId"
+                width="180">
+              </el-table-column> -->
+              <!-- <el-table-column
+                prop="expendId"
+                label="expendId"
+                width="180">
+              </el-table-column> -->
+              <!-- <el-table-column
+                prop="expendName"
+                label="expendName"
+                width="180">
+              </el-table-column> -->
+              <!-- <el-table-column
+                prop="groupName"
+                label="groupName"
+                width="180">
+              </el-table-column> -->
+              <!-- <el-table-column
+                prop="totalAmount"
+                label="totalAmount"
+                width="180">
+              </el-table-column> -->
               <el-table-column
+                prop="remainAmount"
+                label="Remain Amount"
+                width="180">
+              </el-table-column>
+              
+              <!-- <el-table-column
                 prop="userId"
                 label="userId"
                 width="180">
-              </el-table-column>
-              <el-table-column
-                prop="userName"
-                label="userName"
-                width="180">
-              </el-table-column>
+              </el-table-column> -->
+              
               <el-table-column
                 prop="expendCategory"
-                label="expendCategory"
+                label=" Category"
                 width="180">
               </el-table-column>
               <el-table-column
                 prop="appAbstract"
-                label="appAbstract"
+                label="Abstract"
                 width="180">
               </el-table-column>
               <el-table-column
@@ -171,6 +181,12 @@ onMounted(async () => {
        </div>
         </div>
         
+        <bar-graph 
+        :width="'900px'" :height="'600px'" 
+        :x_data=info.x_data
+        :y_data=info.y_data
+
+        ></bar-graph>
         <!-- <div v-for="item in info.applications" :key="item.value">
           {{ item.appId }}
         </div> -->
@@ -187,13 +203,17 @@ onMounted(async () => {
 export default {
   data() {
     return {
-      applications: [],
+      // applications: [],
     }
   },
   methods: {
     error(message) {
         this.$message(message);
     },
+    
+  },
+  components: {
+    BarGraph
   },
 }
 </script>
