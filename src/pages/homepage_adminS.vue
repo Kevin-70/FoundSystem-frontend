@@ -1,74 +1,5 @@
 <script setup>
-import { ref, reactive, onMounted, inject } from 'vue'
-import { useRoute } from 'vue-router'
-// import { Sunny, Moon } from '@element-plus/icons-vue'
-import api from '../utils/api'
-
-const router = useRoute()
-const $cookies = inject('$cookies')
-const dialogFormVisible = ref(false)
-const formLabelWidth = '140px'
-const info = reactive({
-  sex: '',
-  bio: '',
-  name: '',
-  phoneNumber: '',
-})
-const form = reactive({
-  sex: '',
-  bio: '',
-  phoneNumber: '',
-})
-const activeIndex = ref('1')
-const handleSelect = (key, keyPath) => {
-  console.log(key, keyPath)
-}
-onMounted(async () => {
-  await api
-    .GetUserInfo(router.params.email, $cookies.get('satoken'))
-    .then((res) => {
-      info.name = res.data.name
-      info.sex = res.data.sex
-      info.bio = res.data.bio
-      info.phoneNumber = res.data.phoneNumber
-    })
-})
-async function UpdateInfo() {
-  try {
-    const response = await api.UpdateUserInfo(
-      form.bio,
-      form.phoneNumber,
-      form.sex,
-      $cookies.get('satoken')
-    )
-    dialogFormVisible.value = false
-    if (response.code === 200) {
-      const res = await api.GetUserInfo(
-        router.params.email,
-        $cookies.get('satoken')
-      )
-      info.sex = res.data.sex
-      info.bio = res.data.bio
-      info.phoneNumber = res.data.phoneNumber
-      form.sex = ''
-      form.bio = ''
-      form.phoneNumber = ''
-    } else {
-      console.log('error')
-    }
-  } catch (error) {
-    console.error(error)
-  }
-}
-// return {
-//   dialogFormVisible,
-//   formLabelWidth,
-//   info,
-//   form,
-//   activeIndex,
-//   handleSelect,
-//   UpdateInfo,
-// }
+import { Edit, Delete, Check, Close } from '@element-plus/icons-vue'
 </script>
 
 <template>
@@ -81,109 +12,577 @@ async function UpdateInfo() {
           mode="horizontal"
           @select="handleSelect">
           <el-menu-item index="1">Homepage</el-menu-item>
-          <!-- <el-menu-item index="2">Info</el-menu-item> -->
-          <!-- <el-sub-menu index="3">
-            <template #title>Workspace</template>
-            <el-menu-item index="3-1">item one</el-menu-item>
-            <el-menu-item index="3-2">item two</el-menu-item>
-            <el-menu-item index="3-3">item three</el-menu-item>
-          </el-sub-menu> -->
-          <!-- <el-menu-item index="4">
-            <client-only
-              ><el-switch
-                v-model="light_style"
-                class="ml-2"
-                size="large"
-                inline-prompt
-                :active-icon="Sunny"
-                :inactive-icon="Moon"
-                style="
-                  --el-switch-on-color: #fbc2eb;
-                  --el-switch-off-color: #000;
-                "
-            /></client-only>
-          </el-menu-item> -->
         </el-menu>
       </el-header>
       <el-main>
         <div>
-          <el-row :gutter="15">
-            <!-- <el-col :span="4" :push="1">
-              <el-avatar
-                style="--el-avatar-size: 200px; --el-avatar-text-size: 50px">
-                user
-              </el-avatar>
-            </el-col> -->
-            <el-col :span="10" :push="1">
-              <el-descriptions border column="1">
-                <template #title>
-                  <h2 style="color: white">User Info</h2>
-                </template>
-                <template #extra>
-                  <el-button @click="dialogFormVisible = true"
-                    >Update</el-button
-                  >
-                </template>
-                <el-descriptions-item label="Username">{{
-                  info.name
-                }}</el-descriptions-item>
-                <el-descriptions-item label="Telephone">{{
-                  info.phoneNumber
-                }}</el-descriptions-item>
-                <el-descriptions-item label="Sex">{{
-                  info.sex ? '女' : '男'
-                }}</el-descriptions-item>
-                <el-descriptions-item label="Bio">{{
-                  info.bio
-                }}</el-descriptions-item>
-                <!-- <el-descriptions-item label="School">
-                  <el-tag>Sustech</el-tag>
-                </el-descriptions-item>
-                <el-descriptions-item label="Address"
-                  >Example Address..</el-descriptions-item
-                > -->
-              </el-descriptions>
-            </el-col>
-          </el-row>
-          <el-dialog v-model="dialogFormVisible" title="Update Info">
-            <el-form :inline="true" :model="form">
-              <el-form-item label="phone number" :label-width="formLabelWidth">
-                <el-input v-model="form.phoneNumber" autocomplete="off" />
-              </el-form-item>
-              <el-form-item label="Sex" :label-width="formLabelWidth">
-                <el-select v-model="form.sex" placeholder="Please select">
-                  <el-option label="男" value="0" />
-                  <el-option label="女" value="1" />
-                </el-select>
-              </el-form-item>
-              <el-form-item
-                label="bio"
-                :inline="false"
-                :label-width="formLabelWidth">
-                <el-input
-                  v-model="form.bio"
-                  maxlength="200"
-                  placeholder="Please input"
-                  show-word-limit
-                  autocomplete="off" />
-              </el-form-item>
-            </el-form>
-            <template #footer>
-              <span class="dialog-footer">
-                <el-button @click="dialogFormVisible = false">Cancel</el-button>
-                <el-button type="primary" @click="UpdateInfo">
-                  Confirm
-                </el-button>
-              </span>
+          <el-input
+            style="width: 360px"
+            v-model="this.groupname"
+            placeholder="Please input group name"></el-input>
+          <el-button @click="createGroup">Create Group</el-button>
+          <el-card class="box-card">
+            <template #header>
+              <div class="card-header">
+                <span>Group Management</span>
+                <el-button class="button" text @click="handleAllGroups"
+                  >Sync</el-button
+                >
+              </div>
             </template>
-          </el-dialog>
+            <el-table :data="this.groups" style="width: 100%">
+              <el-table-column prop="groupName" label="groupName" width="180" />
+              <el-table-column
+                prop="memberNames"
+                label="memberNames"
+                width="180" />
+              <el-table-column
+                prop="managerNames"
+                label="managers"
+                width="180" />
+              <el-table-column fixed="right" label="Operations" width="120">
+                <template #default="scope">
+                  <el-button
+                    type="primary"
+                    :icon="Edit"
+                    circle
+                    @click="
+                      handleUpdateClick(this.groups[scope.$index].groupName)
+                    " />
+                  <el-button
+                    type="danger"
+                    :icon="Delete"
+                    circle
+                    @click="deleteGroup(this.groups[scope.$index].groupName)" />
+                </template>
+              </el-table-column>
+            </el-table>
+          </el-card>
+          <el-card class="box-card">
+            <template #header>
+              <div class="card-header">
+                <span>All Applications for Fund Establishment</span>
+                <el-button class="button" text @click="handleMsg"
+                  >Sync</el-button
+                >
+              </div>
+            </template>
+            <el-table :data="this.msgs3" style="width: 100%">
+              <el-table-column prop="expendId" label="expendId" width="100" />
+              <el-table-column
+                prop="expendName"
+                label="expendName"
+                width="180" />
+              <el-table-column prop="groupName" label="groupName" width="180" />
+              <el-table-column
+                prop="totalAmount"
+                label="totalAmount"
+                width="180" />
+              <el-table-column
+                prop="remainAmount"
+                label="remainAmount"
+                width="180" />
+              <el-table-column prop="quota" label="quota" width="120" />
+              <el-table-column prop="startTime" label="startTime" width="180" />
+              <el-table-column prop="endTime" label="endTime" width="180" />
+              <el-table-column prop="status" label="status" width="180" />
+              <el-table-column fixed="right" label="Operations" width="120">
+                <template #default="scope">
+                  <el-button
+                    type="primary"
+                    :icon="Check"
+                    circle
+                    @click="PassFund(scope.row.expendId)"
+                    :disabled="scope.row.status !== 0" />
+                  <el-button
+                    type="danger"
+                    :icon="Close"
+                    circle
+                    @click="RejectFund(scope.row.expendId)"
+                    :disabled="scope.row.status !== 0" />
+                </template>
+              </el-table-column>
+            </el-table>
+          </el-card>
+          <el-card class="box-card">
+            <template #header>
+              <div class="card-header">
+                <span>All Applications for Fund Utilization</span>
+                <el-button class="button" text @click="handleMsg"
+                  >Sync</el-button
+                >
+              </div>
+            </template>
+            <el-table :data="this.msgs" style="width: 100%">
+              <el-table-column prop="appId" label="appId" width="180" />
+              <el-table-column prop="userName" label="userName" width="180" />
+              <el-table-column prop="groupName" label="groupName" width="180" />
+              <el-table-column prop="status" label="status" width="80" />
+              <el-table-column
+                prop="expendName"
+                label="expendName"
+                width="180" />
+              <el-table-column
+                prop="expendCategory"
+                label="expendCategory"
+                width="180" />
+              <el-table-column prop="appAmount" label="appAmount" width="180" />
+              <el-table-column
+                prop="appAbstract"
+                label="appAbstract"
+                width="180" />
+              <el-table-column prop="comment" label="comment" width="180" />
+              <el-table-column fixed="right" label="Operations" width="120">
+                <template #default="scope">
+                  <el-button
+                    type="primary"
+                    :icon="Check"
+                    circle
+                    @click="PassApp(scope.row.appId)"
+                    :disabled="scope.row.status !== 0" />
+                  <el-button
+                    type="danger"
+                    :icon="Close"
+                    circle
+                    @click="RejectApp(scope.row.appId)"
+                    :disabled="scope.row.status !== 0" />
+                </template>
+              </el-table-column>
+            </el-table>
+          </el-card>
+          <el-card class="box-card">
+            <template #header>
+              <div class="card-header">
+                <span>All Applications to Join a Group</span>
+                <el-button class="button" text @click="handleMsg"
+                  >Sync</el-button
+                >
+              </div>
+            </template>
+            <el-table :data="this.msgs2" style="width: 100%">
+              <el-table-column
+                prop="groupAppId"
+                label="groupAppId"
+                width="180" />
+              <el-table-column prop="applyTime" label="applyTime" width="180" />
+              <el-table-column prop="comment" label="comment" width="180" />
+              <el-table-column prop="groupName" label="groupName" width="180" />
+              <el-table-column prop="groupId" label="groupId" width="180" />
+              <el-table-column prop="status" label="status" width="180" />
+              <el-table-column fixed="right" label="Operations" width="120">
+                <template #default="scope">
+                  <el-button
+                    type="primary"
+                    :icon="Check"
+                    circle
+                    @click="PassApp(scope.row.groupAppId)"
+                    :disabled="scope.row.status !== 0" />
+                  <el-button
+                    type="danger"
+                    :icon="Close"
+                    circle
+                    @click="RejectApp(scope.row.groupAppId)"
+                    :disabled="scope.row.status !== 0" />
+                </template>
+              </el-table-column>
+            </el-table>
+          </el-card>
         </div>
+        <el-dialog v-model="dialogFormVisible" title="Edit Group">
+          <div class="updatebox">
+            <el-input
+              v-model="updategroupname"
+              placeholder="Please Input"
+              style="width: 360px"></el-input>
+            <el-button @click="editGroup(updategroupname)"
+              >Update Group Name</el-button
+            >
+          </div>
+          <div>
+            <el-select
+              v-model="NewManagers"
+              multiple
+              filterable
+              placeholder="Select"
+              style="width: 240px">
+              <el-option
+                v-for="item in managers"
+                :key="item.name"
+                :label="item.name"
+                :value="item.mail"
+                :disabled="
+                  [
+                    ...this.groups.find(
+                      (item) => item.groupName == this.passgroupname
+                    ).managerNames,
+                  ].includes(item.name)
+                " />
+            </el-select>
+            <el-button @click="assignManagers">Assign New Manager</el-button>
+          </div>
+          <div>
+            <el-select
+              v-model="OldManagers"
+              multiple
+              filterable
+              placeholder="Select"
+              style="width: 240px">
+              <el-option
+                v-for="item in managers"
+                :key="item.name"
+                :label="item.name"
+                :value="item.mail"
+                :disabled="
+                  ![
+                    ...this.groups.find(
+                      (item) => item.groupName == this.passgroupname
+                    ).managerNames,
+                  ].includes(item.name)
+                " />
+            </el-select>
+            <el-button @click="unassignManagers">Unassign Manager</el-button>
+          </div>
+          <template #footer>
+            <span class="dialog-footer">
+              <el-button @click="dialogFormVisible = false">Close</el-button>
+            </span>
+          </template>
+        </el-dialog>
       </el-main>
-      <el-footer style="color: #000">Powered By Vue @SE黑奴 2023</el-footer>
+      <el-footer style="color: #000">Powered By Vue @SE 2023</el-footer>
       <el-backtop :right="100" :bottom="100" />
     </el-container>
   </div>
 </template>
+<script>
+import api from '../utils/api'
+export default {
+  async mounted() {
+    await api.GetAllGroups(this.$cookies.get('satoken')).then((res) => {
+      if (res.code === 500) {
+        ElMessage.error(res.msg)
+      } else if (res.code === 200) {
+        this.groups = res.data
+        this.groups.forEach((group) => {
+          const managerNames = []
+          group.managers.forEach((manager) => {
+            managerNames.push(manager.name)
+          })
+          group.managerNames = managerNames
+        })
+      }
+    })
+    await api.GetAllMessage(this.$cookies.get('satoken')).then((res) => {
+      if (res.code === 500) {
+        ElMessage.error(res.msg)
+      } else if (res.code === 200) {
+        this.msgs = res.data
+      }
+    })
+    await api.GetAllGroupApp(this.$cookies.get('satoken')).then((res) => {
+      if (res.code === 500) {
+        ElMessage.error(res.msg)
+      } else if (res.code === 200) {
+        this.msgs2 = res.data
+      }
+    })
+    await api.GetAllFundToExam(this.$cookies.get('satoken')).then((res) => {
+      if (res.code === 500) {
+        ElMessage.error(res.msg)
+      } else if (res.code === 200) {
+        this.msgs3 = res.data
+      }
+    })
+  },
+  data() {
+    return {
+      groupname: '',
+      groups: [],
+      dialogFormVisible: false,
+      updategroupname: '',
+      msgs: [],
+      msgs2: [],
+      msgs3: [],
+      managers: '',
+      NewManagers: [],
+      OldManagers: [],
+    }
+  },
+  methods: {
+    test(whatever) {
+      console.log(whatever)
+    },
+    async handleUpdateClick(groupname) {
+      this.dialogFormVisible = true
+      this.passgroupname = groupname
+      this.updategroupname = groupname
+      await api.GetAllManagers(this.$cookies.get('satoken')).then((res) => {
+        if (res.code === 500) {
+          ElMessage.error(res.msg)
+        } else if (res.code === 200) {
+          this.managers = res.data
+        }
+      })
+    },
+    async PassApp(appId) {
+      await api.passApp(appId, this.$cookies.get('satoken')).then((res) => {
+        if (res.code === 500) {
+          ElMessage.error(res.msg)
+        } else if (res.code === 200) {
+          ElMessage.success(res.msg)
+        }
+      })
+    },
+    async RejectApp(appId) {
+      await api.rejectApp(appId, this.$cookies.get('satoken')).then((res) => {
+        if (res.code === 500) {
+          ElMessage.error(res.msg)
+        } else if (res.code === 200) {
+          ElMessage.success(res.msg)
+        }
+      })
+    },
+    async PassFund(appId) {
+      await api.passFund(appId, this.$cookies.get('satoken')).then((res) => {
+        if (res.code === 500) {
+          ElMessage.error(res.msg)
+        } else if (res.code === 200) {
+          ElMessage.success(res.msg)
+        }
+      })
+    },
+    async RejectFund(appId) {
+      await api.rejectFund(appId, this.$cookies.get('satoken')).then((res) => {
+        if (res.code === 500) {
+          ElMessage.error(res.msg)
+        } else if (res.code === 200) {
+          ElMessage.success(res.msg)
+        }
+      })
+    },
+    async PassGroupApp(appId) {
+      await api
+        .passGroupApp(appId, this.$cookies.get('satoken'))
+        .then((res) => {
+          if (res.code === 500) {
+            ElMessage.error(res.msg)
+          } else if (res.code === 200) {
+            ElMessage.success(res.msg)
+          }
+        })
+    },
+    async RejectGroupApp(appId) {
+      await api
+        .rejectGroupApp(appId, this.$cookies.get('satoken'))
+        .then((res) => {
+          if (res.code === 500) {
+            ElMessage.error(res.msg)
+          } else if (res.code === 200) {
+            ElMessage.success(res.msg)
+          }
+        })
+    },
+    async CheckAllManager() {
+      await api.GetAllManagers(this.$cookies.get('satoken')).then((res) => {
+        if (res.code === 500) {
+          ElMessage.error(res.msg)
+        } else if (res.code === 200) {
+          this.managers = res.data
+        }
+      })
+    },
+    async handleAllGroups() {
+      await api.GetAllGroups(this.$cookies.get('satoken')).then((res) => {
+        if (res.code === 500) {
+          ElMessage.error(res.msg)
+        } else if (res.code === 200) {
+          this.groups = res.data
+          this.groups.forEach((group) => {
+            const managerNames = []
+            group.managers.forEach((manager) => {
+              managerNames.push(manager.name)
+            })
+            group.managerNames = managerNames
+          })
+        }
+      })
+    },
+    async assignManagers() {
+      this.NewManagers.forEach(async (manager) => {
+        await api
+          .AssignManager(
+            this.passgroupname,
+            manager,
+            this.$cookies.get('satoken')
+          )
+          .then((res) => {
+            if (res.code === 500) {
+              ElMessage.error(res.msg + ': failed to assign ' + manager)
+            } else if (res.code === 200) {
+              ElMessage.success(
+                manager + ' is assigned as manager successfully'
+              )
+            }
+          })
+      })
+      this.NewManagers = []
+      await new Promise((resolve) => setTimeout(resolve, 1000))
+      await api.GetAllGroups(this.$cookies.get('satoken')).then((res) => {
+        if (res.code === 500) {
+          ElMessage.error(res.msg)
+        } else if (res.code === 200) {
+          this.groups = res.data
+          this.groups.forEach((group) => {
+            const managerNames = []
+            group.managers.forEach((manager) => {
+              managerNames.push(manager.name)
+            })
+            group.managerNames = managerNames
+          })
+        }
+      })
+    },
+    async unassignManagers() {
+      this.OldManagers.forEach(async (manager) => {
+        await api
+          .unAssignManager(
+            this.passgroupname,
+            manager,
+            this.$cookies.get('satoken')
+          )
+          .then((res) => {
+            if (res.code === 500) {
+              ElMessage.error(res.msg + ': failed to unassign ' + manager)
+            } else if (res.code === 200) {
+              ElMessage.success(manager + ' is unassigned successfully')
+            }
+          })
+      })
+      this.OldManagers = []
+      await new Promise((resolve) => setTimeout(resolve, 1000))
+      await api.GetAllGroups(this.$cookies.get('satoken')).then((res) => {
+        if (res.code === 500) {
+          ElMessage.error(res.msg)
+        } else if (res.code === 200) {
+          this.groups = res.data
+          this.groups.forEach((group) => {
+            const managerNames = []
+            group.managers.forEach((manager) => {
+              managerNames.push(manager.name)
+            })
+            group.managerNames = managerNames
+          })
+        }
+      })
+    },
+    async createGroup() {
+      if (this.groupname === '') {
+        ElMessage.error('Group Name can not be empty')
+        return
+      }
+      await api
+        .CreateGroup(this.groupname, this.$cookies.get('satoken'))
+        .then(async (res) => {
+          if (res.code === 500) {
+            ElMessage.error(res.msg)
+            console.log(res.msg)
+          } else if (res.code === 200) {
+            ElMessage.success(res.msg)
+            await api.GetAllGroups(this.$cookies.get('satoken')).then((res) => {
+              if (res.code === 500) {
+                ElMessage.error(res.msg)
+              } else if (res.code === 200) {
+                this.groups = res.data
+                this.groups.forEach((group) => {
+                  const managerNames = []
+                  group.managers.forEach((manager) => {
+                    managerNames.push(manager.name)
+                  })
+                  group.managerNames = managerNames
+                })
+              }
+            })
+          } else {
+            ElMessage.error('unknown error')
+          }
+        })
+    },
+    async deleteGroup(groupName) {
+      await api
+        .DeleteGroup(groupName, this.$cookies.get('satoken'))
+        .then(async (res) => {
+          if (res.code === 500) {
+            ElMessage.error(res.msg)
+            console.log(res.msg)
+          } else if (res.code === 200) {
+            ElMessage.success(res.msg)
+            await api.GetAllGroups(this.$cookies.get('satoken')).then((res) => {
+              if (res.code === 500) {
+                ElMessage.error(res.msg)
+              } else if (res.code === 200) {
+                this.groups = res.data
+                this.groups.forEach((group) => {
+                  const managerNames = []
+                  group.managers.forEach((manager) => {
+                    managerNames.push(manager.name)
+                  })
+                  group.managerNames = managerNames
+                })
+              }
+            })
+          } else {
+            ElMessage.error('unknown error')
+          }
+        })
+    },
+    async editGroup(updateName) {
+      if (updateName === '') {
+        ElMessage.error('Group Name can not be empty')
+        return
+      }
+      if (updateName === this.passgroupname) {
+        ElMessage.error('Please Update Group Name')
+        return
+      }
+      await api
+        .EditGroup(this.passgroupname, updateName, this.$cookies.get('satoken'))
+        .then(async (res) => {
+          if (res.code === 500) {
+            ElMessage.error(res.msg)
+            console.log(res.msg)
+          } else if (res.code === 200) {
+            ElMessage.success(res.msg)
+            await api.GetAllGroups(this.$cookies.get('satoken')).then((res) => {
+              if (res.code === 500) {
+                ElMessage.error(res.msg)
+              } else if (res.code === 200) {
+                this.groups = res.data
+                this.groups.forEach((group) => {
+                  const managerNames = []
+                  group.managers.forEach((manager) => {
+                    managerNames.push(manager.name)
+                  })
+                  group.managerNames = managerNames
+                })
+              }
+            })
+          } else {
+            ElMessage.error('unknown error')
+          }
+        })
+    },
+    async handleMsg() {
+      await api.GetAllMessage(this.$cookies.get('satoken')).then((res) => {
+        if (res.code === 500) {
+          ElMessage.error(res.msg)
+        } else if (res.code === 200) {
+          this.msgs = res.data
+        }
+      })
+    },
+  },
+}
+</script>
 
 <style>
 .el-container {
@@ -197,5 +596,20 @@ async function UpdateInfo() {
 }
 .el-row:last-child {
   margin-bottom: 0;
+}
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.box-card {
+  width: 1580px;
+}
+
+.el-table .reject-row {
+  --el-table-tr-bg-color: var(--el-color-warning-light-9);
+}
+.el-table .success-row {
+  --el-table-tr-bg-color: var(--el-color-success-light-9);
 }
 </style>
