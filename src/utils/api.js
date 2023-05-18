@@ -451,4 +451,66 @@ export default {
       return console.error(error)
     }
   },
+  async getOneUserGroups (satoken) {
+    try {
+      const response = await fetch(`${BASE_URL}/group/getMyGroups`, {
+        method: "GET",
+        credentials: "include",
+        headers: {
+          'satoken': satoken
+        }
+      })
+      const data = await response.json()
+      return data
+    } catch (error) {
+      return console.error(error)
+    }
+  },
+  async submitExpend (beginTime, endTime, expenditureName, expenditureNumber, expenditureTotalAmount, groupName, satoken) {
+    try {
+      console.log(beginTime)
+      const response = await fetch(`${BASE_URL}/application/edit/submitExpend?
+          beginTime=${beginTime}&endTime=${endTime}&expenditureName=${expenditureName}
+          &expenditureNumber=${expenditureNumber}&expenditureTotalAmount=${expenditureTotalAmount}&groupName=${groupName}`, {
+        method: 'POST',
+        credentials: 'include',
+        headers: {
+          'satoken': satoken,
+        },
+      })
+      const data = await response.json()
+      return data
+    } catch (error) {
+      return console.error(error)
+    }
+  },
+  async getAllExpend (satoken) {
+    try {
+      const response = await fetch(`${BASE_URL}/`, {
+        method: 'POST',
+        credentials: 'include',
+        headers: {
+          'satoken': satoken,
+        },
+      })
+      const data = await response.json()
+      return data
+    } catch (error) {
+      return console.error(error)
+    }
+  },
+  async GetOneExpenditureAllInfo (satoken, expenditureNumber) {
+    try {
+      const response = await fetch(`${BASE_URL}/expenditure/view/getOneExpenditureAllInfo?expenditureNumber=${expenditureNumber}`, {
+        method: 'GET',
+        credentials: 'include',
+        headers: {
+          'satoken': satoken,
+        },
+      })
+      return await response.json()
+    } catch (error) {
+      return console.error(error)
+    }
+  },
 }

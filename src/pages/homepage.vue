@@ -320,7 +320,5 @@ export default {
   justify-content: space-between;
   align-items: center;
 }
-.box-card {
-  width: 480px;
-}
+
 </style>
