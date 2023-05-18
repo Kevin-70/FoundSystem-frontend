@@ -2,6 +2,7 @@
 import api from '../utils/api'
 import { reactive } from 'vue'
 import { useRouter } from 'vue-router'
+import { ElMessage } from 'element-plus'
 const register = reactive({
   email: '',
   identity: '',
@@ -48,11 +49,8 @@ async function handleRegister() {
       register.identity
     )
     if (response.code === 200) {
-      router.push(
-        register.identity === '1'
-          ? `/admin/${register.email}`
-          : `/staff/${register.email}`
-      )
+      ElMessage('Please verify your email')
+      router.push(`/login/verify/${register.email}/${register.identity}`)
     } else {
       console.log(response)
     }

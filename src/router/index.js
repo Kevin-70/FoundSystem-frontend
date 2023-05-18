@@ -14,7 +14,6 @@ import api from '../utils/api'
 import { inject } from 'vue'
 
 const $cookies = inject('$cookies')
-
 const routes = [
     { path: '/', component: welcome },
     { path: '/staff/:email', component: homepage },
