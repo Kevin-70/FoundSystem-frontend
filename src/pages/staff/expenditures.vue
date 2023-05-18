@@ -53,7 +53,7 @@ const $cookies = inject('$cookies');
     <el-form-item label="Expenditure Number">
       <el-input v-model="form.expenditurenumber" />
     </el-form-item>
-    <el-form-item label="Activity zone">
+    <el-form-item label="Group name">
       <el-select v-model="form.groupName" placeholder="Group name">
         <el-option
         v-for="(item) in options"
@@ -117,6 +117,84 @@ const $cookies = inject('$cookies');
       </span>
     </template>
   </el-dialog>
+
+  <el-dialog
+    v-model="appDialogVisible"
+    title="Warning"
+    width="30%"
+    align-center>
+    <span>Apply for a application</span>
+    <el-form :model="form2" label-width="120px">
+    <el-form-item label="Expenditure name">
+      <el-input v-model="form2.expenditurename" />
+    </el-form-item>
+    <el-form-item label="Expenditure Number">
+      <el-input v-model="form2.expenditurenumber" />
+    </el-form-item>
+    <el-form-item label="Group name">
+      <el-select v-model="form2.groupName" placeholder="Group name">
+        <el-option
+        v-for="(item) in options"
+        :key="item.groupName"
+        :label="item.groupName"
+        :value="item.groupName"
+        >
+      </el-option>
+      </el-select>
+    </el-form-item>
+    <el-form-item label="Expected Start time">
+      <el-col :span="11">
+        <el-date-picker
+          v-model="form2.beginTime1"
+          type="date"
+          placeholder="Start date"
+          style="width: 100%"
+        />
+      </el-col>
+      <el-col :span="2" class="text-center">
+        <span class="text-gray-500">-</span>
+      </el-col>
+      <el-col :span="11">
+        <el-time-picker
+          v-model="form2.beginTime2"
+          placeholder="End date"
+          style="width: 100%"
+        />
+      </el-col>
+    </el-form-item>
+    <el-form-item label="Expected end time">
+      <el-col :span="11">
+        <el-date-picker
+          v-model="form2.endTime1"
+          type="date"
+          placeholder="Start date"
+          style="width: 100%"
+        />
+      </el-col>
+      <el-col :span="2" class="text-center">
+        <span class="text-gray-500">-</span>
+      </el-col>
+      <el-col :span="11">
+        <el-time-picker
+          v-model="form2.endTime2"
+          placeholder="End date"
+          style="width: 100%"
+        />
+      </el-col>
+    </el-form-item>
+    <el-form-item label="Total Amount">
+      <el-input v-model="form2.totalamount" type="number" />
+    </el-form-item>
+  </el-form>
+    <template #footer>
+      <span class="dialog-footer">
+        <el-button @click="appDialogVisible = false">Cancel</el-button>
+        <el-button type="primary" @click="submitApp">
+          Submit Expenditure apply
+        </el-button>
+      </span>
+    </template>
+  </el-dialog>
     </div>
 
 </template>
@@ -137,6 +215,7 @@ export default {
     },],
     options: [],
     centerDialogVisible:false,
+    appDialogVisible:false,
     form :{
     expenditurename:"",
     expenditurenumber:"",
@@ -144,7 +223,14 @@ export default {
     endTime1:"",endTime2:"",
     groupName:"",
     totalamount:""
-},
+},  form2:{
+    expenditurename:"",
+    expenditurenumber:"",
+    beginTime1:"",beginTime2:"",
+    endTime1:"",endTime2:"",
+    groupName:"",
+    totalamount:""
+}
 
     }
 },methods:{
@@ -179,9 +265,31 @@ export default {
     } catch (error) {
     console.error(error)
     }
-},handleSelect(){},
+},submitApp() {
+    try {
+    const response = api.submitExpend(
+        this.form2.beginTime1.toString()+this.form2.beginTime2.toString(),
+        this.form2.endTime1.toString()+this.form2.endTime2.toString(),
+        this.form2.expenditurename,
+        this.form2.expenditurenumber,
+        this.form2.totalamount,
+        this.form2.groupName,
+        $cookies.get('satoken')
+    )
+    if (response.code === 200) {
+        this.centerDialogVisible=false
+        
+    } else {
+        console.log('error')
+        console.log(response);
+    }
+    } catch (error) {
+    console.error(error)
+    }
+},
+handleSelect(){},
 CreateNewApplication(){
-
+    this.appDialogVisible=true;
 }
 },
 onMounted(){//get all the expenditures
