@@ -6,6 +6,7 @@ export default {
             x_data.push(applications[i].createdDate);
             y_data.push(applications[i].appAmount);
         }
+        console.log(x_data);
         return x_data, y_data;
     }
 }

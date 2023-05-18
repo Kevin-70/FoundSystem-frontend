@@ -3,7 +3,8 @@ import { ref, reactive, onMounted, inject } from 'vue'
 import { useRoute } from 'vue-router'
 import api from '../utils/api'
 import graphHelper from '../utils/graphHelper'
-import BarGraph from "@/components/BarGraph.vue";
+import BarGraph from "@/components/BarGraph.vue"
+// import componentLazy from "@/components/componentLazy.vue"
 const route = useRoute()
 const $cookies = inject('$cookies')
 const dialogFormVisible = ref(false)
@@ -18,14 +19,14 @@ const info = reactive({
   endTime: '',
   quota: 0,
   applications: [],
+  createdDate: '',
   x_data: [],
   y_data: []
 })
+const dataState = reactive({
+  ifDataUpdated: false
+})
 
-// const expenditures = ref([])
-// const handleSelect = (key, keyPath) => {
-//   console.log(key, keyPath)
-// }
 onMounted(async () => {
   await api
     // .GetUserInfo(route.params.email, $cookies.get('satoken'))
@@ -44,8 +45,8 @@ onMounted(async () => {
         info.endTime = res.data.endTime
         info.quota = res.data.quota
         info.applications = res.data.applications
-        console.log(info.applications)
-        console.log("update info")
+        // console.log(info.applications)
+        // console.log("update info")
       }else{
         console.error(res)
         ElMessage.error(res.msg)
@@ -56,7 +57,11 @@ onMounted(async () => {
     })
 
    info.x_data, info.y_data = graphHelper.applications2Line(info.applications)
+   console.log("info.x_data")
    console.log(info.x_data)
+   console.log("info.y_data")
+   console.log(info.y_data)
+   dataState.ifDataUpdated = true
 
 })
 </script>
@@ -115,43 +120,7 @@ onMounted(async () => {
                 label="Avail Amount"
                 width="180">
               </el-table-column>
-              <!-- <el-table-column
-                prop="appId"
-                label="appId"
-                width="180">
-              </el-table-column> -->
-              <!-- <el-table-column
-                prop="expendId"
-                label="expendId"
-                width="180">
-              </el-table-column> -->
-              <!-- <el-table-column
-                prop="expendName"
-                label="expendName"
-                width="180">
-              </el-table-column> -->
-              <!-- <el-table-column
-                prop="groupName"
-                label="groupName"
-                width="180">
-              </el-table-column> -->
-              <!-- <el-table-column
-                prop="totalAmount"
-                label="totalAmount"
-                width="180">
-              </el-table-column> -->
-              <el-table-column
-                prop="remainAmount"
-                label="Remain Amount"
-                width="180">
-              </el-table-column>
-              
-              <!-- <el-table-column
-                prop="userId"
-                label="userId"
-                width="180">
-              </el-table-column> -->
-              
+                        
               <el-table-column
                 prop="expendCategory"
                 label=" Category"
@@ -177,16 +146,31 @@ onMounted(async () => {
                 label="type"
                 width="180">
               </el-table-column>
+              <el-table-column
+                prop="createdDate"
+                label="createdDate"
+                width="180">
+              </el-table-column>
             </el-table>
        </div>
         </div>
         
-        <bar-graph 
+        <!-- <bar-graph 
         :width="'900px'" :height="'600px'" 
-        :x_data=info.x_data
-        :y_data=info.y_data
+        ></bar-graph> -->
 
-        ></bar-graph>
+        <!-- <bar-graph 
+        :width="'900px'" :height="'600px'" 
+        :x_data="info.x_data" :y_data="info.y_data"
+        ></bar-graph> -->
+
+        <!-- <lazyLoad @done="lazyLoadDone = 'componentLazy'"> -->
+          <bar-graph 
+            v-if="dataState.ifDataUpdated"
+            :width="'1900px'" :height="'600px'" 
+            :x_data="info.x_data" :y_data="info.y_data"
+          ></bar-graph>
+        <!-- </lazyLoad> -->
         <!-- <div v-for="item in info.applications" :key="item.value">
           {{ item.appId }}
         </div> -->
