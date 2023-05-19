@@ -26,7 +26,6 @@ const handleSelect = (key, keyPath) => {
 }
 onMounted(async () => {
   await api
-    // .GetUserInfo(route.params.email, $cookies.get('satoken'))
     .GetMyInfo($cookies.get('satoken'))
     .then((res) => {
       info.name = res.data.name
@@ -42,22 +41,7 @@ onMounted(async () => {
     .catch((error) => {
       console.log(error)
     })
-  await api
-    // .GetUserInfo(route.params.email, $cookies.get('satoken'))
-    .GetMyInfo($cookies.get('satoken'))
-    .then((res) => {
-      info.name = res.data.name
-      info.sex = res.data.sex
-      info.bio = res.data.bio
-      info.phoneNumber = res.data.phoneNumber
-      form.sex = res.data.sex ? '女' : '男'
-      form.bio = res.data.bio
-      form.phoneNumber = res.data.phoneNumber
-      form.name = res.data.name
-    })
-    .catch((error) => {
-      console.log(error)
-    })
+  handleAllGroups()
 })
 async function UpdateInfo() {
   try {

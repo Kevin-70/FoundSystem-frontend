@@ -10,7 +10,7 @@ import * as echarts from "echarts";
 import {onMounted, onUnmounted, defineComponent, watch, ref, defineProps} from "vue";
 
 export default {
-  name: "App",
+  name: "BarGraph",
   // props: ["width", "height"],
   props: {
     width: {

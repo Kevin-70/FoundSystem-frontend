@@ -4,6 +4,7 @@ import { useRoute } from 'vue-router'
 import api from '../utils/api'
 import graphHelper from '../utils/graphHelper'
 import BarGraph from "@/components/BarGraph.vue"
+import PieGraph from "@/components/PieGraph.vue"
 // import componentLazy from "@/components/componentLazy.vue"
 const route = useRoute()
 const $cookies = inject('$cookies')
@@ -56,11 +57,9 @@ onMounted(async () => {
       console.log(error)
     })
 
-   info.x_data, info.y_data = graphHelper.applications2Line(info.applications)
-   console.log("info.x_data")
-   console.log(info.x_data)
-   console.log("info.y_data")
-   console.log(info.y_data)
+   info.y_data = graphHelper.applications2LineY(info.applications)
+   info.x_data = graphHelper.applications2LineX(info.applications)
+
    dataState.ifDataUpdated = true
 
 })
@@ -68,46 +67,74 @@ onMounted(async () => {
 
 <template>
   <div class="common-layout">
-    <el-container>  
+    <el-container> 
+      <el-header>
+        <el-menu
+          :default-active="this.activeIndex"
+          class="el-menu-demo"
+          mode="horizontal"
+          @select="handleSelect">
+          <el-menu-item index="Back">Back</el-menu-item>
+          <el-menu-item index="Base Info">Base Info</el-menu-item>
+          <el-menu-item index="Applications">Applications</el-menu-item>
+        </el-menu>
+      </el-header> 
       <el-main>
         <div>
-          <el-row :gutter="15">
-            <el-col :span="10" :push="1">
-              <el-descriptions border column="1">
-                <template #title>
-                  <h2 style="color: white">Expenditure Info</h2>
-                </template>
-                
-                <el-descriptions-item label="Expenditure Number">{{
-                  info.expenditureNumber
-                }}</el-descriptions-item>
-                <el-descriptions-item label="Expenditure Name">{{
-                  info.expenditureName
-                }}</el-descriptions-item>
-                <el-descriptions-item label="Group Name">{{
-                  info.groupName
-                }}</el-descriptions-item>
-                <el-descriptions-item label="Total Amount">{{
-                  info.totalAmount
-                }}</el-descriptions-item>
-                <el-descriptions-item label="Remaining Amount">{{
-                  info.remainingAmount
-                }}</el-descriptions-item>
-                <el-descriptions-item label="Start Time">{{
-                  info.startTime
-                }}</el-descriptions-item>
-                <el-descriptions-item label="End Time">{{
-                  info.endTime
-                }}</el-descriptions-item>
-                <el-descriptions-item label="Quota">{{
-                  info.quota
-                }}</el-descriptions-item>
-              </el-descriptions>
+          <el-row>
+            <el-col :span="12">
+              <el-row :gutter="15"
+              v-if="this.activeIndex === 'Base Info'">
+                <el-col :span="10" :push="1">
+                  <el-descriptions border column="1">
+                    <template #title>
+                      <h2 style="color: white">Expenditure Info</h2>
+                    </template>
+                    
+                    <el-descriptions-item label="Expenditure Number">{{
+                      info.expenditureNumber
+                    }}</el-descriptions-item>
+                    <el-descriptions-item label="Expenditure Name">{{
+                      info.expenditureName
+                    }}</el-descriptions-item>
+                    <el-descriptions-item label="Group Name">{{
+                      info.groupName
+                    }}</el-descriptions-item>
+                    <el-descriptions-item label="Total Amount">{{
+                      info.totalAmount
+                    }}</el-descriptions-item>
+                    <el-descriptions-item label="Remaining Amount">{{
+                      info.remainingAmount
+                    }}</el-descriptions-item>
+                    <el-descriptions-item label="Start Time">{{
+                      info.startTime
+                    }}</el-descriptions-item>
+                    <el-descriptions-item label="End Time">{{
+                      info.endTime
+                    }}</el-descriptions-item>
+                    <el-descriptions-item label="Quota">{{
+                      info.quota
+                    }}</el-descriptions-item>
+                  </el-descriptions>
+                </el-col>
+              </el-row>
             </el-col>
-          </el-row>
+            <el-col :span="12">
+              <PieGraph
+                  v-if="dataState.ifDataUpdated && this.activeIndex === 'Base Info'"
+                  :width="'900px'" :height="'600px'" 
+                  :dataName="['Remaining Amount', 'Total Amount']"
+                  :name="'Expenditure usage'"
+                  :data="[info.remainingAmount, info.totalAmount]"
+              ></PieGraph>
+            </el-col>
 
+          </el-row>
           <div>
+            <!-- <el-row> -->
+              <!-- <el-col :span="12"> -->
             <el-table
+              v-if="this.activeIndex === 'Applications'"
               :data=info.applications
               style="width: 100%">
               <el-table-column
@@ -116,8 +143,8 @@ onMounted(async () => {
                 width="180">
               </el-table-column>
               <el-table-column
-                prop="availAmount"
-                label="Avail Amount"
+                prop="appAmount"
+                label="Apply Amount"
                 width="180">
               </el-table-column>
                         
@@ -152,28 +179,18 @@ onMounted(async () => {
                 width="180">
               </el-table-column>
             </el-table>
-       </div>
-        </div>
-        
-        <!-- <bar-graph 
-        :width="'900px'" :height="'600px'" 
-        ></bar-graph> -->
 
-        <!-- <bar-graph 
-        :width="'900px'" :height="'600px'" 
-        :x_data="info.x_data" :y_data="info.y_data"
-        ></bar-graph> -->
-
-        <!-- <lazyLoad @done="lazyLoadDone = 'componentLazy'"> -->
-          <bar-graph 
-            v-if="dataState.ifDataUpdated"
-            :width="'1900px'" :height="'600px'" 
+          <!-- </el-col>
+          <el-col :span="12"> -->
+            <BarGraph 
+            v-if="dataState.ifDataUpdated && this.activeIndex === 'Applications'"
+            :width="'900px'" :height="'600px'" 
             :x_data="info.x_data" :y_data="info.y_data"
-          ></bar-graph>
-        <!-- </lazyLoad> -->
-        <!-- <div v-for="item in info.applications" :key="item.value">
-          {{ item.appId }}
-        </div> -->
+          ></BarGraph>
+        <!-- </el-col> -->
+        <!-- </el-row> -->
+          </div>
+        </div>
         
       </el-main>
       <el-footer style="color: #000">Powered By Vue @SE 2023</el-footer>
@@ -187,6 +204,7 @@ onMounted(async () => {
 export default {
   data() {
     return {
+      activeIndex: "Base Info",
       // applications: [],
     }
   },
@@ -194,7 +212,9 @@ export default {
     error(message) {
         this.$message(message);
     },
-    
+    handleSelect(key) {
+      this.activeIndex = key
+    },
   },
   components: {
     BarGraph

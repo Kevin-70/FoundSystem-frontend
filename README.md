@@ -1,6 +1,6 @@
 # foundSystem
 
-This template should help get you started developing with Vue 3 in Vite.
+This template should help get you started developing with Vue 3 in Vite to start this project.
 
 ## Recommended IDE Setup
 
@@ -35,4 +35,5 @@ npm install vuex@4.0.2
 npm install vue-router@4.0.12
 npm install -D unplugin-vue-components unplugin-auto-import
 npm install vue-cookies -S
+npm install echarts --save
 ```

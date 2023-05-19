@@ -1,5 +1,11 @@
 <script setup>
-import { Edit, Delete, Check, Close } from '@element-plus/icons-vue'
+import {
+  Edit,
+  Delete,
+  Check,
+  Close,
+  QuestionFilled,
+} from '@element-plus/icons-vue'
 </script>
 
 <template>
@@ -7,21 +13,18 @@ import { Edit, Delete, Check, Close } from '@element-plus/icons-vue'
     <el-container>
       <el-header>
         <el-menu
-          :default-active="activeIndex"
+          :default-active="this.activeIndex"
           class="el-menu-demo"
           mode="horizontal"
           @select="handleSelect">
           <el-menu-item index="1">Homepage</el-menu-item>
+          <el-menu-item index="2">Group Management</el-menu-item>
+          <el-menu-item index="3">Fund Management</el-menu-item>
         </el-menu>
       </el-header>
       <el-main>
         <div>
-          <el-input
-            style="width: 360px"
-            v-model="this.groupname"
-            placeholder="Please input group name"></el-input>
-          <el-button @click="createGroup">Create Group</el-button>
-          <el-card class="box-card">
+          <el-card class="box-card" v-if="this.activeIndex == 2">
             <template #header>
               <div class="card-header">
                 <span>Group Management</span>
@@ -30,6 +33,12 @@ import { Edit, Delete, Check, Close } from '@element-plus/icons-vue'
                 >
               </div>
             </template>
+            <el-input
+              style="width: 360px"
+              v-model="this.groupname"
+              placeholder="Please input group name"></el-input>
+            <el-button @click="createGroup">Create Group</el-button>
+            <br />
             <el-table :data="this.groups" style="width: 100%">
               <el-table-column prop="groupName" label="groupName" width="180" />
               <el-table-column
@@ -58,7 +67,7 @@ import { Edit, Delete, Check, Close } from '@element-plus/icons-vue'
               </el-table-column>
             </el-table>
           </el-card>
-          <el-card class="box-card">
+          <el-card class="box-card" v-if="this.activeIndex == 3">
             <template #header>
               <div class="card-header">
                 <span>All Applications for Fund Establishment</span>
@@ -89,22 +98,24 @@ import { Edit, Delete, Check, Close } from '@element-plus/icons-vue'
               <el-table-column fixed="right" label="Operations" width="120">
                 <template #default="scope">
                   <el-button
-                    type="primary"
+                    v-if="scope.row.status != 'Reject'"
+                    type="success"
                     :icon="Check"
                     circle
                     @click="PassFund(scope.row.expendId)"
-                    :disabled="scope.row.status !== 0" />
+                    :disabled="scope.row.status != 'Unread'" />
                   <el-button
+                    v-if="scope.row.status != 'Pass'"
                     type="danger"
                     :icon="Close"
                     circle
                     @click="RejectFund(scope.row.expendId)"
-                    :disabled="scope.row.status !== 0" />
+                    :disabled="scope.row.status != 'Unread'" />
                 </template>
               </el-table-column>
             </el-table>
           </el-card>
-          <el-card class="box-card">
+          <el-card class="box-card" v-if="this.activeIndex == 3">
             <template #header>
               <div class="card-header">
                 <span>All Applications for Fund Utilization</span>
@@ -135,22 +146,29 @@ import { Edit, Delete, Check, Close } from '@element-plus/icons-vue'
               <el-table-column fixed="right" label="Operations" width="120">
                 <template #default="scope">
                   <el-button
+                    v-if="scope.row.status == 'Unread'"
                     type="primary"
+                    :icon="QuestionFilled"
+                    circle
+                    @click="handleFeedback(scope.row.appId)"
+                    :disabled="scope.row.status != 'Unread'" />
+                  <el-button
+                    v-if="scope.row.status == 'Pass'"
+                    type="success"
                     :icon="Check"
                     circle
-                    @click="PassApp(scope.row.appId)"
-                    :disabled="scope.row.status !== 0" />
+                    disabled />
                   <el-button
+                    v-if="scope.row.status == 'Reject'"
                     type="danger"
                     :icon="Close"
                     circle
-                    @click="RejectApp(scope.row.appId)"
-                    :disabled="scope.row.status !== 0" />
+                    disabled />
                 </template>
               </el-table-column>
             </el-table>
           </el-card>
-          <el-card class="box-card">
+          <el-card class="box-card" v-if="this.activeIndex == 2">
             <template #header>
               <div class="card-header">
                 <span>All Applications to Join a Group</span>
@@ -176,13 +194,13 @@ import { Edit, Delete, Check, Close } from '@element-plus/icons-vue'
                     :icon="Check"
                     circle
                     @click="PassApp(scope.row.groupAppId)"
-                    :disabled="scope.row.status !== 0" />
+                    :disabled="scope.row.status !== 'Unread'" />
                   <el-button
                     type="danger"
                     :icon="Close"
                     circle
                     @click="RejectApp(scope.row.groupAppId)"
-                    :disabled="scope.row.status !== 0" />
+                    :disabled="scope.row.status !== 'Unread'" />
                 </template>
               </el-table-column>
             </el-table>
@@ -248,6 +266,39 @@ import { Edit, Delete, Check, Close } from '@element-plus/icons-vue'
             </span>
           </template>
         </el-dialog>
+        <el-dialog title="Feedback" v-model="feedbackVisible">
+          <div class="feedback-dialog">
+            <el-form>
+              <el-form-item label="Your Feedback">
+                <el-input
+                  v-model="passFeedback"
+                  maxlength="200"
+                  :rows="2"
+                  type="textarea"
+                  show-word-limit>
+                </el-input>
+              </el-form-item>
+            </el-form>
+          </div>
+          <template #footer>
+            <span class="dialog-footer">
+              <el-button
+                @click="PassApp(this.passAppId, this.passFeedback)"
+                type="success"
+                round
+                style="width: 70px"
+                >Pass</el-button
+              >
+              <el-button
+                @click="RejectApp(this.passAppId, this.passFeedback)"
+                type="danger"
+                round
+                style="width: 70px"
+                >Reject</el-button
+              >
+            </span>
+          </template>
+        </el-dialog>
       </el-main>
       <el-footer style="color: #000">Powered By Vue @SE 2023</el-footer>
       <el-backtop :right="100" :bottom="100" />
@@ -299,6 +350,7 @@ export default {
       groupname: '',
       groups: [],
       dialogFormVisible: false,
+      feedbackVisible: false,
       updategroupname: '',
       msgs: [],
       msgs2: [],
@@ -306,9 +358,19 @@ export default {
       managers: '',
       NewManagers: [],
       OldManagers: [],
+      activeIndex: 1,
+      passFeedback: '',
+      passAppId: '',
     }
   },
   methods: {
+    handleFeedback(appId) {
+      this.feedbackVisible = true
+      this.passAppId = appId
+    },
+    handleSelect(key) {
+      this.activeIndex = key
+    },
     test(whatever) {
       console.log(whatever)
     },
@@ -324,23 +386,29 @@ export default {
         }
       })
     },
-    async PassApp(appId) {
-      await api.passApp(appId, this.$cookies.get('satoken')).then((res) => {
-        if (res.code === 500) {
-          ElMessage.error(res.msg)
-        } else if (res.code === 200) {
-          ElMessage.success(res.msg)
-        }
-      })
+    async PassApp(appId, comment) {
+      await api
+        .passApp(appId, comment, this.$cookies.get('satoken'))
+        .then((res) => {
+          if (res.code === 500) {
+            ElMessage.error(res.msg)
+          } else if (res.code === 200) {
+            ElMessage.success(res.msg)
+          }
+        })
+      this.feedbackVisible = false
     },
     async RejectApp(appId) {
-      await api.rejectApp(appId, this.$cookies.get('satoken')).then((res) => {
-        if (res.code === 500) {
-          ElMessage.error(res.msg)
-        } else if (res.code === 200) {
-          ElMessage.success(res.msg)
-        }
-      })
+      await api
+        .rejectApp(appId, comment, this.$cookies.get('satoken'))
+        .then((res) => {
+          if (res.code === 500) {
+            ElMessage.error(res.msg)
+          } else if (res.code === 200) {
+            ElMessage.success(res.msg)
+          }
+        })
+      this.feedbackVisible = false
     },
     async PassFund(appId) {
       await api.passFund(appId, this.$cookies.get('satoken')).then((res) => {
