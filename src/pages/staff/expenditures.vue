@@ -315,7 +315,12 @@ handleReadTable(){this.readDialogVisible=true;},
          this.fileList = fileList;
       },
 submitApplicationTable(){
-    console.log(this.fileList[0])
+    let file = this.fileList[0];
+    console.log(file)
+    file.then((file1)=>{
+        console.log(file1)
+    })
+
 },
  CreateNewApplication(row){
     this.form2.expenditureNumber=row.expenditureNumber
@@ -332,16 +337,12 @@ mounted(){//get all the expenditures
     response.then((res)=>{
     if (res.code === 200) {
         this.tableData=res.data;
-        console.log(this.tableData)  
     } else {
         ElMessage("加载基金信息失败")
         console.log(res)
     }
 })
-
 }
-
-
 }
 
 </script>

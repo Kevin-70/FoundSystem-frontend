@@ -309,6 +309,9 @@ export default {
         }
       })
     },
+    handleCheckExpenditure(){
+        this.$router.push("/expenditure")
+    }
   },
 }
 </script>
