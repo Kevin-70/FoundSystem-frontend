@@ -1,11 +1,16 @@
 export default {
-    applications2Line(applications) {
-        let x_data = [];
+    applications2LineY(applications) {
         let y_data = [];
         for (let i = 0; i < applications.length; i++) {
-            x_data.push(applications[i].createdDate);
             y_data.push(applications[i].appAmount);
         }
-        return x_data, y_data;
+        return y_data;
+    },
+    applications2LineX(applications) {
+        let x_data = [];
+        for (let i = 0; i < applications.length; i++) {
+            x_data.push(applications[i].createdDate);
+        }
+        return x_data;
     }
 }
