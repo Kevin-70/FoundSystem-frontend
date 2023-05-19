@@ -136,7 +136,7 @@ async function UpdateInfo() {
                 <template #header>
                   <div class="card-header">
                     <span>My Groups</span>
-                    <el-button class="button" text @click="handleAllGroups"
+                    <el-button class="button" text @click="handleJoinedGroups"
                       >Sync</el-button
                     >
                   </div>
@@ -152,8 +152,7 @@ async function UpdateInfo() {
               ><el-button @click="openJoinWindow"
                 >Join Research Group</el-button
               >
-            </el-col></el-row
-          >
+            </el-col></el-row>
           <el-dialog v-model="dialogFormVisible" title="Update Info">
             <el-form :inline="true" :model="form">
               <el-form-item label="phone number" :label-width="formLabelWidth">
@@ -206,7 +205,9 @@ async function UpdateInfo() {
                 :value="item.groupName">
               </el-option>
             </el-select>
-            <el-button @click="handleApplyGroup">Apply</el-button>
+            <el-input v-model="comment" type="textarea" placeholder="请输入申请内容"></el-input>
+
+            <el-button @click="handleApplyGroup(choice)">Apply</el-button>
             <el-button @click="handleJoinGroup">Join(just for test)</el-button>
             <template #footer>
               <span class="dialog-footer">
@@ -231,6 +232,7 @@ export default {
       options: [],
       choice: '',
       groups: [],
+      comment:"",
     }
   },
   methods: {
@@ -247,13 +249,22 @@ export default {
         }
       })
     },
-    async handleApplyGroup() {
-      await api.StaffJoinGroup(this.$cookies.get('satoken')).then((res) => {
+    async handleJoinedGroups() {
+      await api.getOneUserGroups(this.$cookies.get('satoken')).then((res) => {
+        if (res.code === 500) {
+          ElMessage.error(res.msg)
+        } else if (res.code === 200) {
+          this.options = res.data
+        }
+      })
+    },
+    async handleApplyGroup(groupName) {
+      await api.StaffJoinGroup(this.comment,groupName,this.$cookies.get('satoken')).then((res) => {
         if (res.code === 500) {
           ElMessage.error(res.msg)
         } else if (res.code === 200) {
           console.log(res)
-          ElMessage.success('加入成功')
+          ElMessage.success('申请发送成功')
         }
       })
     },

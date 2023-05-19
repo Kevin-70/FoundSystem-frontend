@@ -21,8 +21,11 @@ const $cookies = inject('$cookies');
           <el-menu-item index="1">Homepage</el-menu-item>
         </el-menu>
       </el-header>
-    <el-button @click="handleNewExpend">
-            Apply for a expenditure
+    <el-button @click="handleNewExpend" type="primary">
+            Apply for a new expenditure
+    </el-button>
+    <el-button @click="handleReadTable">
+            Read applications from a table
     </el-button>
         <!-- All expenditures in on table with button "check its application"-->
         <el-table :data="tableData" style="width: 100%">
@@ -34,6 +37,7 @@ const $cookies = inject('$cookies');
     <el-table-column prop="totalAmount" label="全部金额" width="120"/>
     <el-table-column prop="remainingAmount" label="剩余金额" width="120"/>
     <el-table-column prop="quota" label="限额" width="120"/>
+    <el-table-column prop="status" label="审核状态" width="120"/>
     <el-table-column fixed="right" label="Operations" width="200">
       <template #default="scope" >
         <el-button link type="primary" size="small" @click="CreateNewApplication(scope.row)">Create an application</el-button>
@@ -118,14 +122,12 @@ const $cookies = inject('$cookies');
       </span>
     </template>
   </el-dialog>
-
   <el-dialog
     v-model="appDialogVisible"
     title="Apply for a application"
     width="30%"
     align-center>
-    <el-form :model="form" label-width="120px">
-    
+    <el-form :model="form2" label-width="120px">
     <el-form-item label="基金编号">
       <el-input v-model="form2.expenditureNumber" placeholder="Expenditure Number"  />
     </el-form-item>
@@ -139,8 +141,7 @@ const $cookies = inject('$cookies');
         v-for="(item) in categories"
         :key="item"
         :label="item"
-        :value="item"
-        >
+        :value="item">
       </el-option>
       </el-select> 
     </el-form-item>
@@ -156,6 +157,35 @@ const $cookies = inject('$cookies');
         <el-button @click="appDialogVisible = false">Cancel</el-button>
         <el-button type="primary" @click="submitApplication">
           Submit Application apply
+        </el-button>
+      </span>
+    </template>
+  </el-dialog>
+
+  <el-dialog
+    v-model="readDialogVisible"
+    title="Read applications from a table file"
+    width="30%"
+    align-center>
+    <el-upload
+  class="upload-demo"
+  action="https://jsonplaceholder.typicode.com/posts/"
+  :on-remove="handleRemove"
+  :on-preview="handlePreview"
+  :on-change="handlChange"
+  multiple
+  :limit="1"
+  :on-exceed="handleExceed"
+  accept=".xlsx,.xls,.csv"
+  :file-list="fileList">
+  <el-button size="small" type="primary">点击上传</el-button>
+  <div slot="tip" class="el-upload__tip">只能上传一个.csv文件,且不超过500kb</div>
+</el-upload>
+    <template #footer>
+      <span class="dialog-footer">
+        <el-button @click="readDialogVisible = false">Cancel</el-button>
+        <el-button type="primary" @click="submitApplicationTable">
+          Submit Applications 
         </el-button>
       </span>
     </template>
@@ -176,12 +206,12 @@ export default {
     endTime: '2016-05-09',
     totalAmount: 100000.0,
     remainingAmount: 98900.0,
+    status:"Unread",
     tag: '审核中',
     },],
     options: [],
     categories:["1","2"],
     centerDialogVisible:false,
-    appDialogVisible:false,
     form :{
     expenditurename:"",
     expenditurenumber:"",
@@ -189,14 +219,17 @@ export default {
     endTime1:"",endTime2:"",
     groupName:"",
     totalamount:""
-},  form2 :{
+    },  
+    appDialogVisible:false,
+    form2 :{
     abstrac:"",
     applyAmount:"", 
     cate:"", 
     comment:"", 
     expenditureNumber:""
-},
-    }
+},  readDialogVisible:false,
+fileList:[]
+}
 },methods:{
    handleNewExpend(){
         api.getOneUserGroups(this.$cookies.get('satoken')).then((res) => {
@@ -228,9 +261,7 @@ export default {
     } else {
         console.log('error')
         console.log(res);
-    }
-    })
-    
+    }})
     } catch (error) {
     console.error(error)
     }
@@ -246,15 +277,46 @@ export default {
         ElMessage.success("申请完成");
         } else {
         ElMessage.error("申请发起失败，请更改信息后重试");
-        // console.log(res);
+        console.log(res);
         }
     })
-    
     } catch (error) {
     console.error(error)
     }
 },
-handleSelect(){},
+
+handleSelect(){
+    const response =  api.getMyEmail(
+        $cookies.get('satoken')
+    )
+    response.then((res)=>{
+    if (res.code === 200) {
+        this.$router.push("/staff/"+res.data);
+    } else {
+        ElMessage.error("身份过期返回主页失败")
+        console.log(res)
+    }})
+    this.$router.push("/staff/"+email);
+},
+handleReadTable(){this.readDialogVisible=true;},
+    handleRemove(file, fileList) {
+        console.log(file, fileList);
+      },
+      handlePreview(file) {
+        console.log(file);
+      },
+      handleExceed(files, fileList) {
+        ElMessage.warning(`当前限制选择 1 个文件，本次选择了 ${files.length} 个文件，共选择了 ${files.length + fileList.length} 个文件`);
+      },
+      handleRemove(file, fileList) {
+         this.fileList = fileList;
+      },
+      handlChange(file, fileList) {
+         this.fileList = fileList;
+      },
+submitApplicationTable(){
+    console.log(this.fileList[0])
+},
  CreateNewApplication(row){
     this.form2.expenditureNumber=row.expenditureNumber
     this.appDialogVisible=true;
@@ -269,7 +331,8 @@ mounted(){//get all the expenditures
     )
     response.then((res)=>{
     if (res.code === 200) {
-        this.tableData=res.data;        
+        this.tableData=res.data;
+        console.log(this.tableData)  
     } else {
         ElMessage("加载基金信息失败")
         console.log(res)
