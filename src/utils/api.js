@@ -174,9 +174,9 @@ export default {
       return console.error(error)
     }
   },
-  async StaffJoinGroup (satoken) {
+  async StaffJoinGroup (comment,groupname,satoken) {
     try {
-      const response = await fetch(`${BASE_URL}/group/joinGroup`, {
+      const response = await fetch(`${BASE_URL}/group/joinGroup?comment=${comment}&groupName=${groupname}`, {
         method: 'POST',
         credentials: 'include',
         headers: {
@@ -524,6 +524,19 @@ async getAllExpend(satoken) {
     }catch(error){
         return console.log(Error)
     }
-
+},async getMyEmail(satoken){
+    try{
+        const response = await fetch(`${BASE_URL}/user/getMyEmail`,{
+        method:"GET",
+        credentials:"include",
+        headers:{
+            'satoken':satoken,
+        }
+    })
+    const data = await response.json()
+    return data
+    }catch(error){
+        return console.log(Error)
+    }
 }
 }
