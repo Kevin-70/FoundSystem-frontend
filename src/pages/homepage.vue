@@ -29,6 +29,7 @@ import profile from './staff/profile.vue'
   </div>
 </template>
 <script>
+import api from '../utils/api'
 export default {
   data() {
     return {
@@ -38,6 +39,18 @@ export default {
   methods: {
     handleSelect(key) {
       this.activeIndex = key
+    },
+    async handleQuitLogin() {
+      await api.QuitLogin(this.$cookies.get('satoken')).then((res) => {
+        if (res.code === 500) {
+          ElMessage.error(res.msg)
+          console.log(res)
+        } else if (res.code === 200) {
+          console.log(res)
+          ElMessage.success('退出登录成功')
+          this.$router.push('/login')
+        }
+      })
     },
   },
 }
