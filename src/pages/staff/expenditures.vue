@@ -6,7 +6,6 @@ import api from '../../utils/api.js'
 import { ref } from 'vue'
 import { ElButton, ElDialog, ElMessage } from 'element-plus'
 import { reactive, onMounted, inject } from 'vue'
-const BASE_URL = 'http://43.139.159.107:8080'
 const router = useRoute();
 const $cookies = inject('$cookies');
 </script>
