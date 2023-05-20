@@ -592,8 +592,7 @@ export default {
             method:"POST",
             body:formData,
             headers:{
-                "Content-Type": "multipart/form-data;boundary = --------------------------592823226029657963733863",
-                // "Content-Type": "multipart/form-data;boundary = "+new Date().getTime(),
+                // "Content-Type": "multipart/form-data",
                 'satoken':satoken,
             }
         })

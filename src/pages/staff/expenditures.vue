@@ -168,6 +168,7 @@ const $cookies = inject('$cookies');
     align-center>
     <el-upload
   class="upload-demo"
+  :auto-upload="false"
   :action="actionUrl"
   :on-remove="handleRemove"
   :on-preview="handlePreview"
@@ -229,8 +230,7 @@ export default {
     expenditureNumber:""
 },  readDialogVisible:false,
 fileList:[],
-// actionUrl: "https://jsonplaceholder.typicode.com/posts/", //上传文件url https://jsonplaceholder.typicode.com/posts/
-actionUrl: BASE_URL+"/application/file/uploadCsvFileToApply", //上传文件url
+actionUrl: "https://jsonplaceholder.typicode.com/posts/", //上传文件url https://jsonplaceholder.typicode.com/posts/
 }
 },methods:{
    handleNewExpend(){
@@ -316,18 +316,9 @@ handleReadTable(){this.readDialogVisible=true;},
     },
 submitApplicationTable(){
     let formData=new FormData(); 
-    // let file=this.fileList[0]
-    // let reader= new FileReader();
-    // reader.readAsBinaryString(file.raw)
-    // reader.onload=function(e){
-    //     console.log(this.result)//图片的base64数据
-    // };reader.onload();
     console.log(this.fileList[0].raw)
-    // this.fileList.forEach((val,index)=>{
-    //     console.log(val.raw)
-    //     formData.append("uploadFile",val.raw)})
     formData.append("uploadFile", this.fileList[0].raw)
-    console.log(formData.get("uploadFile"));
+    console.log(formData.get("uploadFile").type,formData.get("uploadFile").size);
     //     formData.append("test", 'value');console.log(formData.get("test"));
     console.log(formData)
     const response = api.uploadFile(formData,$cookies.get('satoken'))
