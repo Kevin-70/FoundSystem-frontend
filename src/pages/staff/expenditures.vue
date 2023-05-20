@@ -27,7 +27,7 @@ const $cookies = inject('$cookies');
             Read applications from a table
     </el-button>
         <!-- All expenditures in on table with button "check its application"-->
-        <el-table :data="tableData" style="width: 100%">
+        <el-table v-loading="loading"  :data="tableData" style="width: 100%">
     <el-table-column prop="expenditureName" label="基金名称" width="120" />
     <el-table-column prop="expenditureNumber" label="基金编号" width="120" />
     <el-table-column prop="groupName" label="所属课题组" width="200" />
@@ -134,10 +134,20 @@ const $cookies = inject('$cookies');
     <el-form-item label="申请摘要">
       <el-input v-model="form2.abstrac" placeholder="abstract"/>        
     </el-form-item>
-    <el-form-item label="使用金额类别">
-        <el-select v-model="form2.cate" placeholder="types of funds">
+    <el-form-item label="使用金额大类">
+        <el-select v-model="form2.cate1" placeholder="types of funds 1">
         <el-option
-        v-for="(item) in categories"
+        v-for="(item) in categories1"
+        :key="item"
+        :label="item"
+        :value="item">
+      </el-option>
+      </el-select> 
+    </el-form-item>
+    <el-form-item label="使用金额小类">
+        <el-select v-model="form2.cate2" placeholder="types of funds 2">
+        <el-option
+        v-for="(item) in categories2"
         :key="item"
         :label="item"
         :value="item">
@@ -211,7 +221,8 @@ export default {
     tag: '审核中',
     },],
     options: [],
-    categories:["1","2"],
+    categories1 :["书本费","物料费"],
+    categories2 :["A",'B'],
     centerDialogVisible:false,
     form :{
     expenditurename:"",
@@ -225,10 +236,12 @@ export default {
     form2 :{
     abstrac:"",
     applyAmount:"", 
-    cate:"", 
+    cate1:"", 
+    cate2:"", 
     comment:"", 
     expenditureNumber:""
 },  readDialogVisible:false,
+loading:true,
 fileList:[],
 actionUrl: "https://jsonplaceholder.typicode.com/posts/", //上传文件url https://jsonplaceholder.typicode.com/posts/
 }
@@ -270,7 +283,8 @@ actionUrl: "https://jsonplaceholder.typicode.com/posts/", //上传文件url http
 },submitApplication() {
     try {
     const response = api.submitApplication(
-        this.form2.abstrac, this.form2.applyAmount, this.form2.cate,this.form2.comment,this.form2.expenditureNumber,
+        this.form2.abstrac, this.form2.applyAmount, this.form2.cate1,this.form2.cate2
+        ,this.form2.comment,this.form2.expenditureNumber,
         $cookies.get('satoken')
     )
     response.then((res)=>{
@@ -325,9 +339,11 @@ submitApplicationTable(){
     response.then((res)=>{
         if(res.code==200){
             ElMessage.success("上传识别成功!")
+            this.appDialogVisible=true;
+
         }else{
             console.log(res)
-            ElMessage.warning("上传失败。");
+            ElMessage.warning("上传失败，请检查文件内容。");
         }
     })
     
@@ -347,9 +363,11 @@ mounted(){//get all the expenditures
     response.then((res)=>{
     if (res.code === 200) {
         this.tableData=res.data;
+        this.loading=false
     } else {
         ElMessage("加载基金信息失败")
         console.log(res)
+        
     }
 })
 }
