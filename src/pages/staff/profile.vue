@@ -8,7 +8,7 @@
           <h2 style="color: black">User Info</h2>
         </template>
         <template #extra>
-          <el-button @click="handleUpdate">Update</el-button>
+          <el-button @click="handleUpdate" text>Update</el-button>
         </template>
         <el-descriptions-item label="Username">{{
           this.info.name

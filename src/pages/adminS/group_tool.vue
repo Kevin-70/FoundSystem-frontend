@@ -105,22 +105,7 @@ import { Edit, Delete } from '@element-plus/icons-vue'
 import api from '../../utils/api'
 export default {
   async mounted() {
-    this.loading = true
-    await api.GetAllGroups(this.$cookies.get('satoken')).then((res) => {
-      if (res.code === 500) {
-        ElMessage.error(res.msg)
-      } else if (res.code === 200) {
-        this.groups = res.data
-        this.groups.forEach((group) => {
-          const managerNames = []
-          group.managers.forEach((manager) => {
-            managerNames.push(manager.name)
-          })
-          group.managerNames = managerNames
-        })
-      }
-    })
-    this.loading = false
+    this.handleAllGroups()
   },
   data() {
     return {
