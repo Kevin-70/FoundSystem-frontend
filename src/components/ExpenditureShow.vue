@@ -1,4 +1,6 @@
 <script setup>
+import { Check, Message } from '@element-plus/icons-vue'
+import {ElMessage} from 'element-plus/es';
 import { ref, reactive, onMounted, inject } from 'vue'
 import { useRoute } from 'vue-router'
 import api from '../utils/api'
@@ -136,6 +138,7 @@ onMounted(async () => {
             <el-table
               v-if="this.activeIndex === 'Applications'"
               :data=info.applications
+              height="400"
               style="width: 100%">
               <el-table-column
                 prop="userName"
@@ -178,20 +181,54 @@ onMounted(async () => {
                 label="createdDate"
                 width="180">
               </el-table-column>
+
+              <el-table-column fixed="right" label="Feedback" width="180">
+                <template #default="scope">
+                  <el-button
+                    type="primary"
+                    :icon="Message"
+                    circle
+                    @click="
+                      this.handleFeedback(scope.row.appId)
+                    "/>
+                </template>
+              </el-table-column>
+              
             </el-table>
 
           <!-- </el-col>
           <el-col :span="12"> -->
             <BarGraph 
             v-if="dataState.ifDataUpdated && this.activeIndex === 'Applications'"
-            :width="'900px'" :height="'600px'" 
-            :x_data="info.x_data" :y_data="info.y_data"
-          ></BarGraph>
+            :width="'900px'" :height="'400px'" 
+            :x_data="info.x_data" :y_data="info.y_data" ></BarGraph>
+
+            <!-- <PieGraph
+                  v-if="dataState.ifDataUpdated && this.activeIndex === 'Base Info'"
+                  :width="'900px'" :height="'400px'" 
+                  :dataName="['Remaining Amount', 'Total Amount']"
+                  :name="'Catagory'"
+                  :data=""
+              ></PieGraph> -->
         <!-- </el-col> -->
         <!-- </el-row> -->
           </div>
         </div>
         
+        <el-dialog v-model="dialogVisible" 
+                    title="Feedback" >
+            <div>
+              <span>{{ this.feedBack }}</span>
+            </div>
+            <template #footer>
+              <span class="dialog-footer">
+                <el-button @click="dialogVisible = false">Cancel</el-button>
+                <el-button type="primary" @click="dialogVisible = false">
+                  Confirm
+                </el-button>
+              </span>
+        </template>
+      </el-dialog>
       </el-main>
       <el-footer style="color: #000">Powered By Vue @SE 2023</el-footer>
       <el-backtop :right="100" :bottom="100" />
@@ -205,6 +242,10 @@ export default {
   data() {
     return {
       activeIndex: "Base Info",
+      dialogVisible: false,
+      feedBack: "",
+      catagroryName: [],
+      catagroryValue: [],
       // applications: [],
     }
   },
@@ -214,6 +255,25 @@ export default {
     },
     handleSelect(key) {
       this.activeIndex = key
+    },
+    back() {
+      this.$router.go(-1)
+    },
+    async handleFeedback(AppId) {
+      console.log("handleFeedback")
+      console.log(AppId) 
+      await api.getFeedBackByAppId(
+        this.$cookies.get('satoken'),
+        AppId).then((res) => {
+        if (res.code === 500) {
+          ElMessage.error(res.msg)
+        } else if (res.code === 200) {
+          this.feedBack = res.data.comment
+          this.dialogVisible = true 
+          // console.log(res.data)
+          // ElMessage.error(res.msg)
+        }
+      })
     },
   },
   components: {
