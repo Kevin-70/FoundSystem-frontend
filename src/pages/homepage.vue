@@ -58,7 +58,12 @@ export default {
         }
       })
     },
-  },
+    handleCheckExpenditure(){
+        this.$router.push("/expenditure")
+    }
+  },mounted(){
+    // this.handleJoinedGroups();
+  }
 }
 </script>
 

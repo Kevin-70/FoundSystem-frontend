@@ -14,7 +14,6 @@ const $cookies = inject('$cookies');
     <el-container>
       <el-header>
         <el-menu
-          :default-active="activeIndex"
           class="el-menu-demo"
           mode="horizontal"
           @select="handleSelect">
@@ -169,17 +168,17 @@ const $cookies = inject('$cookies');
     align-center>
     <el-upload
   class="upload-demo"
-  action="https://jsonplaceholder.typicode.com/posts/"
+  :auto-upload="false"
+  :action="actionUrl"
   :on-remove="handleRemove"
   :on-preview="handlePreview"
-  :on-change="handlChange"
-  multiple
+  :on-change="(file,fileList)=>handleChange(file,fileList)"
   :limit="1"
   :on-exceed="handleExceed"
-  accept=".xlsx,.xls,.csv"
+  accept=".xlsx"
   :file-list="fileList">
   <el-button size="small" type="primary">点击上传</el-button>
-  <div slot="tip" class="el-upload__tip">只能上传一个.csv文件,且不超过500kb</div>
+  <div slot="tip" class="el-upload__tip">只能上传一个.xlsx文件,且不超过500kb</div>
 </el-upload>
     <template #footer>
       <span class="dialog-footer">
@@ -195,6 +194,8 @@ const $cookies = inject('$cookies');
 </template>
 
 <script>
+import { toRaw } from 'vue'
+const BASE_URL = 'http://43.139.159.107:8080'
 export default {
     data() {
         return {
@@ -228,7 +229,8 @@ export default {
     comment:"", 
     expenditureNumber:""
 },  readDialogVisible:false,
-fileList:[]
+fileList:[],
+actionUrl: "https://jsonplaceholder.typicode.com/posts/", //上传文件url https://jsonplaceholder.typicode.com/posts/
 }
 },methods:{
    handleNewExpend(){
@@ -284,7 +286,6 @@ fileList:[]
     console.error(error)
     }
 },
-
 handleSelect(){
     const response =  api.getMyEmail(
         $cookies.get('satoken')
@@ -308,14 +309,28 @@ handleReadTable(){this.readDialogVisible=true;},
       handleExceed(files, fileList) {
         ElMessage.warning(`当前限制选择 1 个文件，本次选择了 ${files.length} 个文件，共选择了 ${files.length + fileList.length} 个文件`);
       },
-      handleRemove(file, fileList) {
-         this.fileList = fileList;
-      },
-      handlChange(file, fileList) {
-         this.fileList = fileList;
-      },
+      handleRemove(file, fileList) {this.fileList = fileList;},
+      handleChange(file,fileList) { 
+        this.fileList=fileList
+        // console.log(this.fileList)
+    },
 submitApplicationTable(){
-    console.log(this.fileList[0])
+    let formData=new FormData(); 
+    console.log(this.fileList[0].raw)
+    formData.append("uploadFile", this.fileList[0].raw)
+    console.log(formData.get("uploadFile").type,formData.get("uploadFile").size);
+    //     formData.append("test", 'value');console.log(formData.get("test"));
+    console.log(formData)
+    const response = api.uploadFile(formData,$cookies.get('satoken'))
+    response.then((res)=>{
+        if(res.code==200){
+            ElMessage.success("上传识别成功!")
+        }else{
+            console.log(res)
+            ElMessage.warning("上传失败。");
+        }
+    })
+    
 },
  CreateNewApplication(row){
     this.form2.expenditureNumber=row.expenditureNumber
@@ -332,16 +347,12 @@ mounted(){//get all the expenditures
     response.then((res)=>{
     if (res.code === 200) {
         this.tableData=res.data;
-        console.log(this.tableData)  
     } else {
         ElMessage("加载基金信息失败")
         console.log(res)
     }
 })
-
 }
-
-
 }
 
 </script>
