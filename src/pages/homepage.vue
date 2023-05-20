@@ -19,7 +19,6 @@ const form = reactive({
   name: '',
   phoneNumber: '',
 })
-const groups = ref([])
 const activeIndex = ref('1')
 const handleSelect = (key, keyPath) => {
   console.log(key, keyPath)
@@ -41,7 +40,6 @@ onMounted(async () => {
     .catch((error) => {
       console.log(error)
     })
-  handleAllGroups()
 })
 async function UpdateInfo() {
   try {
@@ -136,12 +134,12 @@ async function UpdateInfo() {
                 <template #header>
                   <div class="card-header">
                     <span>My Groups</span>
-                    <el-button class="button" text @click="handleJoinedGroups"
+                    <el-button class="button" text @click="handleJoinedGroups()"
                       >Sync</el-button
                     >
                   </div>
                 </template>
-                <div v-for="item in this.options" :key="item.value">
+                <div v-for="item in this.groups" :key="item.value">
                   {{ item.groupName }}
                 </div>
               </el-card>
@@ -254,7 +252,7 @@ export default {
         if (res.code === 500) {
           ElMessage.error(res.msg)
         } else if (res.code === 200) {
-          this.options = res.data
+          this.groups = res.data
         }
       })
     },
@@ -263,7 +261,7 @@ export default {
         if (res.code === 500) {
           ElMessage.error(res.msg)
         } else if (res.code === 200) {
-          console.log(res)
+        //   console.log(res)
           ElMessage.success('申请发送成功')
         }
       })
@@ -276,7 +274,6 @@ export default {
             ElMessage.error(res.msg)
             console.log(res)
           } else if (res.code === 200) {
-            console.log(res)
             ElMessage.success('加入成功')
           }
         })
@@ -296,7 +293,9 @@ export default {
     handleCheckExpenditure(){
         this.$router.push("/expenditure")
     }
-  },
+  },mounted(){
+    this.handleJoinedGroups();
+  }
 }
 </script>
 

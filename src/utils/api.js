@@ -538,5 +538,20 @@ async getAllExpend(satoken) {
     }catch(error){
         return console.log(Error)
     }
+}, async uploadFile(formData,satoken){
+    try{
+        const response = await fetch(`${BASE_URL}/application/file/uploadCsvFileToApply`,{
+        method:"POST",
+        headers:{
+            "Content-Type": "multipart/form-data;boundary = --------------------------592823226029657963733863",
+            // "Content-Type": "multipart/form-data;boundary = "+new Date().getTime(),
+            'satoken':satoken,
+        },body:formData,
+    })
+    const data = await response.json()
+    return data
+    }catch(error){
+        return console.log(Error)
+    }
 }
 }

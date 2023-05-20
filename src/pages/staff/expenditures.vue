@@ -6,6 +6,7 @@ import api from '../../utils/api.js'
 import { ref } from 'vue'
 import { ElButton, ElDialog, ElMessage } from 'element-plus'
 import { reactive, onMounted, inject } from 'vue'
+const BASE_URL = 'http://43.139.159.107:8080'
 const router = useRoute();
 const $cookies = inject('$cookies');
 </script>
@@ -14,7 +15,6 @@ const $cookies = inject('$cookies');
     <el-container>
       <el-header>
         <el-menu
-          :default-active="activeIndex"
           class="el-menu-demo"
           mode="horizontal"
           @select="handleSelect">
@@ -169,17 +169,16 @@ const $cookies = inject('$cookies');
     align-center>
     <el-upload
   class="upload-demo"
-  action="https://jsonplaceholder.typicode.com/posts/"
+  :action="actionUrl"
   :on-remove="handleRemove"
   :on-preview="handlePreview"
-  :on-change="handlChange"
-  multiple
+  :on-change="handleChange"
   :limit="1"
   :on-exceed="handleExceed"
-  accept=".xlsx,.xls,.csv"
+  accept=".xlsx"
   :file-list="fileList">
   <el-button size="small" type="primary">点击上传</el-button>
-  <div slot="tip" class="el-upload__tip">只能上传一个.csv文件,且不超过500kb</div>
+  <div slot="tip" class="el-upload__tip">只能上传一个.xlsx文件,且不超过500kb</div>
 </el-upload>
     <template #footer>
       <span class="dialog-footer">
@@ -195,6 +194,7 @@ const $cookies = inject('$cookies');
 </template>
 
 <script>
+import { toRaw } from 'vue'
 export default {
     data() {
         return {
@@ -228,7 +228,8 @@ export default {
     comment:"", 
     expenditureNumber:""
 },  readDialogVisible:false,
-fileList:[]
+fileList:[],
+actionUrl: "https://jsonplaceholder.typicode.com/posts/", //上传文件url
 }
 },methods:{
    handleNewExpend(){
@@ -284,7 +285,6 @@ fileList:[]
     console.error(error)
     }
 },
-
 handleSelect(){
     const response =  api.getMyEmail(
         $cookies.get('satoken')
@@ -308,19 +308,30 @@ handleReadTable(){this.readDialogVisible=true;},
       handleExceed(files, fileList) {
         ElMessage.warning(`当前限制选择 1 个文件，本次选择了 ${files.length} 个文件，共选择了 ${files.length + fileList.length} 个文件`);
       },
-      handleRemove(file, fileList) {
-         this.fileList = fileList;
-      },
-      handlChange(file, fileList) {
-         this.fileList = fileList;
-      },
+      handleRemove(file, fileList) {this.fileList = fileList;},
+      handleChange(file,fileList) { 
+        this.fileList=fileList
+    },
 submitApplicationTable(){
-    let file = this.fileList[0];
-    console.log(file)
-    file.then((file1)=>{
-        console.log(file1)
+    let formData=new FormData(); 
+    let file=this.fileList[0]
+    let reader= new FileReader();
+    reader.readAsBinaryString(file.raw)
+    reader.onload=function(e){
+        console.log(this.result)//图片的base64数据
+    };reader.onload();
+    formData.append("uploadFile",file.raw,file.raw.name)
+    console.log(formData);
+    const response = api.uploadFile(formData,$cookies.get('satoken'))
+    response.then((res)=>{
+        if(res.code==200){
+            ElMessage.success("上传识别成功!")
+        }else{
+            console.log(res)
+            ElMessage.warning("上传失败。");
+        }
     })
-
+    
 },
  CreateNewApplication(row){
     this.form2.expenditureNumber=row.expenditureNumber
