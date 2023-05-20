@@ -1,6 +1,7 @@
 <script setup>
 import profile from './staff/profile.vue'
 import group_view from './staff/group_view.vue'
+import group_app from './staff/group_app.vue'
 </script>
 
 <template>
@@ -13,18 +14,21 @@ import group_view from './staff/group_view.vue'
           mode="horizontal"
           @select="handleSelect">
           <el-menu-item index="1">Homepage</el-menu-item>
-          <el-menu-item index="2" @click="handleCheckExpenditure"
+          <el-menu-item index="2">Group</el-menu-item>
+          <el-menu-item index="3" @click="handleCheckExpenditure"
             >View Expenditure</el-menu-item
           >
-          <el-menu-item index="3" @click="handleQuitLogin"
+          <el-menu-item index="4" @click="handleQuitLogin"
             >Quit Login</el-menu-item
           >
         </el-menu>
       </el-header>
       <el-main>
         <profile v-if="this.activeIndex == 1" />
-        <group_view />
+        <group_view v-if="this.activeIndex == 2" />
+        <group_app v-if="this.activeIndex == 2" />
       </el-main>
+
       <el-footer style="color: #000">Powered By Vue @SE 2023</el-footer>
       <el-backtop :right="100" :bottom="100" />
     </el-container>
@@ -48,8 +52,8 @@ export default {
           ElMessage.error(res.msg)
           console.log(res)
         } else if (res.code === 200) {
-          console.log(res)
           ElMessage.success('退出登录成功')
+          this.$cookies.remove('satoken')
           this.$router.push('/login')
         }
       })

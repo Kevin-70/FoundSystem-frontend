@@ -1,9 +1,5 @@
 <script setup>
-import group_tool from './adminS/group_tool.vue'
-import group_join from './admin/group_join.vue'
-import fund_create from './admin/fund_create.vue'
-import fund_app from './admin/fund_app.vue'
-import profile from './staff/profile.vue'
+import group_show from './group/group_show.vue'
 </script>
 
 <template>
@@ -11,25 +7,20 @@ import profile from './staff/profile.vue'
     <el-container>
       <el-header>
         <el-menu
-          :default-active="this.activeIndex"
+          :default-active="activeIndex"
           class="el-menu-demo"
           mode="horizontal"
           @select="handleSelect">
-          <el-menu-item index="1">Homepage</el-menu-item>
-          <el-menu-item index="2">Group Management</el-menu-item>
-          <el-menu-item index="3">Fund Management</el-menu-item>
-          <el-menu-item index="4" @click="handleQuitLogin"
+          <el-menu-item index="1">Group Homepage</el-menu-item>
+          <el-menu-item index="2" @click="handleQuitLogin"
             >Quit Login</el-menu-item
           >
         </el-menu>
       </el-header>
       <el-main>
-        <profile v-if="this.activeIndex == 1" />
-        <group_tool v-if="this.activeIndex == 2" />
-        <group_join v-if="this.activeIndex == 2" />
-        <fund_create v-if="this.activeIndex == 3" />
-        <fund_app v-if="this.activeIndex == 3" />
+        <group_show />
       </el-main>
+
       <el-footer style="color: #000">Powered By Vue @SE 2023</el-footer>
       <el-backtop :right="100" :bottom="100" />
     </el-container>
@@ -80,15 +71,5 @@ export default {
   display: flex;
   justify-content: space-between;
   align-items: center;
-}
-.box-card {
-  width: 1580px;
-}
-
-.el-table .reject-row {
-  --el-table-tr-bg-color: var(--el-color-warning-light-9);
-}
-.el-table .success-row {
-  --el-table-tr-bg-color: var(--el-color-success-light-9);
 }
 </style>
