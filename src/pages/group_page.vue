@@ -1,7 +1,5 @@
 <script setup>
-import profile from './staff/profile.vue'
-import group_view from './staff/group_view.vue'
-import group_app from './staff/group_app.vue'
+import group_show from './group/group_show.vue'
 </script>
 
 <template>
@@ -13,20 +11,14 @@ import group_app from './staff/group_app.vue'
           class="el-menu-demo"
           mode="horizontal"
           @select="handleSelect">
-          <el-menu-item index="1">Homepage</el-menu-item>
-          <el-menu-item index="2">Group</el-menu-item>
-          <el-menu-item index="3" @click="handleCheckExpenditure"
-            >View Expenditure</el-menu-item
-          >
-          <el-menu-item index="4" @click="handleQuitLogin"
+          <el-menu-item index="1">Group Homepage</el-menu-item>
+          <el-menu-item index="2" @click="handleQuitLogin"
             >Quit Login</el-menu-item
           >
         </el-menu>
       </el-header>
       <el-main>
-        <profile v-if="this.activeIndex == 1" />
-        <group_view v-if="this.activeIndex == 2" />
-        <group_app v-if="this.activeIndex == 2" />
+        <group_show />
       </el-main>
 
       <el-footer style="color: #000">Powered By Vue @SE 2023</el-footer>

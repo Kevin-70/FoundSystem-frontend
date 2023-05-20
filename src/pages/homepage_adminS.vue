@@ -18,6 +18,9 @@ import profile from './staff/profile.vue'
           <el-menu-item index="1">Homepage</el-menu-item>
           <el-menu-item index="2">Group Management</el-menu-item>
           <el-menu-item index="3">Fund Management</el-menu-item>
+          <el-menu-item index="4" @click="handleQuitLogin"
+            >Quit Login</el-menu-item
+          >
         </el-menu>
       </el-header>
       <el-main>
@@ -33,6 +36,7 @@ import profile from './staff/profile.vue'
   </div>
 </template>
 <script>
+import api from '../utils/api'
 export default {
   data() {
     return {
@@ -42,6 +46,18 @@ export default {
   methods: {
     handleSelect(key) {
       this.activeIndex = key
+    },
+    async handleQuitLogin() {
+      await api.QuitLogin(this.$cookies.get('satoken')).then((res) => {
+        if (res.code === 500) {
+          ElMessage.error(res.msg)
+          console.log(res)
+        } else if (res.code === 200) {
+          ElMessage.success('退出登录成功')
+          this.$cookies.remove('satoken')
+          this.$router.push('/login')
+        }
+      })
     },
   },
 }
