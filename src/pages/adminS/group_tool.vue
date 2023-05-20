@@ -120,7 +120,7 @@ export default {
       OldManagers: [],
       activeIndex: 1,
       passAppId: '',
-      loading: true,
+      loading: false,
     }
   },
   methods: {

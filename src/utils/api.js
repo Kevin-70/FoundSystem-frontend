@@ -586,19 +586,36 @@ export default {
         } catch (error) {
             return console.log(Error)
         }
-    },async uploadFile(formData,satoken){
-        try{
-            const response = await fetch(`${BASE_URL}/application/file/uploadCsvFileToApply`,{
-            method:"POST",
-            body:formData,
-            headers:{
-                // "Content-Type": "multipart/form-data",
-                'satoken':satoken,
-            }
-        })
-        const data = await response.json()
-        return data
-        }catch(error){
+    }, async uploadFile (formData, satoken) {
+        try {
+            const response = await fetch(`${BASE_URL}/application/file/uploadCsvFileToApply`, {
+                method: "POST",
+                body: formData,
+                headers: {
+                    // "Content-Type": "multipart/form-data",
+                    'satoken': satoken,
+                }
+            })
+            const data = await response.json()
+            return data
+        } catch (error) {
+            return console.log(Error)
+        }
+    },
+    async GetGroupExpenditure (satoken, groupName) {
+        try {
+            const response = await fetch(`${BASE_URL}/expenditure/view/getAllExpenditureInfoInOneGroup?groupName=${groupName}`, {
+                method: "GET",
+                credentials: "include",
+                headers: {
+                    'satoken': satoken,
+                }
+            })
+            const data = await response.json()
+            console.log("getFeedBackByAppId")
+            console.log(data)
+            return data
+        } catch (error) {
             return console.log(Error)
         }
     }

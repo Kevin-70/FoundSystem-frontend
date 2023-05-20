@@ -9,6 +9,7 @@ import notfound from "../pages/notfound.vue"
 import verify from "../pages/verify.vue"
 import expenditureShow from "../components/ExpenditureShow.vue"
 import expenditure from "../pages/staff/expenditures.vue"
+import group_page from "../pages/group_page.vue"
 // import store from '@/store/index'
 import api from '../utils/api'
 import { inject } from 'vue'
@@ -23,6 +24,7 @@ const routes = [
     { path: "/login/register", component: register },
     { path: "/login/verify/:email/:identity", component: verify },
     { path: "/notfound", component: notfound },
+    { path: '/group/:groupName', component: group_page },
     { path: "/expenditure/", component: expenditure },
     { path: "/expenditureShow/:expenditureNumber", component: expenditureShow }
 
@@ -33,7 +35,7 @@ const router = createRouter({
     routes
 })
 
-router.beforeEach(async(to, from, next) => {
+router.beforeEach(async (to, from, next) => {
     console.log(to.name)
     console.log(from.name)
     if (to.matched.length === 0) {
