@@ -10,11 +10,10 @@ import { Check, Close } from '@element-plus/icons-vue'
       </div>
     </template>
     <el-table :data="this.msgs" style="width: 100%">
-      <el-table-column prop="groupAppId" label="groupAppId" width="180" />
+      <el-table-column prop="groupName" label="groupName" width="180" />
       <el-table-column prop="applyTime" label="applyTime" width="180" />
       <el-table-column prop="comment" label="comment" width="180" />
-      <el-table-column prop="groupName" label="groupName" width="180" />
-      <el-table-column prop="groupId" label="groupId" width="180" />
+      <el-table-column prop="applicant.name" label="applicant" width="180" />
       <el-table-column prop="status" label="status" width="180" />
       <el-table-column fixed="right" label="Operations" width="120">
         <template #default="scope">
