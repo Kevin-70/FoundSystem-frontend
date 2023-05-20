@@ -14,46 +14,50 @@ const $cookies = inject('$cookies');
     <el-container>
       <el-header>
         <el-menu
-          :default-active="activeIndex"
           class="el-menu-demo"
           mode="horizontal"
           @select="handleSelect">
           <el-menu-item index="1">Homepage</el-menu-item>
         </el-menu>
       </el-header>
-    <el-button @click="handleNewExpend">
-            Apply for a expenditure
+    <el-button @click="handleNewExpend" type="primary">
+            Apply for a new expenditure
+    </el-button>
+    <el-button @click="handleReadTable">
+            Read applications from a table
     </el-button>
         <!-- All expenditures in on table with button "check its application"-->
         <el-table :data="tableData" style="width: 100%">
     <el-table-column prop="expenditureName" label="基金名称" width="120" />
     <el-table-column prop="expenditureNumber" label="基金编号" width="120" />
     <el-table-column prop="groupName" label="所属课题组" width="200" />
-    <el-table-column prop="begintime" label="开始时间" width="120" />
+    <el-table-column prop="startTime" label="开始时间" width="120" />
     <el-table-column prop="endTime" label="结束时间" width="120" />
-    <el-table-column prop="totalAmount" label="全部金额" width="600"/>
-    <el-table-column prop="remainingAmount" label="剩余金额" width="600"/>
-    <el-table-column fixed="right" label="Operations" width="120">
-      <template #default>
-        <el-button link type="primary" size="small" @click="CreateNewApplication">Create an application</el-button>
+    <el-table-column prop="totalAmount" label="全部金额" width="120"/>
+    <el-table-column prop="remainingAmount" label="剩余金额" width="120"/>
+    <el-table-column prop="quota" label="限额" width="120"/>
+    <el-table-column prop="status" label="审核状态" width="120"/>
+    <el-table-column fixed="right" label="Operations" width="200">
+      <template #default="scope" >
+        <el-button link type="primary" size="small" @click="CreateNewApplication(scope.row)">Create an application</el-button>
+        <el-button link type="primary" size="small" @click="CheckApplication(scope.row)">Check its info</el-button>
       </template>
     </el-table-column>
   </el-table>
     </el-container>
   <el-dialog
     v-model="centerDialogVisible"
-    title="Warning"
+    title="Apply for a Expenditure"
     width="30%"
     align-center>
-    <span>Apply for a Expenditure</span>
-    <el-form :model="form" label-width="120px">
-    <el-form-item label="Expenditure name">
+    <el-form :model="form" label-width="200px">
+    <el-form-item label="Expenditure Name">
       <el-input v-model="form.expenditurename" />
     </el-form-item>
     <el-form-item label="Expenditure Number">
       <el-input v-model="form.expenditurenumber" />
     </el-form-item>
-    <el-form-item label="Activity zone">
+    <el-form-item label="Group name">
       <el-select v-model="form.groupName" placeholder="Group name">
         <el-option
         v-for="(item) in options"
@@ -117,11 +121,81 @@ const $cookies = inject('$cookies');
       </span>
     </template>
   </el-dialog>
+  <el-dialog
+    v-model="appDialogVisible"
+    title="Apply for a application"
+    width="30%"
+    align-center>
+    <el-form :model="form2" label-width="120px">
+    <el-form-item label="基金编号">
+      <el-input v-model="form2.expenditureNumber" placeholder="Expenditure Number"  />
+    </el-form-item>
+
+    <el-form-item label="申请摘要">
+      <el-input v-model="form2.abstrac" placeholder="abstract"/>        
+    </el-form-item>
+    <el-form-item label="使用金额类别">
+        <el-select v-model="form2.cate" placeholder="types of funds">
+        <el-option
+        v-for="(item) in categories"
+        :key="item"
+        :label="item"
+        :value="item">
+      </el-option>
+      </el-select> 
+    </el-form-item>
+    <el-form-item label="申请金额">
+      <el-input v-model="form2.applyAmount" type="number" />
+    </el-form-item>
+    <el-form-item label="申请详细说明">
+      <el-input v-model="form2.comment" type="textarea"  />
+    </el-form-item>
+  </el-form>
+    <template #footer>
+      <span class="dialog-footer">
+        <el-button @click="appDialogVisible = false">Cancel</el-button>
+        <el-button type="primary" @click="submitApplication">
+          Submit Application apply
+        </el-button>
+      </span>
+    </template>
+  </el-dialog>
+
+  <el-dialog
+    v-model="readDialogVisible"
+    title="Read applications from a table file"
+    width="30%"
+    align-center>
+    <el-upload
+  class="upload-demo"
+  :auto-upload="false"
+  :action="actionUrl"
+  :on-remove="handleRemove"
+  :on-preview="handlePreview"
+  :on-change="(file,fileList)=>handleChange(file,fileList)"
+  :limit="1"
+  :on-exceed="handleExceed"
+  accept=".xlsx"
+  :file-list="fileList">
+  <el-button size="small" type="primary">点击上传</el-button>
+  <div slot="tip" class="el-upload__tip">只能上传一个.xlsx文件,且不超过500kb</div>
+</el-upload>
+    <template #footer>
+      <span class="dialog-footer">
+        <el-button @click="readDialogVisible = false">Cancel</el-button>
+        <el-button type="primary" @click="submitApplicationTable">
+          Submit Applications 
+        </el-button>
+      </span>
+    </template>
+  </el-dialog>
     </div>
 
 </template>
 
 <script>
+import { toRaw } from 'vue'
+const BASE_URL = 'http://43.139.159.107:8080'
 export default {
     data() {
         return {
@@ -133,9 +207,11 @@ export default {
     endTime: '2016-05-09',
     totalAmount: 100000.0,
     remainingAmount: 98900.0,
+    status:"Unread",
     tag: '审核中',
     },],
     options: [],
+    categories:["1","2"],
     centerDialogVisible:false,
     form :{
     expenditurename:"",
@@ -144,12 +220,22 @@ export default {
     endTime1:"",endTime2:"",
     groupName:"",
     totalamount:""
-},
-
-    }
+    },  
+    appDialogVisible:false,
+    form2 :{
+    abstrac:"",
+    applyAmount:"", 
+    cate:"", 
+    comment:"", 
+    expenditureNumber:""
+},  readDialogVisible:false,
+fileList:[],
+// actionUrl: "https://jsonplaceholder.typicode.com/posts/", //上传文件url https://jsonplaceholder.typicode.com/posts/
+actionUrl: BASE_URL+"/application/file/uploadCsvFileToApply", //上传文件url
+}
 },methods:{
    handleNewExpend(){
-        api.GetAllGroups(this.$cookies.get('satoken')).then((res) => {
+        api.getOneUserGroups(this.$cookies.get('satoken')).then((res) => {
         if (res.code === 500) {
           ElMessage.error(res.msg)
         } else if (res.code === 200) {
@@ -160,53 +246,122 @@ export default {
     },
     submitExpend() {
     try {
-    const response = api.submitExpend(
-        this.form.beginTime1.toString()+this.form.beginTime2.toString(),
-        this.form.endTime1.toString()+this.form.endTime2.toString(),
+        let time1=this.form.beginTime1.toLocaleString().split(" ")[0].replaceAll("/","-")+" "+this.form.beginTime2.toLocaleString().split(" ")[1];
+        let time2=this.form.endTime1.toLocaleString().split(" ")[0].replaceAll("/","-")+" "+this.form.endTime2.toLocaleString().split(" ")[1];
+        const response = api.submitExpend(
+        time1,
+        time2,
         this.form.expenditurename,
         this.form.expenditurenumber,
         this.form.totalamount,
         this.form.groupName,
         $cookies.get('satoken')
     )
-    if (response.code === 200) {
+    response.then((res)=>{
+        if (res.code === 200) {
         this.centerDialogVisible=false
-        
+        ElMessage.success("发起申请成功");
     } else {
         console.log('error')
-        console.log(response);
-    }
+        console.log(res);
+    }})
     } catch (error) {
     console.error(error)
     }
-},handleSelect(){},
-CreateNewApplication(){
-
-}
-},
-onMounted(){//get all the expenditures
+},submitApplication() {
     try {
-    const response =  api.getAllExpend(
-        form.beginTime1.toString.toString()+form.beginTime2.toString(),
-        form.endTime1.toString()+form.endTime2.toString(),
-        form.expenditurename,
-        form.expenditurenumber,
-        form.totalamount,
-        form.groupName,
+    const response = api.submitApplication(
+        this.form2.abstrac, this.form2.applyAmount, this.form2.cate,this.form2.comment,this.form2.expenditureNumber,
         $cookies.get('satoken')
     )
-    if (response.code === 200) {
-        this.centerDialogVisible=false
+    response.then((res)=>{
+        if (res.code === 200) {
+        this.appDialogVisible=false;
         ElMessage.success("申请完成");
-    } else {
-        ElMessage.error("申请基金失败，请更改信息后重试");
-        console.log('error')
-    }
+        } else {
+        ElMessage.error("申请发起失败，请更改信息后重试");
+        console.log(res);
+        }
+    })
     } catch (error) {
     console.error(error)
+    }
+},
+handleSelect(){
+    const response =  api.getMyEmail(
+        $cookies.get('satoken')
+    )
+    response.then((res)=>{
+    if (res.code === 200) {
+        this.$router.push("/staff/"+res.data);
+    } else {
+        ElMessage.error("身份过期返回主页失败")
+        console.log(res)
+    }})
+    this.$router.push("/staff/"+email);
+},
+handleReadTable(){this.readDialogVisible=true;},
+    handleRemove(file, fileList) {
+        console.log(file, fileList);
+      },
+      handlePreview(file) {
+        console.log(file);
+      },
+      handleExceed(files, fileList) {
+        ElMessage.warning(`当前限制选择 1 个文件，本次选择了 ${files.length} 个文件，共选择了 ${files.length + fileList.length} 个文件`);
+      },
+      handleRemove(file, fileList) {this.fileList = fileList;},
+      handleChange(file,fileList) { 
+        this.fileList=fileList
+        // console.log(this.fileList)
+    },
+submitApplicationTable(){
+    let formData=new FormData(); 
+    // let file=this.fileList[0]
+    // let reader= new FileReader();
+    // reader.readAsBinaryString(file.raw)
+    // reader.onload=function(e){
+    //     console.log(this.result)//图片的base64数据
+    // };reader.onload();
+    console.log(this.fileList[0].raw)
+    // this.fileList.forEach((val,index)=>{
+    //     console.log(val.raw)
+    //     formData.append("uploadFile",val.raw)})
+    formData.append("uploadFile", this.fileList[0].raw)
+    console.log(formData.get("uploadFile"));
+    //     formData.append("test", 'value');console.log(formData.get("test"));
+    console.log(formData)
+    const response = api.uploadFile(formData,$cookies.get('satoken'))
+    response.then((res)=>{
+        if(res.code==200){
+            ElMessage.success("上传识别成功!")
+        }else{
+            console.log(res)
+            ElMessage.warning("上传失败。");
+        }
+    })
+    
+},
+ CreateNewApplication(row){
+    this.form2.expenditureNumber=row.expenditureNumber
+    this.appDialogVisible=true;
+},
+CheckApplication(row){
+    this.$router.push("/expenditureShow/"+row.expenditureNumber)
 }
-
-
+},
+mounted(){//get all the expenditures
+    const response =  api.getAllExpend(
+        $cookies.get('satoken')
+    )
+    response.then((res)=>{
+    if (res.code === 200) {
+        this.tableData=res.data;
+    } else {
+        ElMessage("加载基金信息失败")
+        console.log(res)
+    }
+})
 }
 }
 

@@ -21,8 +21,8 @@ const $cookies = inject('$cookies');
           <el-menu-item index="1">Homepage</el-menu-item>
         </el-menu>
       </el-header>
-    <el-button @click="handleNewExpend">
-            Apply for a expenditure
+    <el-button @click="handleNewApplication">
+            Apply for a Application
     </el-button>
         <!-- All expenditures in on table with button "check its application"-->
         <el-table :data="tableData" style="width: 100%">
@@ -35,7 +35,7 @@ const $cookies = inject('$cookies');
     <el-table-column prop="remainingAmount" label="剩余金额" width="600"/>
     <el-table-column fixed="right" label="Operations" width="120">
       <template #default>
-        <el-button link type="primary" size="small" @click="CreateNewApplication">Create an application</el-button>
+        <el-button link type="primary" size="small" @click="WidthdrawApplication">Withdraw this application</el-button>
       </template>
     </el-table-column>
   </el-table>
@@ -45,74 +45,39 @@ const $cookies = inject('$cookies');
     title="Warning"
     width="30%"
     align-center>
-    <span>Apply for a Expenditure</span>
+    <span>Apply for a application</span>
     <el-form :model="form" label-width="120px">
-    <el-form-item label="Expenditure name">
-      <el-input v-model="form.expenditurename" />
+    
+    <el-form-item label="基金编号">
+      <el-input v-model="form2.expenditureNumber" placeholder="Expenditure Number" />
     </el-form-item>
-    <el-form-item label="Expenditure Number">
-      <el-input v-model="form.expenditurenumber" />
+
+    <el-form-item label="申请名称">
+      <el-input v-model="form2.abstrac" placeholder="abstract"/>        
     </el-form-item>
-    <el-form-item label="Activity zone">
-      <el-select v-model="form.groupName" placeholder="Group name">
+    <el-form-item label="类别">
+        <el-select v-model="form2.cate" placeholder="Group name">
         <el-option
-        v-for="(item) in options"
+        v-for="(item) in categories"
         :key="item.groupName"
         :label="item.groupName"
         :value="item.groupName"
         >
       </el-option>
-      </el-select>
+      </el-select> 
     </el-form-item>
-    <el-form-item label="Expected Start time">
-      <el-col :span="11">
-        <el-date-picker
-          v-model="form.beginTime1"
-          type="date"
-          placeholder="Start date"
-          style="width: 100%"
-        />
-      </el-col>
-      <el-col :span="2" class="text-center">
-        <span class="text-gray-500">-</span>
-      </el-col>
-      <el-col :span="11">
-        <el-time-picker
-          v-model="form.beginTime2"
-          placeholder="End date"
-          style="width: 100%"
-        />
-      </el-col>
+    <el-form-item label="申请金额">
+      <el-input v-model="form2.applyAmount" type="number" />
     </el-form-item>
-    <el-form-item label="Expected end time">
-      <el-col :span="11">
-        <el-date-picker
-          v-model="form.endTime1"
-          type="date"
-          placeholder="Start date"
-          style="width: 100%"
-        />
-      </el-col>
-      <el-col :span="2" class="text-center">
-        <span class="text-gray-500">-</span>
-      </el-col>
-      <el-col :span="11">
-        <el-time-picker
-          v-model="form.endTime2"
-          placeholder="End date"
-          style="width: 100%"
-        />
-      </el-col>
-    </el-form-item>
-    <el-form-item label="Total Amount">
-      <el-input v-model="form.totalamount" type="number" />
+    <el-form-item label="详细说明">
+      <el-input v-model="form2.comment" type="number" />
     </el-form-item>
   </el-form>
     <template #footer>
       <span class="dialog-footer">
         <el-button @click="centerDialogVisible = false">Cancel</el-button>
-        <el-button type="primary" @click="submitExpend">
-          Submit Expenditure apply
+        <el-button type="primary" @click="submitApplication">
+          Submit Application apply
         </el-button>
       </span>
     </template>
@@ -136,6 +101,7 @@ export default {
     tag: '审核中',
     },],
     options: [],
+    categories:["打印份","人工费"],
     centerDialogVisible:false,
     form :{
     expenditurename:"",
@@ -145,10 +111,17 @@ export default {
     groupName:"",
     totalamount:""
 },
+form2 :{
+    abstrac,
+    applyAmount, 
+    cate, 
+    comment, 
+    expenditureNumber
+},
 
     }
 },methods:{
-   handleNewExpend(){
+   handleNewApplication(){
         api.GetAllGroups(this.$cookies.get('satoken')).then((res) => {
         if (res.code === 500) {
           ElMessage.error(res.msg)
@@ -158,15 +131,10 @@ export default {
       })
         this.centerDialogVisible = true;
     },
-    submitExpend() {
+    submitApplication() {
     try {
-    const response = api.submitExpend(
-        this.form.beginTime1.toString()+this.form.beginTime2.toString(),
-        this.form.endTime1.toString()+this.form.endTime2.toString(),
-        this.form.expenditurename,
-        this.form.expenditurenumber,
-        this.form.totalamount,
-        this.form.groupName,
+    const response = api.submitApplication(
+        form2.abstrac, form2.applyAmount, this.form2.cate,form2.comment,form2.expenditureNumber,
         $cookies.get('satoken')
     )
     if (response.code === 200) {
@@ -179,20 +147,16 @@ export default {
     } catch (error) {
     console.error(error)
     }
-},handleSelect(){},
-CreateNewApplication(){
+},handleSelect(){
 
+},
+WidthdrawApplication(){
+    this.centerDialogVisible=true;
 }
 },
-onMounted(){//get all the expenditures
+mounted(){//get all the expenditures
     try {
     const response =  api.getAllExpend(
-        form.beginTime1.toString.toString()+form.beginTime2.toString(),
-        form.endTime1.toString()+form.endTime2.toString(),
-        form.expenditurename,
-        form.expenditurenumber,
-        form.totalamount,
-        form.groupName,
         $cookies.get('satoken')
     )
     if (response.code === 200) {

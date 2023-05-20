@@ -7,13 +7,56 @@
 
 <script>
 import * as echarts from "echarts";
-import {onMounted, onUnmounted} from "vue";
+import {onMounted, onUnmounted, defineComponent, watch, ref, defineProps} from "vue";
 
 export default {
-  name: "App",
-  props: ["width", "height", "x_data", "y_data"],
-  setup() {
+  name: "BarGraph",
+  // props: ["width", "height"],
+  props: {
+    width: {
+      type: String,
+      default: "600px"
+    },
+    height: {
+      type: String,
+      default: "400px"
+    },
+    x_data: {
+      type: Array,
+      default: []
+    },
+    y_data: {
+      type: Array,
+      default: []
+    }
+  },
+  
+  setup(props) {
     let myEcharts = echarts;
+    
+    // watch(
+    //     () => props.x_data,
+    //     (val) => {
+    //       props.x_data = val;
+    //     }
+    // );
+
+    // watch(
+    //     () => props.y_data,
+    //     (val) => {
+    //       props.y_data = val;
+    //     }
+    // );
+
+    // console.log(props.width)
+    // console.log(props.x_data)
+
+    // watch(
+    //     () => props.y_data,
+    //     (val) => {
+    //       y_data = val;
+    //     }
+    // );
 
     onMounted(() => {
       initChart();
@@ -32,7 +75,8 @@ export default {
         },
         xAxis: {
           type: "category",
-          data: this.x_data
+          data: props.x_data,
+          
         },
         tooltip: {
           trigger: "axis"
@@ -42,10 +86,9 @@ export default {
         },
         series: [
           {
-            // data: [
-            //     10,20
-            // ],
-            data: this.y_data,
+
+            data: props.y_data,
+            // data: this.y_data,
             type: "line",
             smooth: true,
             itemStyle: {
@@ -66,7 +109,8 @@ export default {
     }
 
     return {
-      initChart
+      initChart,
+      //  x_data, y_data
     };
   }
 };
