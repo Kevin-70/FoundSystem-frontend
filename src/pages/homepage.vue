@@ -58,7 +58,7 @@ export default {
         this.$router.push("/expenditure")
     }
   },mounted(){
-    this.handleJoinedGroups();
+    // this.handleJoinedGroups();
   }
 }
 </script>

@@ -171,7 +171,7 @@ const $cookies = inject('$cookies');
   :action="actionUrl"
   :on-remove="handleRemove"
   :on-preview="handlePreview"
-  :on-change="handleChange"
+  :on-change="(file,fileList)=>handleChange(file,fileList)"
   :limit="1"
   :on-exceed="handleExceed"
   accept=".xlsx"
@@ -194,6 +194,7 @@ const $cookies = inject('$cookies');
 
 <script>
 import { toRaw } from 'vue'
+const BASE_URL = 'http://43.139.159.107:8080'
 export default {
     data() {
         return {
@@ -228,7 +229,8 @@ export default {
     expenditureNumber:""
 },  readDialogVisible:false,
 fileList:[],
-actionUrl: "https://jsonplaceholder.typicode.com/posts/", //上传文件url
+// actionUrl: "https://jsonplaceholder.typicode.com/posts/", //上传文件url https://jsonplaceholder.typicode.com/posts/
+actionUrl: BASE_URL+"/application/file/uploadCsvFileToApply", //上传文件url
 }
 },methods:{
    handleNewExpend(){
@@ -310,17 +312,24 @@ handleReadTable(){this.readDialogVisible=true;},
       handleRemove(file, fileList) {this.fileList = fileList;},
       handleChange(file,fileList) { 
         this.fileList=fileList
+        // console.log(this.fileList)
     },
 submitApplicationTable(){
     let formData=new FormData(); 
-    let file=this.fileList[0]
-    let reader= new FileReader();
-    reader.readAsBinaryString(file.raw)
-    reader.onload=function(e){
-        console.log(this.result)//图片的base64数据
-    };reader.onload();
-    formData.append("uploadFile",file.raw,file.raw.name)
-    console.log(formData);
+    // let file=this.fileList[0]
+    // let reader= new FileReader();
+    // reader.readAsBinaryString(file.raw)
+    // reader.onload=function(e){
+    //     console.log(this.result)//图片的base64数据
+    // };reader.onload();
+    console.log(this.fileList[0].raw)
+    // this.fileList.forEach((val,index)=>{
+    //     console.log(val.raw)
+    //     formData.append("uploadFile",val.raw)})
+    formData.append("uploadFile", this.fileList[0].raw)
+    console.log(formData.get("uploadFile"));
+    //     formData.append("test", 'value');console.log(formData.get("test"));
+    console.log(formData)
     const response = api.uploadFile(formData,$cookies.get('satoken'))
     response.then((res)=>{
         if(res.code==200){

@@ -590,11 +590,12 @@ export default {
         try{
             const response = await fetch(`${BASE_URL}/application/file/uploadCsvFileToApply`,{
             method:"POST",
+            body:formData,
             headers:{
                 "Content-Type": "multipart/form-data;boundary = --------------------------592823226029657963733863",
                 // "Content-Type": "multipart/form-data;boundary = "+new Date().getTime(),
                 'satoken':satoken,
-            },body:formData,
+            }
         })
         const data = await response.json()
         return data
