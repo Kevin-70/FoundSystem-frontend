@@ -16,6 +16,10 @@
           :label="group.groupName"
           :value="group.groupName"></el-option>
       </el-select>
+      <el-input
+        v-model="this.comment"
+        style="width: 200px"
+        placeholder="comment here"></el-input>
       <el-button @click="this.handleJoin">Apply</el-button>
       <el-button @click="this.handleGroupApp">Test</el-button>
       <el-table
@@ -39,6 +43,7 @@ export default {
   },
   data() {
     return {
+      comment: '',
       loading: false,
       myGroupApps: [],
       group2join: [],
@@ -90,7 +95,7 @@ export default {
       }
       this.group2join.forEach(async (groupName) => {
         await api
-          .StaffJoinGroup('test', groupName, this.$cookies.get('satoken'))
+          .StaffJoinGroup(this.comment, groupName, this.$cookies.get('satoken'))
           .then((res) => {
             if (res.code === 500) {
               ElMessage.error('apply for ' + groupName + ' error : ' + res.msg)
@@ -102,6 +107,7 @@ export default {
           })
       })
       this.group2join = []
+      this.comment = ''
       this.loading = true
       await new Promise((resolve) => setTimeout(resolve, 1000))
       this.handleGroupApp()

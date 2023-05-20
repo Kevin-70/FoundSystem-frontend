@@ -54,16 +54,17 @@ export default {
         } else if (res.code === 200) {
           ElMessage.success('退出登录成功')
           this.$cookies.remove('satoken')
-          this.$router.push('/login')
         }
       })
+      this.$router.push('/login')
     },
-    handleCheckExpenditure(){
-        this.$router.push("/expenditure")
-    }
-  },mounted(){
+    handleCheckExpenditure() {
+      this.$router.push('/expenditure')
+    },
+  },
+  mounted() {
     // this.handleJoinedGroups();
-  }
+  },
 }
 </script>
 
