@@ -39,8 +39,8 @@ const $cookies = inject('$cookies');
     <el-table-column prop="status" label="审核状态" width="120"/>
     <el-table-column fixed="right" label="Operations" width="200">
       <template #default="scope" >
-        <el-button link type="primary" size="small" @click="CreateNewApplication(scope.row)">Create an application</el-button>
-        <el-button link type="primary" size="small" @click="CheckApplication(scope.row)">Check its info</el-button>
+        <el-button color="yellow"  type="primary" size="small" @click="CreateNewApplication(scope.row)">Create an application</el-button>
+        <el-button  plain size="small" @click="CheckApplication(scope.row)">Check its info</el-button>
       </template>
     </el-table-column>
   </el-table>
@@ -134,25 +134,11 @@ const $cookies = inject('$cookies');
     <el-form-item label="申请摘要">
       <el-input v-model="form2.abstrac" placeholder="abstract"/>        
     </el-form-item>
-    <el-form-item label="使用金额大类">
-        <el-select v-model="form2.cate1" placeholder="types of funds 1">
-        <el-option
-        v-for="(item) in categories1"
-        :key="item"
-        :label="item"
-        :value="item">
-      </el-option>
-      </el-select> 
-    </el-form-item>
-    <el-form-item label="使用金额小类">
-        <el-select v-model="form2.cate2" placeholder="types of funds 2">
-        <el-option
-        v-for="(item) in categories2"
-        :key="item"
-        :label="item"
-        :value="item">
-      </el-option>
-      </el-select> 
+    <el-form-item label="使用金额类别">
+        <el-cascader
+    v-model="form2.cate"
+    :options="categories"
+    @change="handleCate"></el-cascader>
     </el-form-item>
     <el-form-item label="申请金额">
       <el-input v-model="form2.applyAmount" type="number" />
@@ -221,8 +207,33 @@ export default {
     tag: '审核中',
     },],
     options: [],
-    categories1 :["书本费","物料费"],
-    categories2 :["A",'B'],
+    categories:[{
+          value: 'zhinan',
+          label: '指南',
+          children: [{
+            value: 'shejiyuanze',
+            label: '设计原则'
+          }, {
+            value: 'daohang',
+            label: '导航1'
+          },{
+            value: 'daohang',
+            label: '导航2'
+          }]
+        }, {
+          value: 'ziyuan',
+          label: '资源',
+          children: [{
+            value: 'axure',
+            label: 'Axure Components'
+          }, {
+            value: 'sketch',
+            label: 'Sketch Templates'
+          }, {
+            value: 'jiaohu',
+            label: '组件交互文档'
+          }]
+        }],
     centerDialogVisible:false,
     form :{
     expenditurename:"",
@@ -236,8 +247,7 @@ export default {
     form2 :{
     abstrac:"",
     applyAmount:"", 
-    cate1:"", 
-    cate2:"", 
+    cate:"一级类别/二级类别",
     comment:"", 
     expenditureNumber:""
 },  readDialogVisible:false,
@@ -282,8 +292,11 @@ actionUrl: "https://jsonplaceholder.typicode.com/posts/", //上传文件url http
     }
 },submitApplication() {
     try {
+        let cate1=toRaw(this.form2.cate)[0];
+        let cate2=toRaw(this.form2.cate)[0];
+        // console.log(cate1,cate2);
     const response = api.submitApplication(
-        this.form2.abstrac, this.form2.applyAmount, this.form2.cate1,this.form2.cate2
+        this.form2.abstrac, this.form2.applyAmount, cate1,cate2
         ,this.form2.comment,this.form2.expenditureNumber,
         $cookies.get('satoken')
     )
@@ -292,13 +305,16 @@ actionUrl: "https://jsonplaceholder.typicode.com/posts/", //上传文件url http
         this.appDialogVisible=false;
         ElMessage.success("申请完成");
         } else {
-        ElMessage.error("申请发起失败，请更改信息后重试");
+        // ElMessage.error("申请发起失败，请更改信息后重试");
+        ElMessage.error(res.msg);
         console.log(res);
         }
     })
     } catch (error) {
     console.error(error)
     }
+},handleCate(){
+    console.log(this.form2.cate)
 },
 handleSelect(){
     const response =  api.getMyEmail(
@@ -363,11 +379,15 @@ mounted(){//get all the expenditures
     response.then((res)=>{
     if (res.code === 200) {
         this.tableData=res.data;
+        let array = this.tableData;
+        for (let index = 0; index < array.length; index++) {
+            const element = array[index];
+            element.begintime=8;
+        }
         this.loading=false
     } else {
-        ElMessage("加载基金信息失败")
-        console.log(res)
-        
+        ElMessage.error("加载基金信息失败"+res.data)
+
     }
 })
 }
