@@ -8,4 +8,4 @@ export default {
         }
         return x_data, y_data;
     }
-}
+} 
