@@ -177,7 +177,7 @@ onMounted(async () => {
                 </template>
               </el-table-column>
               <el-table-column fixed="right" label="Operations" width="180">
-                <template slot-scope="scope">
+                <template #default="scope">
 		            <el-button v-if="scope.row.status=='Unread'" type="plain" @click="WithdrawApp(scope.row.appId)">取消申请</el-button>
 	            </template>
               </el-table-column>
