@@ -612,8 +612,8 @@ export default {
                 }
             })
             const data = await response.json()
-            console.log("getFeedBackByAppId")
-            console.log(data)
+            // console.log("getFeedBackByAppId")
+            // console.log(data)
             return data
         } catch (error) {
             return console.log(Error)

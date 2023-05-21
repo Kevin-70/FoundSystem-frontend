@@ -1,5 +1,6 @@
 <script setup>
 import group_show from './group/group_show.vue'
+import PieGraph from '../components/PieGraph.vue'
 </script>
 
 <template>
@@ -32,6 +33,9 @@ export default {
   data() {
     return {
       activeIndex: 1,
+      pieCatagory: [],
+      pieData: [],
+      pieShow: false,
     }
   },
   methods: {
