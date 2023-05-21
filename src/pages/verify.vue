@@ -104,7 +104,7 @@ export default {
         </div>
       </div>
     </el-main>
-    <el-footer style="color: #000">Powered By Vue @SE 2023</el-footer>
+    <el-footer>Powered By Vue @SE 2023</el-footer>
   </el-container>
 </template>
 

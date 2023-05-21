@@ -26,7 +26,7 @@ import profile from './staff/profile.vue'
         <fund_create v-if="this.activeIndex == 3" />
         <group_join v-if="this.activeIndex == 2" />
       </el-main>
-      <el-footer style="color: #000">Powered By Vue @SE 2023</el-footer>
+      <el-footer>Powered By Vue @SE 2023</el-footer>
       <el-backtop :right="100" :bottom="100" />
     </el-container>
   </div>
