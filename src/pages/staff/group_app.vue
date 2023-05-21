@@ -25,7 +25,6 @@
         style="width: 200px"
         placeholder="comment here"></el-input>
       <el-button @click="this.handleJoin">Apply</el-button>
-      <el-button @click="this.handleGroupApp">Test</el-button>
       <el-table
         :data="myGroupApps"
         style="width: 100%"
