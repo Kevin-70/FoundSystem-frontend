@@ -31,38 +31,37 @@ const dataState = reactive({
 })
 
 onMounted(async () => {
-  await api
-    // .GetUserInfo(route.params.email, $cookies.get('satoken'))
-    .GetOneExpenditureAllInfo(
-      $cookies.get('satoken'), 
-      route.params.expenditureNumber
-    )
-    .then((res) => {
-      if(res.code === 200){
-        info.expenditureName = res.data.expenditureName
-        info.expenditureNumber = res.data.expenditureNumber
-        info.groupName = res.data.groupName
-        info.totalAmount = res.data.totalAmount
-        info.remainingAmount = res.data.remainingAmount
-        info.startTime = res.data.startTime
-        info.endTime = res.data.endTime
-        info.quota = res.data.quota
-        info.applications = res.data.applications
-        // console.log(info.applications)
-        // console.log("update info")
-      }else{
-        console.error(res)
-        ElMessage.error(res.msg)
-      }
-    })
-    .catch((error) => {
-      console.log(error)
-    })
+      await api
+        .GetOneExpenditureAllInfo(
+          $cookies.get('satoken'), 
+          route.params.expenditureNumber
+        )
+        .then((res) => {
+          if(res.code === 200){
+            info.expenditureName = res.data.expenditureName
+            info.expenditureNumber = res.data.expenditureNumber
+            info.groupName = res.data.groupName
+            info.totalAmount = res.data.totalAmount
+            info.remainingAmount = res.data.remainingAmount
+            info.startTime = res.data.startTime
+            info.endTime = res.data.endTime
+            info.quota = res.data.quota
+            info.applications = res.data.applications
+            // console.log(info.applications)
+            // console.log("update info")
+          }else{
+            console.error(res)
+            ElMessage.error(res.msg)
+          }
+        })
+        .catch((error) => {
+          console.log(error)
+        })
 
-   info.y_data = graphHelper.applications2LineY(info.applications)
-   info.x_data = graphHelper.applications2LineX(info.applications)
+      info.y_data = graphHelper.applications2LineY(info.applications)
+      info.x_data = graphHelper.applications2LineX(info.applications)
 
-   dataState.ifDataUpdated = true
+      dataState.ifDataUpdated = true
 
 })
 </script>
@@ -125,9 +124,9 @@ onMounted(async () => {
               <PieGraph
                   v-if="dataState.ifDataUpdated && this.activeIndex === 'Base Info'"
                   :width="'900px'" :height="'600px'" 
-                  :dataName="['Remaining Amount', 'Total Amount']"
+                  :dataName="['Unused Amount', 'Used Amount']"
                   :name="'Expenditure usage'"
-                  :data="[info.remainingAmount, info.totalAmount]"
+                  :data="[info.remainingAmount, info.totalAmount-info.remainingAmount]"
               ></PieGraph>
             </el-col>
 
@@ -201,15 +200,10 @@ onMounted(async () => {
             <BarGraph 
             v-if="dataState.ifDataUpdated && this.activeIndex === 'Applications'"
             :width="'900px'" :height="'400px'" 
-            :x_data="info.x_data" :y_data="info.y_data" ></BarGraph>
+            :x_data="info.x_data" :y_data="info.y_data" >
+          </BarGraph>
 
-            <!-- <PieGraph
-                  v-if="dataState.ifDataUpdated && this.activeIndex === 'Base Info'"
-                  :width="'900px'" :height="'400px'" 
-                  :dataName="['Remaining Amount', 'Total Amount']"
-                  :name="'Catagory'"
-                  :data=""
-              ></PieGraph> -->
+            
         <!-- </el-col> -->
         <!-- </el-row> -->
           </div>
@@ -246,7 +240,6 @@ export default {
       feedBack: "",
       catagroryName: [],
       catagroryValue: [],
-      // applications: [],
     }
   },
   methods: {
@@ -270,8 +263,6 @@ export default {
         } else if (res.code === 200) {
           this.feedBack = res.data.comment
           this.dialogVisible = true 
-          // console.log(res.data)
-          // ElMessage.error(res.msg)
         }
       })
     },

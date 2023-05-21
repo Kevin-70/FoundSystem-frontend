@@ -1,10 +1,12 @@
-<script setup></script>
+<script setup>
+import graphHelper from '../../utils/graphHelper';
+</script>
 
 <template>
   <div>
     <el-card>
       <el-table :data="this.funds" style="width: 100%">
-        <el-table-column prop="groupName" label="groupName" width="180" />
+        <el-table-column prop="expenditureNumber" label="expenditureNumber" width="180" />
         <el-table-column
           prop="expenditureName"
           label="expenditureName"
@@ -20,17 +22,32 @@
       </el-table>
     </el-card>
   </div>
+
+  <div v-if="pieShow">
+      <PieGraph
+          v-if="this.pieShow"
+          :width="'900px'" :height="'600px'" 
+          :name="'expenditure proportion'"
+          :dataName="this.pieInfo.name"
+          :data="this.pieInfo.values"
+      ></PieGraph>
+    </div>
 </template>
 
 <script>
 import api from '../../utils/api'
 export default {
   async mounted() {
-    this.getGroupFund()
+    this.getGroupFund().then(() => {
+      this.updatePie()
+    })
+
   },
   data() {
     return {
       funds: [],
+      pieInfo: {catagory: [], values: []},
+      pieShow: false,
     }
   },
   methods: {
@@ -50,6 +67,12 @@ export default {
           }
         })
     },
+    async updatePie() {
+        this.pieInfo = graphHelper.getGroupExpendurePie(this.funds)
+        this.pieShow = true
+        // console.log("updatePie")
+        // console.log(this.pieInfo)
+    }
   },
 }
 </script>
