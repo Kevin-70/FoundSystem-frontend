@@ -5,7 +5,7 @@
     <el-card v-loading="this.loading">
       <el-descriptions border column="1">
         <template #title>
-          <h2 style="color: black">User Info</h2>
+          <h2>User Info</h2>
         </template>
         <template #extra>
           <el-button @click="handleUpdate" text>Update</el-button>

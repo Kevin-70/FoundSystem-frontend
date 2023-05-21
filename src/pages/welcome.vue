@@ -34,7 +34,7 @@ export default {
           </el-row>
         </el-space>
       </el-main>
-      <el-footer style="color: #000">Powered By Vue @SE 2023</el-footer>
+      <el-footer>Powered By Vue @SE 2023</el-footer>
       <el-backtop :right="100" :bottom="100" />
     </el-container>
   </div>
@@ -46,12 +46,6 @@ export default {
 }
 .el-row:last-child {
   margin-bottom: 0;
-}
-.el-container {
-  height: 100%;
-  width: 100%;
-  position: fixed;
-  background-image: linear-gradient(to right, #fbc2eb, #a6c1ee);
 }
 .welcome-main {
   align-self: center;

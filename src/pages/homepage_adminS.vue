@@ -30,7 +30,7 @@ import profile from './staff/profile.vue'
         <fund_create v-if="this.activeIndex == 3" />
         <fund_app v-if="this.activeIndex == 3" />
       </el-main>
-      <el-footer style="color: #000">Powered By Vue @SE 2023</el-footer>
+      <el-footer>Powered By Vue @SE 2023</el-footer>
       <el-backtop :right="100" :bottom="100" />
     </el-container>
   </div>
@@ -55,40 +55,10 @@ export default {
         } else if (res.code === 200) {
           ElMessage.success('退出登录成功')
           this.$cookies.remove('satoken')
-          this.$router.push('/login')
         }
       })
+      this.$router.push('/login')
     },
   },
 }
 </script>
-
-<style>
-.el-container {
-  height: 100%;
-  width: 100%;
-  position: fixed;
-  background-image: linear-gradient(to right, #fbc2eb, #a6c1ee);
-}
-.el-row {
-  margin-bottom: 20px;
-}
-.el-row:last-child {
-  margin-bottom: 0;
-}
-.card-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-.box-card {
-  width: 1580px;
-}
-
-.el-table .reject-row {
-  --el-table-tr-bg-color: var(--el-color-warning-light-9);
-}
-.el-table .success-row {
-  --el-table-tr-bg-color: var(--el-color-success-light-9);
-}
-</style>

@@ -6,19 +6,13 @@
           <el-text class="notfound-text" truncated> Not Found </el-text>
         </el-space>
       </el-main>
-      <el-footer style="color: #000">Powered By Vue @SE 2023</el-footer>
+      <el-footer>Powered By Vue @SE 2023</el-footer>
       <el-backtop :right="100" :bottom="100" />
     </el-container>
   </div>
 </template>
 
 <style>
-.el-container {
-  height: 100%;
-  width: 100%;
-  position: fixed;
-  background-image: linear-gradient(to right, #fbc2eb, #a6c1ee);
-}
 .notfound-main {
   align-self: center;
 }

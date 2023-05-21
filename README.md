@@ -29,6 +29,7 @@ npm run build
 ```
 
 ### install useful packages
+
 ```sh
 npm install element-plus
 npm install vuex@4.0.2
@@ -36,4 +37,6 @@ npm install vue-router@4.0.12
 npm install -D unplugin-vue-components unplugin-auto-import
 npm install vue-cookies -S
 npm install echarts --save
+npm i @vueuse/core
+npm install vuex
 ```

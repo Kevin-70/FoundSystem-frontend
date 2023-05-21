@@ -2,11 +2,15 @@
 import profile from './staff/profile.vue'
 import group_view from './staff/group_view.vue'
 import group_app from './staff/group_app.vue'
+import { SwitchButton } from '@element-plus/icons-vue'
+import { useDark, useToggle } from '@vueuse/core'
+const isDark = useDark(false)
+const toggleDark = useToggle(isDark)
 </script>
 
 <template>
-  <div class="common-layout">
-    <el-container>
+  <div>
+    <el-container :class="'dark'">
       <el-header>
         <el-menu
           :default-active="activeIndex"
@@ -18,9 +22,24 @@ import group_app from './staff/group_app.vue'
           <el-menu-item index="3" @click="handleCheckExpenditure"
             >View Expenditure</el-menu-item
           >
-          <el-menu-item index="4" @click="handleQuitLogin"
-            >Quit Login</el-menu-item
+          <el-button
+            index="4"
+            :icon="SwitchButton"
+            @click="handleQuitLogin"
+            style="display: flex; height: auto; margin-left: auto; border: none"
+            >Log out</el-button
           >
+          <el-switch
+            style="
+              display: flex;
+              height: auto;
+              margin-left: 20px;
+              margin-right: 20px;
+            "
+            v-model="isDark"
+            active-text="Dark"
+            inactive-text="Light"
+            @change="toggleDark"></el-switch>
         </el-menu>
       </el-header>
       <el-main>
@@ -28,8 +47,7 @@ import group_app from './staff/group_app.vue'
         <group_view v-if="this.activeIndex == 2" />
         <group_app v-if="this.activeIndex == 2" />
       </el-main>
-
-      <el-footer style="color: #000">Powered By Vue @SE 2023</el-footer>
+      <el-footer>Powered By Vue @SE 2023</el-footer>
       <el-backtop :right="100" :bottom="100" />
     </el-container>
   </div>
@@ -43,6 +61,9 @@ export default {
     }
   },
   methods: {
+    test(whatever) {
+      console.log(whatever)
+    },
     handleSelect(key) {
       this.activeIndex = key
     },
@@ -54,35 +75,15 @@ export default {
         } else if (res.code === 200) {
           ElMessage.success('退出登录成功')
           this.$cookies.remove('satoken')
-          this.$router.push('/login')
         }
       })
+      this.$router.push('/login')
     },
-    handleCheckExpenditure(){
-        this.$router.push("/expenditure")
-    }
-  },mounted(){
-    // this.handleJoinedGroups();
-  }
+    handleCheckExpenditure() {
+      this.$router.push('/expenditure')
+    },
+  },
 }
 </script>
 
-<style>
-.el-container {
-  height: 100%;
-  width: 100%;
-  position: fixed;
-  background-image: linear-gradient(to right, #fbc2eb, #a6c1ee);
-}
-.el-row {
-  margin-bottom: 20px;
-}
-.el-row:last-child {
-  margin-bottom: 0;
-}
-.card-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-</style>
+<style></style>

@@ -1,12 +1,12 @@
 <script setup>
 import { Check, Message } from '@element-plus/icons-vue'
-import {ElMessage} from 'element-plus/es';
+import { ElMessage } from 'element-plus/es'
 import { ref, reactive, onMounted, inject } from 'vue'
 import { useRoute } from 'vue-router'
 import api from '../utils/api'
 import graphHelper from '../utils/graphHelper'
-import BarGraph from "@/components/BarGraph.vue"
-import PieGraph from "@/components/PieGraph.vue"
+import BarGraph from '@/components/BarGraph.vue'
+import PieGraph from '@/components/PieGraph.vue'
 // import componentLazy from "@/components/componentLazy.vue"
 const route = useRoute()
 const $cookies = inject('$cookies')
@@ -28,39 +28,39 @@ const info = reactive({
   catagoryInfo: {name: [], values: []},
 })
 const dataState = reactive({
-  ifDataUpdated: false
+  ifDataUpdated: false,
 })
 
 onMounted(async () => {
-      await api
-        .GetOneExpenditureAllInfo(
-          $cookies.get('satoken'), 
-          route.params.expenditureNumber
-        )
-        .then((res) => {
-          if(res.code === 200){
-            info.expenditureName = res.data.expenditureName
-            info.expenditureNumber = res.data.expenditureNumber
-            info.groupName = res.data.groupName
-            info.totalAmount = res.data.totalAmount
-            info.remainingAmount = res.data.remainingAmount
-            info.startTime = res.data.startTime
-            info.endTime = res.data.endTime
-            info.quota = res.data.quota
-            info.applications = res.data.applications
-            // console.log(info.applications)
-            // console.log("update info")
-          }else{
-            console.error(res)
-            ElMessage.error(res.msg)
-          }
-        })
-        .catch((error) => {
-          console.log(error)
-        })
+  await api
+    .GetOneExpenditureAllInfo(
+      $cookies.get('satoken'),
+      route.params.expenditureNumber
+    )
+    .then((res) => {
+      if (res.code === 200) {
+        info.expenditureName = res.data.expenditureName
+        info.expenditureNumber = res.data.expenditureNumber
+        info.groupName = res.data.groupName
+        info.totalAmount = res.data.totalAmount
+        info.remainingAmount = res.data.remainingAmount
+        info.startTime = res.data.startTime
+        info.endTime = res.data.endTime
+        info.quota = res.data.quota
+        info.applications = res.data.applications
+        // console.log(info.applications)
+        // console.log("update info")
+      } else {
+        console.error(res)
+        ElMessage.error(res.msg)
+      }
+    })
+    .catch((error) => {
+      console.log(error)
+    })
 
-      info.y_data = graphHelper.applications2LineY(info.applications)
-      info.x_data = graphHelper.applications2LineX(info.applications)
+  info.y_data = graphHelper.applications2LineY(info.applications)
+  info.x_data = graphHelper.applications2LineX(info.applications)
 
       info.catagoryInfo = graphHelper.getCatagoryPie(info.applications)
       console.log(info.catagoryInfo.name)
@@ -71,7 +71,7 @@ onMounted(async () => {
 
 <template>
   <div class="common-layout">
-    <el-container> 
+    <el-container>
       <el-header>
         <el-menu
           :default-active="this.activeIndex"
@@ -82,19 +82,18 @@ onMounted(async () => {
           <el-menu-item index="Base Info">Base Info</el-menu-item>
           <el-menu-item index="Applications">Applications</el-menu-item>
         </el-menu>
-      </el-header> 
+      </el-header>
       <el-main>
         <div>
           <el-row>
             <el-col :span="12">
-              <el-row :gutter="15"
-              v-if="this.activeIndex === 'Base Info'">
+              <el-row :gutter="15" v-if="this.activeIndex === 'Base Info'">
                 <el-col :span="10" :push="1">
                   <el-descriptions border column="1">
                     <template #title>
                       <h2 style="color: white">Expenditure Info</h2>
                     </template>
-                    
+
                     <el-descriptions-item label="Expenditure Number">{{
                       info.expenditureNumber
                     }}</el-descriptions-item>
@@ -125,56 +124,42 @@ onMounted(async () => {
             </el-col>
             <el-col :span="12">
               <PieGraph
-                  v-if="dataState.ifDataUpdated && this.activeIndex === 'Base Info'"
-                  :width="'900px'" :height="'600px'" 
-                  :dataName="['Unused Amount', 'Used Amount']"
-                  :name="'Expenditure usage'"
-                  :data="[info.remainingAmount, info.totalAmount-info.remainingAmount]"
-              ></PieGraph>
+                v-if="
+                  dataState.ifDataUpdated && this.activeIndex === 'Base Info'
+                "
+                :width="'900px'"
+                :height="'600px'"
+                :dataName="['Remaining Amount', 'Unused Amount']"
+                :name="'Expenditure usage'"
+                :data="[info.remainingAmount, info.totalAmount-info.remainingAmount]"></PieGraph>
             </el-col>
-
           </el-row>
           <div>
             <el-table
               v-if="this.activeIndex === 'Applications'"
-              :data=info.applications
+              :data="info.applications"
               height="400"
               style="width: 100%">
-              <el-table-column
-                prop="userName"
-                label="User Name"
-                width="180">
+              <el-table-column prop="userName" label="User Name" width="180">
               </el-table-column>
               <el-table-column
                 prop="appAmount"
                 label="Apply Amount"
                 width="180">
               </el-table-column>
-                        
+
               <el-table-column
                 prop="expendCategory"
                 label=" Category"
                 width="180">
               </el-table-column>
-              <el-table-column
-                prop="appAbstract"
-                label="Abstract"
-                width="180">
+              <el-table-column prop="appAbstract" label="Abstract" width="180">
               </el-table-column>
-              <el-table-column
-                prop="comment"
-                label="comment"
-                width="180">
+              <el-table-column prop="comment" label="comment" width="180">
               </el-table-column>
-              <el-table-column
-                prop="status"
-                label="status"
-                width="180">
+              <el-table-column prop="status" label="status" width="180">
               </el-table-column>
-              <el-table-column
-                prop="type"
-                label="type"
-                width="180">
+              <el-table-column prop="type" label="type" width="180">
               </el-table-column>
               <el-table-column
                 prop="createdDate"
@@ -188,12 +173,14 @@ onMounted(async () => {
                     type="primary"
                     :icon="Message"
                     circle
-                    @click="
-                      this.handleFeedback(scope.row.appId)
-                    "/>
+                    @click="this.handleFeedback(scope.row.appId)" />
                 </template>
               </el-table-column>
-              
+              <el-table-column fixed="right" label="Operations" width="180">
+                <template slot-scope="scope">
+		            <el-button v-if="scope.row.status=='Unread'" type="plain" @click="WithdrawApp(scope.row.appId)">取消申请</el-button>
+	            </template>
+              </el-table-column>
             </el-table>
 
 
@@ -262,12 +249,11 @@ onMounted(async () => {
   </div>
 </template>
 
-
 <script>
 export default {
   data() {
     return {
-      activeIndex: "Base Info",
+      activeIndex: 'Base Info',
       dialogVisible: false,
       feedBack: "",
       
@@ -275,7 +261,7 @@ export default {
   },
   methods: {
     error(message) {
-        this.$message(message);
+      this.$message(message)
     },
     handleSelect(key) {
       this.activeIndex = key
@@ -301,7 +287,7 @@ export default {
     },
   },
   components: {
-    BarGraph
+    BarGraph,
   },
 }
 </script>
