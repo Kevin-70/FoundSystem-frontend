@@ -13,12 +13,6 @@
 </template>
 
 <style>
-.el-container {
-  height: 100%;
-  width: 100%;
-  position: fixed;
-  background-image: linear-gradient(to right, #fbc2eb, #a6c1ee);
-}
 .notfound-main {
   align-self: center;
 }

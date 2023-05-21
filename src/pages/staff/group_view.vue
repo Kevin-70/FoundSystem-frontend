@@ -3,15 +3,20 @@ import { View } from '@element-plus/icons-vue'
 </script>
 <template>
   <div>
-    <el-card>
+    <el-card v-loading="this.loading">
       <template #header>
         <div class="card-header">
-          <h2 style="color: black">My Groups</h2>
-          <el-button class="button" text @click="this.handleMyGroups"
+          <span>My Groups</span>
+          <el-button
+            class="button"
+            text
+            @click="this.handleMyGroups"
+            style="display: inline; margin-left: 0%"
             >Sync</el-button
           >
         </div>
       </template>
+
       <el-table :data="this.myGroups" style="width: 100%">
         <el-table-column prop="groupName" label="groupName" width="180" />
         <el-table-column prop="memberNames" label="memberNames" width="500" />
@@ -66,4 +71,3 @@ export default {
   },
 }
 </script>
-<style></style>

@@ -4,8 +4,12 @@
     <el-card v-loading="this.loading">
       <template #header>
         <div class="card-header">
-          <h2 style="color: black">Group Apps</h2>
-          <el-button class="button" text @click="this.handleGroupApp"
+          <span>My Groups</span>
+          <el-button
+            class="button"
+            text
+            @click="this.handleGroupApp"
+            style="display: inline; margin-left: 0%"
             >Sync</el-button
           >
         </div>
