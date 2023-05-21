@@ -174,6 +174,11 @@ onMounted(async () => {
                     @click="this.handleFeedback(scope.row.appId)" />
                 </template>
               </el-table-column>
+              <el-table-column fixed="right" label="Operations" width="180">
+                <template slot-scope="scope">
+		            <el-button v-if="scope.row.status=='Unread'" type="plain" @click="WithdrawApp(scope.row.appId)">取消申请</el-button>
+	            </template>
+              </el-table-column>
             </el-table>
 
             <!-- </el-col>
@@ -248,7 +253,17 @@ export default {
             // ElMessage.error(res.msg)
           }
         })
-    },
+    },async WithdrawApp(AppId){
+         console.log(AppId);
+        await api.WithdrawApplication(AppId,this.$cookies.get('satoken'))
+        .then((res)=>{
+            if(res.code==500){
+                ElMessage.error(res.msg);
+            }else if(res.code==200){
+                ElMessage.error("取消申请成功");
+            }
+        })
+    }
   },
   components: {
     BarGraph,

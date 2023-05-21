@@ -618,5 +618,22 @@ export default {
         } catch (error) {
             return console.log(Error)
         }
+    },
+    async WithdrawApplication(appId,satoken){
+        try{
+            const response = await fetch(`${BASE_URL}/application/edit/withdrawApplication`,{
+                method:"POST",
+                credentials:"include",
+                headers:{
+                    'satoken':satoken,
+                },body:JSON.stringify({
+                    "appId": appId,
+                })
+            })
+            const data = await response.json();
+            return data
+        }catch(error){
+            return console.log(error)
+        }
     }
 }

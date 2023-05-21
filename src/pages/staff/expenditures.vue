@@ -216,38 +216,38 @@ export default {
       options: [],
       categories: [
         {
-          value: 'zhinan',
-          label: '指南',
+          value: 'Office',
+          label: '工作',
           children: [
             {
-              value: 'shejiyuanze',
-              label: '设计原则',
+              value: 'Print',
+              label: '打印费',
             },
             {
-              value: 'daohang',
-              label: '导航1',
+              value: 'Workers',
+              label: '人工费',
             },
             {
-              value: 'daohang',
-              label: '导航2',
+              value: 'Book',
+              label: '书本费',
             },
           ],
         },
         {
-          value: 'ziyuan',
-          label: '资源',
+          value: 'Research',
+          label: '科研费',
           children: [
             {
-              value: 'axure',
-              label: 'Axure Components',
+              value: 'software',
+              label: '计算机软件费',
             },
             {
-              value: 'sketch',
-              label: 'Sketch Templates',
+              value: 'instrument',
+              label: '仪器设备',
             },
             {
-              value: 'jiaohu',
-              label: '组件交互文档',
+              value: 'lecture',
+              label: '讲座费',
             },
           ],
         },
@@ -329,7 +329,7 @@ export default {
     submitApplication() {
       try {
         let cate1 = toRaw(this.form2.cate)[0]
-        let cate2 = toRaw(this.form2.cate)[0]
+        let cate2 = toRaw(this.form2.cate)[1]
         // console.log(cate1,cate2);
         const response = api.submitApplication(
           this.form2.abstrac,
@@ -412,7 +412,7 @@ export default {
         let array = this.tableData
         for (let index = 0; index < array.length; index++) {
           const element = array[index]
-          element.begintime = 8
+        //   element.begintime = toLocaleString(element.begintime);
         }
         this.loading = false
       } else {
