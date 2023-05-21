@@ -32,7 +32,6 @@ const dataState = reactive({
 
 onMounted(async () => {
   await api
-    // .GetUserInfo(route.params.email, $cookies.get('satoken'))
     .GetOneExpenditureAllInfo(
       $cookies.get('satoken'),
       route.params.expenditureNumber
@@ -188,13 +187,6 @@ onMounted(async () => {
               :x_data="info.x_data"
               :y_data="info.y_data"></BarGraph>
 
-            <!-- <PieGraph
-                  v-if="dataState.ifDataUpdated && this.activeIndex === 'Base Info'"
-                  :width="'900px'" :height="'400px'" 
-                  :dataName="['Remaining Amount', 'Total Amount']"
-                  :name="'Catagory'"
-                  :data=""
-              ></PieGraph> -->
             <!-- </el-col> -->
             <!-- </el-row> -->
           </div>
@@ -229,7 +221,6 @@ export default {
       feedBack: '',
       catagroryName: [],
       catagroryValue: [],
-      // applications: [],
     }
   },
   methods: {

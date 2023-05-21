@@ -28,5 +28,27 @@ export default {
             catagory[i] = { name: catagory[i], value: values[i] };
         }
         return catagory;
+    },
+    getGroupExpendurePie(expenditure) {
+        let catagory = [];
+        let values = [];
+
+        for (let i = 0; i < expenditure.length; i++) {
+            if (catagory.indexOf(expenditure[i].expenditureNumber) === -1) {
+                catagory.push(expenditure[i].expenditureNumber);
+                values.push(expenditure[i].totalAmount);
+            } else {
+                values[catagory.indexOf(expenditure[i].expenditureNumber)] += applications[i].totalAmount;
+            }
+        }
+        let result = {name: [], values: []}
+        for (let i = 0; i < catagory.length; i++) {
+            result.name.push(catagory[i])
+            result.values.push(values[i])
+        }
+        // console.log('getGroupExpendurePie')
+        // console.log(result)
+        return result;
+
     }
-}
+} 

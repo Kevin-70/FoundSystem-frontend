@@ -540,9 +540,9 @@ export default {
             return console.error(error)
         }
     },
-    async submitApplication (abstrac, applyAmount, cate, comment, expenditureNumber, satoken) {
+    async submitApplication (abstrac, applyAmount, cate1,cate2, comment, expenditureNumber, satoken) {
         try {
-            const response = await fetch(`${BASE_URL}/application/edit/submitApplication?abstrac=${abstrac}&applyAmount=${applyAmount}&cate=${cate}&comment=${comment}&expenditureNumber=${expenditureNumber}`, {
+            const response = await fetch(`${BASE_URL}/application/edit/submitApplication?abstrac=${abstrac}&applyAmount=${applyAmount}&comment=${comment}&expenditureNumber=${expenditureNumber}&cate1=${cate1}&cate2=${cate2}&`, {
                 method: "POST",
                 credentials: "include",
                 headers: {
@@ -612,8 +612,8 @@ export default {
                 }
             })
             const data = await response.json()
-            console.log("getFeedBackByAppId")
-            console.log(data)
+            // console.log("getFeedBackByAppId")
+            // console.log(data)
             return data
         } catch (error) {
             return console.log(Error)
