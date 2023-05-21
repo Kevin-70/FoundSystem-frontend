@@ -45,8 +45,8 @@
             }
           )  
         }
-        console.log('pieData') 
-        console.log(pieData)    
+        // console.log('pieData') 
+        // console.log(pieData)    
 
   
       onMounted(() => {

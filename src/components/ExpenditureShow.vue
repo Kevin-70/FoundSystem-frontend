@@ -25,49 +25,46 @@ const info = reactive({
   createdDate: '',
   x_data: [],
   y_data: [],
-  catagroryName: [],
-  catagroryValue: [],
+  catagoryInfo: {name: [], values: []},
 })
 const dataState = reactive({
   ifDataUpdated: false
 })
 
 onMounted(async () => {
-  await api
-    // .GetUserInfo(route.params.email, $cookies.get('satoken'))
-    .GetOneExpenditureAllInfo(
-      $cookies.get('satoken'), 
-      route.params.expenditureNumber
-    )
-    .then((res) => {
-      if(res.code === 200){
-        info.expenditureName = res.data.expenditureName
-        info.expenditureNumber = res.data.expenditureNumber
-        info.groupName = res.data.groupName
-        info.totalAmount = res.data.totalAmount
-        info.remainingAmount = res.data.remainingAmount
-        info.startTime = res.data.startTime
-        info.endTime = res.data.endTime
-        info.quota = res.data.quota
-        info.applications = res.data.applications
-        // console.log(info.applications)
-        // console.log("update info")
-      }else{
-        console.error(res)
-        ElMessage.error(res.msg)
-      }
-    })
-    .catch((error) => {
-      console.log(error)
-    })
+      await api
+        .GetOneExpenditureAllInfo(
+          $cookies.get('satoken'), 
+          route.params.expenditureNumber
+        )
+        .then((res) => {
+          if(res.code === 200){
+            info.expenditureName = res.data.expenditureName
+            info.expenditureNumber = res.data.expenditureNumber
+            info.groupName = res.data.groupName
+            info.totalAmount = res.data.totalAmount
+            info.remainingAmount = res.data.remainingAmount
+            info.startTime = res.data.startTime
+            info.endTime = res.data.endTime
+            info.quota = res.data.quota
+            info.applications = res.data.applications
+            // console.log(info.applications)
+            // console.log("update info")
+          }else{
+            console.error(res)
+            ElMessage.error(res.msg)
+          }
+        })
+        .catch((error) => {
+          console.log(error)
+        })
 
-   info.y_data = graphHelper.applications2LineY(info.applications)
-   info.x_data = graphHelper.applications2LineX(info.applications)
-   catagroryInfo = graphHelper.getCatagoryPie(info.applications)
-   info.catagroryName  =  catagroryInfo.name
-   info.catagroryValue = catagroryInfo.value
+      info.y_data = graphHelper.applications2LineY(info.applications)
+      info.x_data = graphHelper.applications2LineX(info.applications)
 
-   dataState.ifDataUpdated = true
+      info.catagoryInfo = graphHelper.getCatagoryPie(info.applications)
+      console.log(info.catagoryInfo.name)
+      dataState.ifDataUpdated = true
 
 })
 </script>
@@ -130,16 +127,14 @@ onMounted(async () => {
               <PieGraph
                   v-if="dataState.ifDataUpdated && this.activeIndex === 'Base Info'"
                   :width="'900px'" :height="'600px'" 
-                  :dataName="['Remaining Amount', 'Total Amount']"
+                  :dataName="['Unused Amount', 'Used Amount']"
                   :name="'Expenditure usage'"
-                  :data="[info.remainingAmount, info.totalAmount]"
+                  :data="[info.remainingAmount, info.totalAmount-info.remainingAmount]"
               ></PieGraph>
             </el-col>
 
           </el-row>
           <div>
-            <!-- <el-row> -->
-              <!-- <el-col :span="12"> -->
             <el-table
               v-if="this.activeIndex === 'Applications'"
               :data=info.applications
@@ -201,24 +196,50 @@ onMounted(async () => {
               
             </el-table>
 
-          <!-- </el-col>
-          <el-col :span="12"> -->
-            <BarGraph 
-            v-if="dataState.ifDataUpdated && this.activeIndex === 'Applications'"
-            :width="'900px'" :height="'400px'" 
-            :x_data="info.x_data" :y_data="info.y_data" ></BarGraph>
 
+            <div class="container">
+              <div class="component">
+                <BarGraph 
+                  v-if="dataState.ifDataUpdated && this.activeIndex === 'Applications'"
+                  :name="'Application Trend'"
+                  :width="'900px'" :height="'400px'" 
+                  :x_data="info.x_data" 
+                  :y_data="info.y_data" >
+                </BarGraph>
+              </div>
+              <div class="component">
+                <PieGraph
+                    v-if="dataState.ifDataUpdated && this.activeIndex === 'Applications'"
+                    :width="'900px'" :height="'400px'" 
+                    :name="'catagory proportion'"
+                    :dataName="info.catagoryInfo.name"
+                    :data="info.catagoryInfo.values"
+                ></PieGraph>
+              </div>
+            </div>
+         <!-- <el-row>
+          <el-col :span="12">
+            <BarGraph 
+              v-if="dataState.ifDataUpdated && this.activeIndex === 'Applications'"
+              :name="'Application Trend'"
+              :width="'900px'" :height="'400px'" 
+              :x_data="info.x_data" 
+              :y_data="info.y_data" >
+            </BarGraph>
+          </el-col>
+          <el-col :span="12">
             <PieGraph
                 v-if="dataState.ifDataUpdated && this.activeIndex === 'Applications'"
                 :width="'900px'" :height="'400px'" 
-                :dataName="info.catagroryName"
-                :name="'Catagory'"
-                :data="info.catagroryValue"
-            ></PieGraph>
-        <!-- </el-col> -->
-        <!-- </el-row> -->
+                :name="'catagory proportion'"
+                :dataName="info.catagoryInfo.name"
+                :data="info.catagoryInfo.values"
+            ></PieGraph>     
+          </el-col>
+        </el-row> -->
           </div>
         </div>
+
         
         <el-dialog v-model="dialogVisible" 
                     title="Feedback" >
@@ -250,7 +271,6 @@ export default {
       dialogVisible: false,
       feedBack: "",
       
-      // applications: [],
     }
   },
   methods: {
@@ -269,11 +289,13 @@ export default {
       await api.getFeedBackByAppId(
         this.$cookies.get('satoken'),
         AppId).then((res) => {
+          console.log(res)
         if (res.code === 500) {
           ElMessage.error(res.msg)
         } else if (res.code === 200) {
           this.feedBack = res.data.comment
           this.dialogVisible = true 
+          console.log(res.data.comment)
         }
       })
     },
@@ -285,22 +307,14 @@ export default {
 </script>
 
 <style>
-.el-container {
-  height: 100%;
-  width: 100%;
-  position: fixed;
-  background-image: linear-gradient(to right, #fbc2eb, #a6c1ee);
-}
-.el-row {
-  margin-bottom: 20px;
-}
-.el-row:last-child {
-  margin-bottom: 0;
-}
-.card-header {
+.container {
   display: flex;
-  justify-content: space-between;
-  align-items: center;
+}
+
+.component {
+  flex: 1;
+  border-bottom: 1px solid black;
+  padding: 10px;
 }
 
 </style>
