@@ -24,7 +24,9 @@ const info = reactive({
   applications: [],
   createdDate: '',
   x_data: [],
-  y_data: []
+  y_data: [],
+  catagroryName: [],
+  catagroryValue: [],
 })
 const dataState = reactive({
   ifDataUpdated: false
@@ -61,6 +63,9 @@ onMounted(async () => {
 
    info.y_data = graphHelper.applications2LineY(info.applications)
    info.x_data = graphHelper.applications2LineX(info.applications)
+   catagroryInfo = graphHelper.getCatagoryPie(info.applications)
+   info.catagroryName  =  catagroryInfo.name
+   info.catagroryValue = catagroryInfo.value
 
    dataState.ifDataUpdated = true
 
@@ -203,13 +208,13 @@ onMounted(async () => {
             :width="'900px'" :height="'400px'" 
             :x_data="info.x_data" :y_data="info.y_data" ></BarGraph>
 
-            <!-- <PieGraph
-                  v-if="dataState.ifDataUpdated && this.activeIndex === 'Base Info'"
-                  :width="'900px'" :height="'400px'" 
-                  :dataName="['Remaining Amount', 'Total Amount']"
-                  :name="'Catagory'"
-                  :data=""
-              ></PieGraph> -->
+            <PieGraph
+                v-if="dataState.ifDataUpdated && this.activeIndex === 'Applications'"
+                :width="'900px'" :height="'400px'" 
+                :dataName="info.catagroryName"
+                :name="'Catagory'"
+                :data="info.catagroryValue"
+            ></PieGraph>
         <!-- </el-col> -->
         <!-- </el-row> -->
           </div>
@@ -244,8 +249,7 @@ export default {
       activeIndex: "Base Info",
       dialogVisible: false,
       feedBack: "",
-      catagroryName: [],
-      catagroryValue: [],
+      
       // applications: [],
     }
   },
@@ -270,8 +274,6 @@ export default {
         } else if (res.code === 200) {
           this.feedBack = res.data.comment
           this.dialogVisible = true 
-          // console.log(res.data)
-          // ElMessage.error(res.msg)
         }
       })
     },
