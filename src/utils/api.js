@@ -625,9 +625,10 @@ export default {
                 method:"POST",
                 credentials:"include",
                 headers:{
+                    'Content-Type': 'application/json',
                     'satoken':satoken,
                 },body:JSON.stringify({
-                    "appId": appId,
+                    appId: appId
                 })
             })
             const data = await response.json();
