@@ -2,6 +2,7 @@
 import profile from './staff/profile.vue'
 import group_view from './staff/group_view.vue'
 import group_app from './staff/group_app.vue'
+import { SwitchButton } from '@element-plus/icons-vue'
 import { useDark, useToggle } from '@vueuse/core'
 const isDark = useDark(false)
 const toggleDark = useToggle(isDark)
@@ -21,11 +22,20 @@ const toggleDark = useToggle(isDark)
           <el-menu-item index="3" @click="handleCheckExpenditure"
             >View Expenditure</el-menu-item
           >
-          <el-menu-item index="4" @click="handleQuitLogin"
-            >Quit Login</el-menu-item
+          <el-button
+            index="4"
+            :icon="SwitchButton"
+            @click="handleQuitLogin"
+            style="display: flex; height: auto; margin-left: auto; border: none"
+            >Log out</el-button
           >
           <el-switch
-            style="display: flex; height: auto; margin-left: auto"
+            style="
+              display: flex;
+              height: auto;
+              margin-left: 20px;
+              margin-right: 20px;
+            "
             v-model="isDark"
             active-text="Dark"
             inactive-text="Light"

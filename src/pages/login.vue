@@ -60,7 +60,7 @@ async function handleStaffRegister() {
         <div class="login-wrapper">
           <div class="form-wrapper">
             <el-text class="login-text" truncated>Login</el-text>
-            <el-form :model="register" label-position="left" :label-width="70">
+            <el-form :model="register" label-position="top" :label-width="70">
               <el-form-item label="Email"
                 ><el-input
                   name="email"
@@ -101,7 +101,7 @@ async function handleStaffRegister() {
         </div>
       </div>
     </el-main>
-    <el-footer style="color: #000">Powered By Vue @SE 2023</el-footer>
+    <el-footer>Powered By Vue @SE 2023</el-footer>
   </el-container>
 </template>
 
