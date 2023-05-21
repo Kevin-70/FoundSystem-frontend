@@ -116,8 +116,8 @@ async function handleRegister() {
   </el-container>
 </template>
 
-<style>
-* {
+<style></style>
+<!-- * {
   margin: 0;
   padding: 0;
 }
@@ -139,8 +139,8 @@ body {
 .form-wrapper {
   background-color: #faf9f9;
   display: inline-block;
-  width: 358px;
-  height: 588px;
+  width: 558px;
+  height: 788px;
   border-radius: 15px;
   padding: 0 50px;
   position: relative;
@@ -185,5 +185,4 @@ body {
 a {
   text-decoration-line: none;
   color: #abc1ee;
-}
-</style>
+} -->

@@ -1,12 +1,12 @@
 <script setup>
 import { Check, Message } from '@element-plus/icons-vue'
-import {ElMessage} from 'element-plus/es';
+import { ElMessage } from 'element-plus/es'
 import { ref, reactive, onMounted, inject } from 'vue'
 import { useRoute } from 'vue-router'
 import api from '../utils/api'
 import graphHelper from '../utils/graphHelper'
-import BarGraph from "@/components/BarGraph.vue"
-import PieGraph from "@/components/PieGraph.vue"
+import BarGraph from '@/components/BarGraph.vue'
+import PieGraph from '@/components/PieGraph.vue'
 // import componentLazy from "@/components/componentLazy.vue"
 const route = useRoute()
 const $cookies = inject('$cookies')
@@ -24,51 +24,50 @@ const info = reactive({
   applications: [],
   createdDate: '',
   x_data: [],
-  y_data: []
+  y_data: [],
 })
 const dataState = reactive({
-  ifDataUpdated: false
+  ifDataUpdated: false,
 })
 
 onMounted(async () => {
-      await api
-        .GetOneExpenditureAllInfo(
-          $cookies.get('satoken'), 
-          route.params.expenditureNumber
-        )
-        .then((res) => {
-          if(res.code === 200){
-            info.expenditureName = res.data.expenditureName
-            info.expenditureNumber = res.data.expenditureNumber
-            info.groupName = res.data.groupName
-            info.totalAmount = res.data.totalAmount
-            info.remainingAmount = res.data.remainingAmount
-            info.startTime = res.data.startTime
-            info.endTime = res.data.endTime
-            info.quota = res.data.quota
-            info.applications = res.data.applications
-            // console.log(info.applications)
-            // console.log("update info")
-          }else{
-            console.error(res)
-            ElMessage.error(res.msg)
-          }
-        })
-        .catch((error) => {
-          console.log(error)
-        })
+  await api
+    .GetOneExpenditureAllInfo(
+      $cookies.get('satoken'),
+      route.params.expenditureNumber
+    )
+    .then((res) => {
+      if (res.code === 200) {
+        info.expenditureName = res.data.expenditureName
+        info.expenditureNumber = res.data.expenditureNumber
+        info.groupName = res.data.groupName
+        info.totalAmount = res.data.totalAmount
+        info.remainingAmount = res.data.remainingAmount
+        info.startTime = res.data.startTime
+        info.endTime = res.data.endTime
+        info.quota = res.data.quota
+        info.applications = res.data.applications
+        // console.log(info.applications)
+        // console.log("update info")
+      } else {
+        console.error(res)
+        ElMessage.error(res.msg)
+      }
+    })
+    .catch((error) => {
+      console.log(error)
+    })
 
-      info.y_data = graphHelper.applications2LineY(info.applications)
-      info.x_data = graphHelper.applications2LineX(info.applications)
+  info.y_data = graphHelper.applications2LineY(info.applications)
+  info.x_data = graphHelper.applications2LineX(info.applications)
 
-      dataState.ifDataUpdated = true
-
+  dataState.ifDataUpdated = true
 })
 </script>
 
 <template>
   <div class="common-layout">
-    <el-container> 
+    <el-container>
       <el-header>
         <el-menu
           :default-active="this.activeIndex"
@@ -79,19 +78,18 @@ onMounted(async () => {
           <el-menu-item index="Base Info">Base Info</el-menu-item>
           <el-menu-item index="Applications">Applications</el-menu-item>
         </el-menu>
-      </el-header> 
+      </el-header>
       <el-main>
         <div>
           <el-row>
             <el-col :span="12">
-              <el-row :gutter="15"
-              v-if="this.activeIndex === 'Base Info'">
+              <el-row :gutter="15" v-if="this.activeIndex === 'Base Info'">
                 <el-col :span="10" :push="1">
                   <el-descriptions border column="1">
                     <template #title>
                       <h2 style="color: white">Expenditure Info</h2>
                     </template>
-                    
+
                     <el-descriptions-item label="Expenditure Number">{{
                       info.expenditureNumber
                     }}</el-descriptions-item>
@@ -122,58 +120,44 @@ onMounted(async () => {
             </el-col>
             <el-col :span="12">
               <PieGraph
-                  v-if="dataState.ifDataUpdated && this.activeIndex === 'Base Info'"
-                  :width="'900px'" :height="'600px'" 
-                  :dataName="['Unused Amount', 'Used Amount']"
-                  :name="'Expenditure usage'"
-                  :data="[info.remainingAmount, info.totalAmount-info.remainingAmount]"
-              ></PieGraph>
+                v-if="
+                  dataState.ifDataUpdated && this.activeIndex === 'Base Info'
+                "
+                :width="'900px'"
+                :height="'600px'"
+                :dataName="['Remaining Amount', 'Total Amount']"
+                :name="'Expenditure usage'"
+                :data="[info.remainingAmount, info.totalAmount]"></PieGraph>
             </el-col>
-
           </el-row>
           <div>
             <!-- <el-row> -->
-              <!-- <el-col :span="12"> -->
+            <!-- <el-col :span="12"> -->
             <el-table
               v-if="this.activeIndex === 'Applications'"
-              :data=info.applications
+              :data="info.applications"
               height="400"
               style="width: 100%">
-              <el-table-column
-                prop="userName"
-                label="User Name"
-                width="180">
+              <el-table-column prop="userName" label="User Name" width="180">
               </el-table-column>
               <el-table-column
                 prop="appAmount"
                 label="Apply Amount"
                 width="180">
               </el-table-column>
-                        
+
               <el-table-column
                 prop="expendCategory"
                 label=" Category"
                 width="180">
               </el-table-column>
-              <el-table-column
-                prop="appAbstract"
-                label="Abstract"
-                width="180">
+              <el-table-column prop="appAbstract" label="Abstract" width="180">
               </el-table-column>
-              <el-table-column
-                prop="comment"
-                label="comment"
-                width="180">
+              <el-table-column prop="comment" label="comment" width="180">
               </el-table-column>
-              <el-table-column
-                prop="status"
-                label="status"
-                width="180">
+              <el-table-column prop="status" label="status" width="180">
               </el-table-column>
-              <el-table-column
-                prop="type"
-                label="type"
-                width="180">
+              <el-table-column prop="type" label="type" width="180">
               </el-table-column>
               <el-table-column
                 prop="createdDate"
@@ -187,42 +171,40 @@ onMounted(async () => {
                     type="primary"
                     :icon="Message"
                     circle
-                    @click="
-                      this.handleFeedback(scope.row.appId)
-                    "/>
+                    @click="this.handleFeedback(scope.row.appId)" />
                 </template>
               </el-table-column>
-              
             </el-table>
 
-          <!-- </el-col>
+            <!-- </el-col>
           <el-col :span="12"> -->
-            <BarGraph 
-            v-if="dataState.ifDataUpdated && this.activeIndex === 'Applications'"
-            :width="'900px'" :height="'400px'" 
-            :x_data="info.x_data" :y_data="info.y_data" >
-          </BarGraph>
+            <BarGraph
+              v-if="
+                dataState.ifDataUpdated && this.activeIndex === 'Applications'
+              "
+              :width="'900px'"
+              :height="'400px'"
+              :x_data="info.x_data"
+              :y_data="info.y_data"></BarGraph>
 
-            
-        <!-- </el-col> -->
-        <!-- </el-row> -->
+            <!-- </el-col> -->
+            <!-- </el-row> -->
           </div>
         </div>
-        
-        <el-dialog v-model="dialogVisible" 
-                    title="Feedback" >
-            <div>
-              <span>{{ this.feedBack }}</span>
-            </div>
-            <template #footer>
-              <span class="dialog-footer">
-                <el-button @click="dialogVisible = false">Cancel</el-button>
-                <el-button type="primary" @click="dialogVisible = false">
-                  Confirm
-                </el-button>
-              </span>
-        </template>
-      </el-dialog>
+
+        <el-dialog v-model="dialogVisible" title="Feedback">
+          <div>
+            <span>{{ this.feedBack }}</span>
+          </div>
+          <template #footer>
+            <span class="dialog-footer">
+              <el-button @click="dialogVisible = false">Cancel</el-button>
+              <el-button type="primary" @click="dialogVisible = false">
+                Confirm
+              </el-button>
+            </span>
+          </template>
+        </el-dialog>
       </el-main>
       <el-footer style="color: #000">Powered By Vue @SE 2023</el-footer>
       <el-backtop :right="100" :bottom="100" />
@@ -230,21 +212,20 @@ onMounted(async () => {
   </div>
 </template>
 
-
 <script>
 export default {
   data() {
     return {
-      activeIndex: "Base Info",
+      activeIndex: 'Base Info',
       dialogVisible: false,
-      feedBack: "",
+      feedBack: '',
       catagroryName: [],
       catagroryValue: [],
     }
   },
   methods: {
     error(message) {
-        this.$message(message);
+      this.$message(message)
     },
     handleSelect(key) {
       this.activeIndex = key
@@ -253,43 +234,26 @@ export default {
       this.$router.go(-1)
     },
     async handleFeedback(AppId) {
-      console.log("handleFeedback")
-      console.log(AppId) 
-      await api.getFeedBackByAppId(
-        this.$cookies.get('satoken'),
-        AppId).then((res) => {
-        if (res.code === 500) {
-          ElMessage.error(res.msg)
-        } else if (res.code === 200) {
-          this.feedBack = res.data.comment
-          this.dialogVisible = true 
-        }
-      })
+      console.log('handleFeedback')
+      console.log(AppId)
+      await api
+        .getFeedBackByAppId(this.$cookies.get('satoken'), AppId)
+        .then((res) => {
+          if (res.code === 500) {
+            ElMessage.error(res.msg)
+          } else if (res.code === 200) {
+            this.feedBack = res.data.comment
+            this.dialogVisible = true
+            // console.log(res.data)
+            // ElMessage.error(res.msg)
+          }
+        })
     },
   },
   components: {
-    BarGraph
+    BarGraph,
   },
 }
 </script>
 
-<style>
-.el-container {
-  height: 100%;
-  width: 100%;
-  position: fixed;
-  background-image: linear-gradient(to right, #fbc2eb, #a6c1ee);
-}
-.el-row {
-  margin-bottom: 20px;
-}
-.el-row:last-child {
-  margin-bottom: 0;
-}
-.card-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-</style>
+<style></style>
