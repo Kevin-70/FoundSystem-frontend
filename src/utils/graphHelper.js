@@ -33,8 +33,11 @@ export default {
     getGroupExpendurePie(expenditure) {
         let catagory = [];
         let values = [];
-
+        console.log(expenditure)
         for (let i = 0; i < expenditure.length; i++) {
+            if (expenditure[i].status === "Timeout") {
+                continue;
+            }
             if (catagory.indexOf(expenditure[i].expenditureNumber) === -1) {
                 catagory.push(expenditure[i].expenditureNumber);
                 values.push(expenditure[i].totalAmount);
@@ -47,8 +50,6 @@ export default {
             result.name.push(catagory[i])
             result.values.push(values[i])
         }
-        // console.log('getGroupExpendurePie')
-        // console.log(result)
         return result;
 
     }
