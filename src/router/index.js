@@ -25,7 +25,7 @@ const routes = [
     { path: "/login/verify/:email/:identity", component: verify },
     { path: "/notfound", component: notfound },
     { path: '/group/:groupName', component: group_page },
-    { path: "/expenditure/", component: expenditure },
+    // { path: "/expenditure/", component: expenditure },
     { path: "/expenditureShow/:expenditureNumber", component: expenditureShow }
 
 ]
@@ -35,7 +35,7 @@ const router = createRouter({
     routes
 })
 
-router.beforeEach(async (to, from, next) => {
+router.beforeEach(async(to, from, next) => {
     console.log(to.name)
     console.log(from.name)
     if (to.matched.length === 0) {

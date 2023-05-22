@@ -25,9 +25,11 @@ const info = reactive({
   createdDate: '',
   x_data: [],
   y_data: [],
+  catagoryInfo: {name: [], values: []},
 })
 const dataState = reactive({
   ifDataUpdated: false,
+  PieUpdate: false,
 })
 
 onMounted(async () => {
@@ -60,8 +62,12 @@ onMounted(async () => {
 
   info.y_data = graphHelper.applications2LineY(info.applications)
   info.x_data = graphHelper.applications2LineX(info.applications)
-
   dataState.ifDataUpdated = true
+
+  info.catagoryInfo = graphHelper.getCatagoryPie(info.applications)
+  console.log(info.catagoryInfo.name)
+  dataState.PieUpdate = true
+
 })
 </script>
 
@@ -125,14 +131,12 @@ onMounted(async () => {
                 "
                 :width="'900px'"
                 :height="'600px'"
-                :dataName="['Remaining Amount', 'Total Amount']"
+                :dataName="['Remaining Amount', 'Unused Amount']"
                 :name="'Expenditure usage'"
-                :data="[info.remainingAmount, info.totalAmount]"></PieGraph>
+                :data="[info.remainingAmount, info.totalAmount-info.remainingAmount]"></PieGraph>
             </el-col>
           </el-row>
           <div>
-            <!-- <el-row> -->
-            <!-- <el-col :span="12"> -->
             <el-table
               v-if="this.activeIndex === 'Applications'"
               :data="info.applications"
@@ -181,40 +185,72 @@ onMounted(async () => {
               </el-table-column>
             </el-table>
 
-            <!-- </el-col>
-          <el-col :span="12"> -->
-            <BarGraph
-              v-if="
-                dataState.ifDataUpdated && this.activeIndex === 'Applications'
-              "
-              :width="'900px'"
-              :height="'400px'"
-              :x_data="info.x_data"
-              :y_data="info.y_data"></BarGraph>
 
-            <!-- </el-col> -->
-            <!-- </el-row> -->
+         <!-- <el-row>
+          <el-col :span="12">
+            <BarGraph 
+              v-if="dataState.ifDataUpdated && this.activeIndex === 'Applications'"
+              :name="'Application Trend'"
+              :width="'900px'" :height="'400px'" 
+              :x_data="info.x_data" 
+              :y_data="info.y_data" >
+            </BarGraph>
+          </el-col>
+          <el-col :span="12">
+            <PieGraph
+                v-if="dataState.ifDataUpdated && this.activeIndex === 'Applications'"
+                :width="'900px'" :height="'400px'" 
+                :name="'catagory proportion'"
+                :dataName="info.catagoryInfo.name"
+                :data="info.catagoryInfo.values"
+            ></PieGraph>     
+          </el-col>
+        </el-row> -->
           </div>
         </div>
+       
+              <!-- <div class="component"> -->
+                <PieGraph
+                    v-if="dataState.PieUpdate && this.activeIndex === 'Applications'"
+                    :width="'900px'" :height="'400px'" 
+                    :name="'catagory proportion'"
+                    :dataName="info.catagoryInfo.name"
+                    :data="info.catagoryInfo.values"
+                ></PieGraph>
+                <BarGraph 
+                  v-if="dataState.ifDataUpdated && this.activeIndex === 'Applications'"
+                  :name="'Application Trend'"
+                  :width="'900px'" :height="'400px'" 
+                  :x_data="info.x_data" 
+                  :y_data="info.y_data" >
+                </BarGraph>
+              <!-- </div> -->
+              <!-- <div class="component"> -->
+                
+              <!-- </div> -->
 
-        <el-dialog v-model="dialogVisible" title="Feedback">
-          <div>
-            <span>{{ this.feedBack }}</span>
-          </div>
-          <template #footer>
-            <span class="dialog-footer">
-              <el-button @click="dialogVisible = false">Cancel</el-button>
-              <el-button type="primary" @click="dialogVisible = false">
-                Confirm
-              </el-button>
-            </span>
-          </template>
-        </el-dialog>
+
+
       </el-main>
       <el-footer style="color: #000">Powered By Vue @SE 2023</el-footer>
       <el-backtop :right="100" :bottom="100" />
     </el-container>
   </div>
+
+  <el-dialog v-model="dialogVisible" 
+                    title="Feedback" >
+            <div>
+              <span>{{ this.feedBack }}</span>
+            </div>
+            <template #footer>
+              <span class="dialog-footer">
+                <el-button @click="dialogVisible = false">Cancel</el-button>
+                <el-button type="primary" @click="dialogVisible = false">
+                  Confirm
+                </el-button>
+              </span>
+        </template>
+        </el-dialog>
 </template>
 
 <script>
@@ -223,9 +259,8 @@ export default {
     return {
       activeIndex: 'Base Info',
       dialogVisible: false,
-      feedBack: '',
-      catagroryName: [],
-      catagroryValue: [],
+      feedBack: "",
+      
     }
   },
   methods: {
@@ -239,31 +274,21 @@ export default {
       this.$router.go(-1)
     },
     async handleFeedback(AppId) {
-      console.log('handleFeedback')
-      console.log(AppId)
-      await api
-        .getFeedBackByAppId(this.$cookies.get('satoken'), AppId)
-        .then((res) => {
-          if (res.code === 500) {
-            ElMessage.error(res.msg)
-          } else if (res.code === 200) {
-            this.feedBack = res.data.comment
-            this.dialogVisible = true
-            // console.log(res.data)
-            // ElMessage.error(res.msg)
-          }
-        })
-    },async WithdrawApp(AppId){
-         console.log(AppId);
-        await api.WithdrawApplication(AppId,this.$cookies.get('satoken'))
-        .then((res)=>{
-            if(res.code==500){
-                ElMessage.error(res.msg);
-            }else if(res.code==200){
-                ElMessage.error("取消申请成功");
-            }
-        })
-    }
+      console.log("handleFeedback")
+      console.log(AppId) 
+      await api.getFeedBackByAppId(
+        this.$cookies.get('satoken'),
+        AppId).then((res) => {
+          console.log(res)
+        if (res.code === 500) {
+          ElMessage.error(res.msg)
+        } else if (res.code === 200) {
+          this.feedBack = res.data.comment
+          this.dialogVisible = true 
+          console.log(res.data.comment)
+        }
+      })
+    },
   },
   components: {
     BarGraph,
@@ -271,4 +296,15 @@ export default {
 }
 </script>
 
-<style></style>
+<style>
+.container {
+  display: flex;
+}
+
+.component {
+  flex: 1;
+  border-bottom: 1px solid black;
+  padding: 10px;
+}
+
+</style>
