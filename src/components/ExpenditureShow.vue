@@ -26,7 +26,7 @@ const info = reactive({
   createdDate: '',
   x_data: [],
   y_data: [],
-  catagoryInfo: {name: [], values: []},
+  catagoryInfo: { name: [], values: [] },
 })
 const dataState = reactive({
   ifDataUpdated: false,
@@ -66,9 +66,7 @@ onMounted(async () => {
   dataState.ifDataUpdated = true
 
   info.catagoryInfo = graphHelper.getCatagoryPie(info.applications)
-  console.log(info.catagoryInfo.name)
   dataState.PieUpdate = true
-
 })
 </script>
 
@@ -138,10 +136,13 @@ onMounted(async () => {
                 :height="'600px'"
                 :dataName="['Remaining Amount', 'Used Amount']"
                 :name="'Expenditure usage'"
-                :data="[info.remainingAmount, info.totalAmount-info.remainingAmount]"></PieGraph>
+                :data="[
+                  info.remainingAmount,
+                  info.totalAmount - info.remainingAmount,
+                ]"></PieGraph>
             </el-col>
           </el-row>
-          <div>
+          <el-row>
             <el-table
               v-if="this.activeIndex === 'Applications'"
               :data="info.applications"
@@ -185,85 +186,55 @@ onMounted(async () => {
               </el-table-column>
               <el-table-column fixed="right" label="Withdraw" width="90">
                 <template #default="scope">
-		            <el-button 
-                    v-if="scope.row.status=='Unread'" 
+                  <el-button
+                    v-if="scope.row.status == 'Unread'"
                     :icon="CircleClose"
                     circle
-                    type="danger" 
+                    type="danger"
                     @click="WithdrawApp(scope.row.appId)">
-                </el-button>
-	            </template>
+                  </el-button>
+                </template>
               </el-table-column>
             </el-table>
 
             <PieGraph
-                v-if="dataState.PieUpdate && this.activeIndex === 'Applications'"
-                :width="'900px'" :height="'400px'" 
-                :name="'catagory proportion'"
-                :dataName="info.catagoryInfo.name"
-                :data="info.catagoryInfo.values"
-            ></PieGraph>
-            <BarGraph 
-              v-if="dataState.ifDataUpdated && this.activeIndex === 'Applications'"
+              v-if="dataState.PieUpdate && this.activeIndex === 'Applications'"
+              :width="'900px'"
+              :height="'400px'"
+              :name="'catagory proportion'"
+              :dataName="info.catagoryInfo.name"
+              :data="info.catagoryInfo.values"></PieGraph>
+            <BarGraph
+              v-if="
+                dataState.ifDataUpdated && this.activeIndex === 'Applications'
+              "
               :name="'Application Trend'"
-              :width="'900px'" :height="'400px'" 
-              :x_data="info.x_data" 
-              :y_data="info.y_data" >
+              :width="'900px'"
+              :height="'400px'"
+              :x_data="info.x_data"
+              :y_data="info.y_data">
             </BarGraph>
-
-
-         <!-- <el-row>
-          <el-col :span="12">
-            <BarGraph 
-              v-if="dataState.ifDataUpdated && this.activeIndex === 'Applications'"
-              :name="'Application Trend'"
-              :width="'900px'" :height="'400px'" 
-              :x_data="info.x_data" 
-              :y_data="info.y_data" >
-            </BarGraph>
-          </el-col>
-          <el-col :span="12">
-            <PieGraph
-                v-if="dataState.ifDataUpdated && this.activeIndex === 'Applications'"
-                :width="'900px'" :height="'400px'" 
-                :name="'catagory proportion'"
-                :dataName="info.catagoryInfo.name"
-                :data="info.catagoryInfo.values"
-            ></PieGraph>     
-          </el-col>
-        </el-row> -->
-          </div>
+          </el-row>
         </div>
-       
-              <!-- <div class="component"> -->
-                
-              <!-- </div> -->
-              <!-- <div class="component"> -->
-                
-              <!-- </div> -->
-
-
-
       </el-main>
       <el-footer style="color: #000">Powered By Vue @SE 2023</el-footer>
       <el-backtop :right="100" :bottom="100" />
     </el-container>
   </div>
 
-  <el-dialog v-model="dialogVisible" 
-                    title="Feedback" >
-            <div>
-              <span>{{ this.feedBack }}</span>
-            </div>
-            <template #footer>
-              <span class="dialog-footer">
-                <el-button @click="dialogVisible = false">Cancel</el-button>
-                <el-button type="primary" @click="dialogVisible = false">
-                  Confirm
-                </el-button>
-              </span>
-        </template>
-        </el-dialog>
+  <el-dialog v-model="dialogVisible" title="Feedback">
+    <div>
+      <span>{{ this.feedBack }}</span>
+    </div>
+    <template #footer>
+      <span class="dialog-footer">
+        <el-button @click="dialogVisible = false">Cancel</el-button>
+        <el-button type="primary" @click="dialogVisible = false">
+          Confirm
+        </el-button>
+      </span>
+    </template>
+  </el-dialog>
 </template>
 
 <script>
@@ -272,8 +243,7 @@ export default {
     return {
       activeIndex: 'Base Info',
       dialogVisible: false,
-      feedBack: "",
-      
+      feedBack: '',
     }
   },
   methods: {
@@ -287,29 +257,31 @@ export default {
       this.$router.go(-1)
     },
     async handleFeedback(AppId) {
-      console.log("handleFeedback")
-      console.log(AppId) 
-      await api.getFeedBackByAppId(
-        this.$cookies.get('satoken'),
-        AppId).then((res) => {
+      console.log('handleFeedback')
+      console.log(AppId)
+      await api
+        .getFeedBackByAppId(this.$cookies.get('satoken'), AppId)
+        .then((res) => {
           console.log(res)
-        if (res.code === 500) {
-          ElMessage.error(res.msg)
-        } else if (res.code === 200) {
-          this.feedBack = res.data.comment
-          this.dialogVisible = true 
-          console.log(res.data.comment)
-        }
-      })
-    },async WithdrawApp(AppId){
-         console.log(AppId);
-        await api.WithdrawApplication(AppId,this.$cookies.get('satoken'))
-        .then((res)=>{
-            if(res.code==500){
-                ElMessage.error(res.msg);
-            }else if(res.code==200){
-                ElMessage.error("取消申请成功");
-            }
+          if (res.code === 500) {
+            ElMessage.error(res.msg)
+          } else if (res.code === 200) {
+            this.feedBack = res.data.comment
+            this.dialogVisible = true
+            console.log(res.data.comment)
+          }
+        })
+    },
+    async WithdrawApp(AppId) {
+      console.log(AppId)
+      await api
+        .WithdrawApplication(AppId, this.$cookies.get('satoken'))
+        .then((res) => {
+          if (res.code == 500) {
+            ElMessage.error(res.msg)
+          } else if (res.code == 200) {
+            ElMessage.error('取消申请成功')
+          }
         })
     },
   },
@@ -319,8 +291,8 @@ export default {
 }
 </script>
 
-<style>
-.container {
+<style scoped>
+.el-container {
   display: flex;
 }
 
@@ -329,5 +301,4 @@ export default {
   border-bottom: 1px solid black;
   padding: 10px;
 }
-
 </style>

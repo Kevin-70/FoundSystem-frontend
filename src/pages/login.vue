@@ -74,7 +74,9 @@ async function handleStaffRegister() {
         </div>
         <div class="login-wrapper">
           <div class="form-wrapper">
-            <h1 style="font-size: 50px">Login</h1>
+            <h1 :class="{ 'dark-class': isDark }" style="font-size: 50px">
+              Login
+            </h1>
             <el-form :model="register" label-position="top" :label-width="70">
               <el-form-item label="Email"
                 ><el-input
@@ -110,7 +112,7 @@ async function handleStaffRegister() {
             <el-button class="btn" @click.native.prevent="handleLogin">
               Login
             </el-button>
-            <span>
+            <span :class="{ 'dark-class': isDark }">
               Don't have an account?
               <a href="#" @click.native.prevent="handleStaffRegister"
                 >Sign up</a
@@ -124,13 +126,21 @@ async function handleStaffRegister() {
   </el-container>
 </template>
 <style scoped>
-.el-container .dark-class {
+.dark-class {
   background-color: #000;
+}
+.dark-class h1 {
+  color: white;
+}
+.dark-class span {
+  color: white;
 }
 .login-container {
   display: flex;
 }
+
 .login-wrapper {
+  left: -15%;
   width: 70%;
   display: flex;
   align-items: center;

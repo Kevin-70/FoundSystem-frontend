@@ -1,3 +1,9 @@
+<script setup>
+import { useDark, useToggle } from '@vueuse/core'
+import icon from '../assets/image/icon.png'
+const isDark = useDark(false)
+const toggleDark = useToggle(isDark)
+</script>
 <script>
 import api from '../utils/api'
 export default {
@@ -72,35 +78,46 @@ export default {
 }
 </script>
 <template>
-  <el-container>
+  <el-container :class="{ 'dark-class': isDark }">
+    <el-header>
+      <el-switch
+        style="display: flex; margin-top: 20px; left: 90%"
+        v-model="isDark"
+        active-text="Dark"
+        inactive-text="Light"
+        @change="toggleDark"></el-switch>
+    </el-header>
     <el-main>
-      <div class="container">
-        <div class="form-wrapper">
-          <el-text class="verify-text" truncated>Verify Your Email</el-text>
-          <el-form :model="register" label-position="top">
-            <el-form-item
-              ><el-text
-                >Your Eamil is {{ this.$route.params.email }}</el-text
-              ></el-form-item
-            >
-            <el-form-item
-              ><el-button @click="handleSend" :disabled="isButtonDisabled">{{
-                buttonText
-              }}</el-button>
-            </el-form-item>
-            <el-form-item
-              ><el-input
-                v-model="this.code"
-                @change="validate"
-                placeholder="six digits code"
-                style="width: 70%"></el-input
-            ></el-form-item>
-            <el-form-item
-              ><el-button @click="handleVerify" :disabled="this.codeverify"
-                >Verify</el-button
+      <div class="verify-container">
+        <div class="verify-wrapper">
+          <div>
+            <h1 :class="{ 'h1-class': isDark }">Verify Your Email</h1>
+            <el-image :src="icon" style="width: 70%" />
+            <el-form :model="register" label-position="top">
+              <el-form-item
+                ><el-text
+                  >Your Eamil is {{ this.$route.params.email }}</el-text
+                ></el-form-item
               >
-            </el-form-item>
-          </el-form>
+              <el-form-item
+                ><el-button @click="handleSend" :disabled="isButtonDisabled">{{
+                  buttonText
+                }}</el-button>
+              </el-form-item>
+              <el-form-item
+                ><el-input
+                  v-model="this.code"
+                  @change="validate"
+                  placeholder="six digits code"
+                  style="width: 70%"></el-input
+              ></el-form-item>
+              <el-form-item
+                ><el-button @click="handleVerify" :disabled="this.codeverify"
+                  >Verify</el-button
+                >
+              </el-form-item>
+            </el-form>
+          </div>
         </div>
       </div>
     </el-main>
@@ -108,4 +125,22 @@ export default {
   </el-container>
 </template>
 
-<style></style>
+<style scoped>
+.dark-class {
+  background-color: #000;
+}
+.h1-class {
+  color: white;
+}
+.verify-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.verify-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  right: auto;
+}
+</style>
