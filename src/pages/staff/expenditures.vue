@@ -8,20 +8,11 @@ import { reactive, onMounted, inject } from 'vue'
 const router = useRoute()
 const $cookies = inject('$cookies')
 </script>
+
 <template>
   <div class="common-layout">
     <el-container>
-      <el-header>
-        <el-menu class="el-menu-demo" mode="horizontal" @select="handleSelect">
-          <el-menu-item index="1">Homepage</el-menu-item>
-        </el-menu>
-      </el-header>
-      <el-button @click="handleNewExpend" type="primary">
-        Apply for a new expenditure
-      </el-button>
-      <el-button @click="handleReadTable">
-        Read applications from a table
-      </el-button>
+      
       <!-- All expenditures in on table with button "check its application"-->
       <el-table v-loading="loading" :data="tableData" style="width: 100%">
         <el-table-column prop="expenditureName" label="基金名称" width="120" />
@@ -51,7 +42,23 @@ const $cookies = inject('$cookies')
           </template>
         </el-table-column>
       </el-table>
+
     </el-container>
+
+    <el-row>
+        <el-col :span="4">
+          <el-button @click="handleNewExpend" type="primary">
+              Apply for a new expenditure
+          </el-button>
+        </el-col>
+
+        <el-col :span="4">
+          <el-button @click="handleReadTable">
+            Read applications from a table
+          </el-button>
+        </el-col>
+
+      </el-row>
     <el-dialog
       v-model="centerDialogVisible"
       title="Apply for a Expenditure"
@@ -196,8 +203,8 @@ const $cookies = inject('$cookies')
 
 <script>
 import { toRaw } from 'vue'
-const BASE_URL = 'http://43.139.159.107:8080'
 export default {
+  name: "expenditure",
   data() {
     return {
       tableData: [
@@ -216,38 +223,38 @@ export default {
       options: [],
       categories: [
         {
-          value: 'zhinan',
-          label: '指南',
+          value: 'Office',
+          label: '工作',
           children: [
             {
-              value: 'shejiyuanze',
-              label: '设计原则',
+              value: 'Print',
+              label: '打印费',
             },
             {
-              value: 'daohang',
-              label: '导航1',
+              value: 'Workers',
+              label: '人工费',
             },
             {
-              value: 'daohang',
-              label: '导航2',
+              value: 'Book',
+              label: '书本费',
             },
           ],
         },
         {
-          value: 'ziyuan',
-          label: '资源',
+          value: 'Research',
+          label: '科研费',
           children: [
             {
-              value: 'axure',
-              label: 'Axure Components',
+              value: 'software',
+              label: '计算机软件费',
             },
             {
-              value: 'sketch',
-              label: 'Sketch Templates',
+              value: 'instrument',
+              label: '仪器设备',
             },
             {
-              value: 'jiaohu',
-              label: '组件交互文档',
+              value: 'lecture',
+              label: '讲座费',
             },
           ],
         },
@@ -329,7 +336,7 @@ export default {
     submitApplication() {
       try {
         let cate1 = toRaw(this.form2.cate)[0]
-        let cate2 = toRaw(this.form2.cate)[0]
+        let cate2 = toRaw(this.form2.cate)[1]
         // console.log(cate1,cate2);
         const response = api.submitApplication(
           this.form2.abstrac,
@@ -356,18 +363,18 @@ export default {
     handleCate() {
       console.log(this.form2.cate)
     },
-    handleSelect() {
-      const response = api.getMyEmail($cookies.get('satoken'))
-      response.then((res) => {
-        if (res.code === 200) {
-          this.$router.push('/staff/' + res.data)
-        } else {
-          ElMessage.error('身份过期返回主页失败')
-          console.log(res)
-        }
-      })
-      this.$router.push('/staff/' + email)
-    },
+    // handleSelect() {
+    //   const response = api.getMyEmail($cookies.get('satoken'))
+    //   response.then((res) => {
+    //     if (res.code === 200) {
+    //       this.$router.push('/staff/' + res.data)
+    //     } else {
+    //       ElMessage.error('身份过期返回主页失败')
+    //       console.log(res)
+    //     }
+    //   })
+    //   this.$router.push('/staff/' + email)
+    // },
     handleReadTable() {
       this.readDialogVisible = true
     },
@@ -410,10 +417,10 @@ export default {
       if (res.code === 200) {
         this.tableData = res.data
         let array = this.tableData
-        for (let index = 0; index < array.length; index++) {
-          const element = array[index]
-          element.begintime = 8
-        }
+        // for (let index = 0; index < array.length; index++) {
+        //   const element = array[index]
+        // //   element.begintime = toLocaleString(element.begintime);
+        // }
         this.loading = false
       } else {
         ElMessage.error('加载基金信息失败' + res.data)
