@@ -18,8 +18,12 @@ import profile from './staff/profile.vue'
           <el-menu-item index="1">Homepage</el-menu-item>
           <el-menu-item index="2">Group Management</el-menu-item>
           <el-menu-item index="3">Fund Management</el-menu-item>
-          <el-menu-item index="4" @click="handleQuitLogin"
-            >Quit Login</el-menu-item
+          <el-button
+            index="4"
+            :icon="SwitchButton"
+            @click="handleQuitLogin"
+            style="display: flex; height: auto; margin-left: auto; border: none"
+            >Log out</el-button
           >
         </el-menu>
       </el-header>

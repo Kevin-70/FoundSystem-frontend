@@ -18,6 +18,13 @@ import profile from './staff/profile.vue'
           <el-menu-item index="2">Group Management</el-menu-item>
           <el-menu-item index="3">Fund Management</el-menu-item>
         </el-menu>
+        <el-button
+          index="4"
+          :icon="SwitchButton"
+          @click="handleQuitLogin"
+          style="display: flex; height: auto; margin-left: auto; border: none"
+          >Log out</el-button
+        >
       </el-header>
 
       <el-main>
@@ -41,6 +48,18 @@ export default {
   methods: {
     handleSelect(key) {
       this.activeIndex = key
+    },
+    async handleQuitLogin() {
+      await api.QuitLogin(this.$cookies.get('satoken')).then((res) => {
+        if (res.code === 500) {
+          ElMessage.error(res.msg)
+          console.log(res)
+        } else if (res.code === 200) {
+          ElMessage.success('退出登录成功')
+          this.$cookies.remove('satoken')
+        }
+      })
+      this.$router.push('/login')
     },
   },
 }
