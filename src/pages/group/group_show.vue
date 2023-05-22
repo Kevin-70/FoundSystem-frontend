@@ -26,7 +26,7 @@ import graphHelper from '../../utils/graphHelper'
     </el-card>
   </div>
 
-  <div v-if="pieShow">
+  <div>
     <PieGraph
       v-if="this.pieShow"
       :width="'900px'"
@@ -42,7 +42,9 @@ import api from '../../utils/api'
 export default {
   async mounted() {
     this.getGroupFund().then(() => {
+      console.log("ready to update pie")
       this.updatePie()
+      console.log("mounted")
     })
   },
   data() {
@@ -69,9 +71,14 @@ export default {
           }
         })
     },
-    async updatePie() {
+    updatePie() {
+      console.log("update pie")
       this.pieInfo = graphHelper.getGroupExpendurePie(this.funds)
-      this.pieShow = true
+      if(this.pieInfo.name.length !== 0) {
+        this.pieShow = true
+        console.log("pie show") 
+      }
+      
     },
   },
 }
