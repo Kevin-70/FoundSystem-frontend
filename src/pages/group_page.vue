@@ -1,6 +1,9 @@
 <script setup>
 import group_show from './group/group_show.vue'
-import PieGraph from '../components/PieGraph.vue'
+import { SwitchButton } from '@element-plus/icons-vue'
+import { useDark, useToggle } from '@vueuse/core'
+const isDark = useDark(false)
+const toggleDark = useToggle(isDark)
 </script>
 
 <template>
@@ -12,10 +15,29 @@ import PieGraph from '../components/PieGraph.vue'
           class="el-menu-demo"
           mode="horizontal"
           @select="handleSelect">
-          <el-menu-item index="1">Group Homepage</el-menu-item>
-          <el-menu-item index="2" @click="handleQuitLogin"
-            >Quit Login</el-menu-item
+          <el-button
+            style="height: 60px; border: none"
+            @click="this.$router.go(-1)"
+            >Go Back to Homepage</el-button
           >
+          <el-button
+            index="4"
+            :icon="SwitchButton"
+            @click="handleQuitLogin"
+            style="display: flex; height: auto; margin-left: auto; border: none"
+            >Log out</el-button
+          >
+          <el-switch
+            style="
+              display: flex;
+              height: auto;
+              margin-left: 20px;
+              margin-right: 20px;
+            "
+            v-model="isDark"
+            active-text="Dark"
+            inactive-text="Light"
+            @change="toggleDark"></el-switch>
         </el-menu>
       </el-header>
       <el-main>
@@ -42,7 +64,9 @@ export default {
     handleSelect(key) {
       this.activeIndex = key
     },
+    handleback() {},
     async handleQuitLogin() {
+      this.$router.push('/login')
       await api.QuitLogin(this.$cookies.get('satoken')).then((res) => {
         if (res.code === 500) {
           ElMessage.error(res.msg)
@@ -50,7 +74,6 @@ export default {
         } else if (res.code === 200) {
           ElMessage.success('退出登录成功')
           this.$cookies.remove('satoken')
-          this.$router.push('/login')
         }
       })
     },

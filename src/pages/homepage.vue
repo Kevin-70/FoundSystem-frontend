@@ -11,7 +11,7 @@ const toggleDark = useToggle(isDark)
 
 <template>
   <div>
-    <el-container :class="'dark'">
+    <el-container>
       <el-header>
         <el-menu
           :default-active="activeIndex"
@@ -48,7 +48,6 @@ const toggleDark = useToggle(isDark)
         <group_view v-if="this.activeIndex == 2" />
         <group_app v-if="this.activeIndex == 2" />
         <expenditures v-if="this.activeIndex == 3" />
-        
       </el-main>
       <el-footer>Powered By Vue @SE 2023</el-footer>
       <el-backtop :right="100" :bottom="100" />
@@ -71,6 +70,7 @@ export default {
       this.activeIndex = key
     },
     async handleQuitLogin() {
+      this.$router.push('/login')
       await api.QuitLogin(this.$cookies.get('satoken')).then((res) => {
         if (res.code === 500) {
           ElMessage.error(res.msg)
@@ -80,7 +80,6 @@ export default {
           this.$cookies.remove('satoken')
         }
       })
-      this.$router.push('/login')
     },
     handleCheckExpenditure() {
       // this.$router.push('/expenditure')
