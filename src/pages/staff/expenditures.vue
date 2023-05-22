@@ -34,7 +34,7 @@ const $cookies = inject('$cookies')
               size="small"
               @click="CreateNewApplication(scope.row)"
               >Create an application</el-button
-            >
+>
             <el-button plain size="small" @click="CheckApplication(scope.row)"
               >Check its info</el-button
             >
