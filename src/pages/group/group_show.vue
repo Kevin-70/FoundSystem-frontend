@@ -1,12 +1,15 @@
 <script setup>
-import graphHelper from '../../utils/graphHelper';
+import graphHelper from '../../utils/graphHelper'
 </script>
 
 <template>
   <div>
     <el-card>
       <el-table :data="this.funds" style="width: 100%">
-        <el-table-column prop="expenditureNumber" label="expenditureNumber" width="180" />
+        <el-table-column
+          prop="expenditureNumber"
+          label="expenditureNumber"
+          width="180" />
         <el-table-column
           prop="expenditureName"
           label="expenditureName"
@@ -24,14 +27,14 @@ import graphHelper from '../../utils/graphHelper';
   </div>
 
   <div v-if="pieShow">
-      <PieGraph
-          v-if="this.pieShow"
-          :width="'900px'" :height="'600px'" 
-          :name="'expenditure proportion'"
-          :dataName="this.pieInfo.name"
-          :data="this.pieInfo.values"
-      ></PieGraph>
-    </div>
+    <PieGraph
+      v-if="this.pieShow"
+      :width="'900px'"
+      :height="'600px'"
+      :name="'expenditure proportion'"
+      :dataName="this.pieInfo.name"
+      :data="this.pieInfo.values"></PieGraph>
+  </div>
 </template>
 
 <script>
@@ -41,12 +44,11 @@ export default {
     this.getGroupFund().then(() => {
       this.updatePie()
     })
-
   },
   data() {
     return {
       funds: [],
-      pieInfo: {catagory: [], values: []},
+      pieInfo: { catagory: [], values: [] },
       pieShow: false,
     }
   },
@@ -68,11 +70,9 @@ export default {
         })
     },
     async updatePie() {
-        this.pieInfo = graphHelper.getGroupExpendurePie(this.funds)
-        this.pieShow = true
-        // console.log("updatePie")
-        // console.log(this.pieInfo)
-    }
+      this.pieInfo = graphHelper.getGroupExpendurePie(this.funds)
+      this.pieShow = true
+    },
   },
 }
 </script>
