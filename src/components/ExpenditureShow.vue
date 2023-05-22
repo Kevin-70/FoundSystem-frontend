@@ -297,6 +297,16 @@ export default {
           console.log(res.data.comment)
         }
       })
+    },async WithdrawApp(AppId){
+         console.log(AppId);
+        await api.WithdrawApplication(AppId,this.$cookies.get('satoken'))
+        .then((res)=>{
+            if(res.code==500){
+                ElMessage.error(res.msg);
+            }else if(res.code==200){
+                ElMessage.error("取消申请成功");
+            }
+        })
     },
   },
   components: {

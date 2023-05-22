@@ -541,7 +541,8 @@ export default {
     },
     async submitApplication (abstrac, applyAmount, cate1, cate2, comment, expenditureNumber, satoken) {
         try {
-            const response = await fetch(`${BASE_URL}/application/edit/submitApplication?abstrac=${abstrac}&applyAmount=${applyAmount}&comment=${comment}&expenditureNumber=${expenditureNumber}&cate1=${cate1}&cate2=${cate2}&`, {
+            // console.log(abstrac);
+            const response = await fetch(`${BASE_URL}/application/edit/submitApplication?abstrac=${abstrac}&applyAmount=${applyAmount}&comment=${comment}&expenditureNumber=${expenditureNumber}&cate1=${cate1}&cate2=${cate2}`, {
                 method: "POST",
                 credentials: "include",
                 headers: {
@@ -620,14 +621,13 @@ export default {
     },
     async WithdrawApplication(appId,satoken){
         try{
-            const response = await fetch(`${BASE_URL}/application/edit/withdrawApplication`,{
+            const response = await fetch(`${BASE_URL}/application/edit/withdrawApplication?appId=${appId}`,{
                 method:"POST",
                 credentials:"include",
                 headers:{
+                    'Content-Type': 'application/json',
                     'satoken':satoken,
-                },body:JSON.stringify({
-                    "appId": appId,
-                })
+                }
             })
             const data = await response.json();
             return data

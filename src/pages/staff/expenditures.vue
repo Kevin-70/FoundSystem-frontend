@@ -319,18 +319,18 @@ export default {
       try {
         let time1 =
           this.form.beginTime1
-            .toLocaleString()
+            .toLocaleString('zh')
             .split(' ')[0]
             .replaceAll('/', '-') +
           ' ' +
-          this.form.beginTime2.toLocaleString().split(' ')[1]
+          this.form.beginTime2.toLocaleString('zh').split(' ')[1]
         let time2 =
           this.form.endTime1
-            .toLocaleString()
+            .toLocaleString('zh')
             .split(' ')[0]
             .replaceAll('/', '-') +
           ' ' +
-          this.form.endTime2.toLocaleString().split(' ')[1]
+          this.form.endTime2.toLocaleString('zh').split(' ')[1]
         const response = api.submitExpend(
           time1,
           time2,
@@ -357,7 +357,7 @@ export default {
       try {
         let cate1 = toRaw(this.form2.cate)[0]
         let cate2 = toRaw(this.form2.cate)[1]
-        // console.log(cate1,cate2);
+        console.log(cate1,cate2);
         const response = api.submitApplication(
           this.form2.abstrac,
           this.form2.applyAmount,
@@ -369,7 +369,10 @@ export default {
         )
         response.then((res) => {
           if (res.code === 200) {
-            this.appDialogVisible = false
+            // this.$router.push('/staff/' + res.data)
+            ElMessage.success("申请提交成功")
+            this.appDialogVisible=false;
+
           } else {
             ElMessage.error(res.msg)
             console.log(res)
@@ -396,9 +399,13 @@ export default {
     // },
     handleReadTable() {
       this.readDialogVisible = true
+    },handleChange(file, fileList){
+        this.fileList=fileList;
     },
     handleRemove(file, fileList) {
       console.log(file, fileList)
+      this.fileList=fileList;
+
     },
     submitApplicationTable() {
       let formData = new FormData()
@@ -435,7 +442,7 @@ export default {
     response.then((res) => {
       if (res.code === 200) {
         this.tableData = res.data
-        // let array = this.tableData
+        let array = this.tableData
         // for (let index = 0; index < array.length; index++) {
         //   const element = array[index]
         // //   element.begintime = toLocaleString(element.begintime);
