@@ -542,7 +542,8 @@ export default {
     },
     async submitApplication (abstrac, applyAmount, cate1,cate2, comment, expenditureNumber, satoken) {
         try {
-            const response = await fetch(`${BASE_URL}/application/edit/submitApplication?abstrac=${abstrac}&applyAmount=${applyAmount}&comment=${comment}&expenditureNumber=${expenditureNumber}&cate1=${cate1}&cate2=${cate2}&`, {
+            // console.log(abstrac);
+            const response = await fetch(`${BASE_URL}/application/edit/submitApplication?abstrac=${abstrac}&applyAmount=${applyAmount}&comment=${comment}&expenditureNumber=${expenditureNumber}&cate1=${cate1}&cate2=${cate2}`, {
                 method: "POST",
                 credentials: "include",
                 headers: {

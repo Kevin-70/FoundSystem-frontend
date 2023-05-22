@@ -299,18 +299,18 @@ export default {
       try {
         let time1 =
           this.form.beginTime1
-            .toLocaleString()
+            .toLocaleString('zh')
             .split(' ')[0]
             .replaceAll('/', '-') +
           ' ' +
-          this.form.beginTime2.toLocaleString().split(' ')[1]
+          this.form.beginTime2.toLocaleString('zh').split(' ')[1]
         let time2 =
           this.form.endTime1
-            .toLocaleString()
+            .toLocaleString('zh')
             .split(' ')[0]
             .replaceAll('/', '-') +
           ' ' +
-          this.form.endTime2.toLocaleString().split(' ')[1]
+          this.form.endTime2.toLocaleString('zh').split(' ')[1]
         const response = api.submitExpend(
           time1,
           time2,
@@ -337,7 +337,7 @@ export default {
       try {
         let cate1 = toRaw(this.form2.cate)[0]
         let cate2 = toRaw(this.form2.cate)[1]
-        // console.log(cate1,cate2);
+        console.log(cate1,cate2);
         const response = api.submitApplication(
           this.form2.abstrac,
           this.form2.applyAmount,
@@ -349,7 +349,10 @@ export default {
         )
         response.then((res) => {
           if (res.code === 200) {
-            this.$router.push('/staff/' + res.data)
+            // this.$router.push('/staff/' + res.data)
+            ElMessage.success("申请提交成功")
+            this.appDialogVisible=false;
+
           } else {
             // ElMessage.error("申请发起失败，请更改信息后重试");
             ElMessage.error(res.msg)
