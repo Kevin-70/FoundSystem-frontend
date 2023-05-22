@@ -621,15 +621,13 @@ export default {
     },
     async WithdrawApplication(appId,satoken){
         try{
-            const response = await fetch(`${BASE_URL}/application/edit/withdrawApplication`,{
+            const response = await fetch(`${BASE_URL}/application/edit/withdrawApplication?appId=${appId}`,{
                 method:"POST",
                 credentials:"include",
                 headers:{
                     'Content-Type': 'application/json',
                     'satoken':satoken,
-                },body:JSON.stringify({
-                    appId: appId
-                })
+                }
             })
             const data = await response.json();
             return data
