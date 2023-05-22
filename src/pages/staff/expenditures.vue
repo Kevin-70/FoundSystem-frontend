@@ -380,9 +380,13 @@ export default {
     // },
     handleReadTable() {
       this.readDialogVisible = true
+    },handleChange(file, fileList){
+        this.fileList=fileList;
     },
     handleRemove(file, fileList) {
       console.log(file, fileList)
+      this.fileList=fileList;
+
     },
     submitApplicationTable() {
       let formData = new FormData()
@@ -420,10 +424,10 @@ export default {
       if (res.code === 200) {
         this.tableData = res.data
         let array = this.tableData
-        // for (let index = 0; index < array.length; index++) {
-        //   const element = array[index]
-        // //   element.begintime = toLocaleString(element.begintime);
-        // }
+        for (let index = 0; index < array.length; index++) {
+          const element = array[index]
+          element.begintime = element.begintime
+        }
         this.loading = false
       } else {
         ElMessage.error('加载基金信息失败' + res.data)
