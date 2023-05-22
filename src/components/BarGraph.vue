@@ -1,7 +1,7 @@
 <template>
   <div class="echarts-box">
     <div
-      id="myEcharts2"
+      id="myEcharts22"
       :style="{ width: this.width, height: this.height }"></div>
   </div>
 </template>
@@ -19,7 +19,6 @@ import {
 
 export default {
   name: 'BarGraph',
-  // props: ["width", "height"],
   props: {
     width: {
       type: String,
@@ -47,7 +46,7 @@ export default {
     })
 
     onUnmounted(() => {
-      myEcharts.dispose
+      myEcharts2.dispose
     })
 
     function initChart() {
@@ -92,10 +91,8 @@ export default {
         chart.resize()
       }
     }
-
     return {
       initChart,
-      //  x_data, y_data
     }
   },
 }

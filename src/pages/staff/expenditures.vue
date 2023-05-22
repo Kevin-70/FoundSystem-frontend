@@ -5,9 +5,9 @@ import api from '../../utils/api.js'
 import { ref } from 'vue'
 import { ElButton, ElDialog, ElMessage } from 'element-plus'
 import { reactive, onMounted, inject } from 'vue'
+import { Check, Message, CircleClose, Plus, Search, Refresh } from '@element-plus/icons-vue' 
 const $cookies = inject('$cookies')
 </script>
-
 <template>
   <div class="common-layout">
     <el-container>
@@ -24,39 +24,57 @@ const $cookies = inject('$cookies')
         <el-table-column prop="endTime" label="endTime" width="120" />
         <el-table-column prop="totalAmount" label="totalAmount" width="120" />
         <el-table-column prop="remainingAmount" label="remainingAmount" width="120" />
-        <el-table-column prop="quota" label="quota" width="120" />
+        <el-table-column prop="quota" label="quota" width="120" >
+        </el-table-column>
         <el-table-column prop="status" label="status" width="120" />
-        <el-table-column fixed="right" label="Operations" width="200">
-          <template #default="scope">
-            <el-button
-              color="yellow"
+        <el-table-column v-if="isAdmin"  label="Change Quota" width="120">
+            <template #default="scope">
+            <el-button 
               type="primary"
-              size="small"
-              @click="CreateNewApplication(scope.row)"
-              >Create an application</el-button
-            >
-            <el-button plain size="small" @click="CheckApplication(scope.row)"
-              >Check its info</el-button
+              :icon="Refresh"
+              circle
+              @click="changeQuota(scope.row)"
+              ></el-button
             >
           </template>
         </el-table-column>
+        <el-table-column fixed="right" label="Create an application" width="200">
+          <template #default="scope">
+            <el-button
+            :icon="Plus"
+            type="primary"
+            circle
+              @click="CreateNewApplication(scope.row)"
+              ></el-button
+            >
+          </template>
+        </el-table-column>
+
+        <el-table-column fixed="right" label="Check Application" width="200">
+          <template #default="scope">
+            <el-button 
+            :icon="Search"
+            type="primary"
+            circle
+            @click="CheckApplication(scope.row)"
+              ></el-button
+            >
+          </template>
+        </el-table-column>
+
       </el-table>
-
     </el-container>
-
     <el-row>
         <el-col :span="4">
-          <el-button @click="handleNewExpend" type="primary">
+          <el-button @click="handleNewExpend" type="primary" >
               Apply for a new expenditure
           </el-button>
         </el-col>
-
         <el-col :span="4">
-          <el-button @click="handleReadTable">
+          <el-button @click="handleReadTable" type="primary">
             Read applications from a table
           </el-button>
         </el-col>
-
       </el-row>
     <el-dialog
       v-model="centerDialogVisible"
@@ -135,25 +153,24 @@ const $cookies = inject('$cookies')
       width="30%"
       align-center>
       <el-form :model="form2" label-width="120px">
-        <el-form-item label="基金编号">
+        <el-form-item label="Expenditure Number">
           <el-input
             v-model="form2.expenditureNumber"
             placeholder="Expenditure Number" />
         </el-form-item>
-
-        <el-form-item label="申请摘要">
+        <el-form-item label="Abstract">
           <el-input v-model="form2.abstrac" placeholder="abstract" />
         </el-form-item>
-        <el-form-item label="使用金额类别">
+        <el-form-item label="Categories">
           <el-cascader
             v-model="form2.cate"
             :options="categories"
             @change="handleCate"></el-cascader>
         </el-form-item>
-        <el-form-item label="申请金额">
+        <el-form-item label="Apply Amount">
           <el-input v-model="form2.applyAmount" type="number" />
         </el-form-item>
-        <el-form-item label="申请详细说明">
+        <el-form-item label="Comment">
           <el-input v-model="form2.comment" type="textarea" />
         </el-form-item>
       </el-form>
@@ -166,7 +183,6 @@ const $cookies = inject('$cookies')
         </span>
       </template>
     </el-dialog>
-
     <el-dialog
       v-model="readDialogVisible"
       title="Read applications from a table file"
@@ -183,9 +199,9 @@ const $cookies = inject('$cookies')
         :on-exceed="handleExceed"
         accept=".xlsx"
         :file-list="fileList">
-        <el-button size="small" type="primary">点击上传</el-button>
+        <el-button size="small" type="primary">upload</el-button>
         <div slot="tip" class="el-upload__tip">
-          只能上传一个.xlsx文件,且不超过500kb
+          once a .xlsx file && no more than 500kb
         </div>
       </el-upload>
       <template #footer>
@@ -197,15 +213,39 @@ const $cookies = inject('$cookies')
         </span>
       </template>
     </el-dialog>
+
+    <el-dialog
+      v-model="quotaDiaglogVisible"
+      title="change quota for one expenditure"
+      width="30%"
+      align-center>
+      <el-input v-model="form3.quotaSet" type="number" placeholder="qouta">
+      </el-input>
+      <template #footer>
+        <span class="dialog-footer">
+          <el-button @click="quotaDiaglogVisible = false">Cancel</el-button>
+          <el-button 
+          @click="submitQuotaModify()">
+          submit
+          </el-button>
+        </span>
+      </template>
+    </el-dialog>
   </div>
 </template>
-
 <script>
 import { toRaw } from 'vue'
 export default {
   name: "expenditure",
   data() {
     return {
+        quotaDiaglogVisible:false,
+        isAdmin:false,
+        form3:{
+            quotaSet:0,
+            expenditureNumber:"",
+        }
+        ,
       tableData: [
         {
           expenditureNumber: 'NN30845KH',
@@ -216,7 +256,7 @@ export default {
           totalAmount: 100000.0,
           remainingAmount: 98900.0,
           status: 'Unread',
-          tag: '审核中',
+          tag: 'processing',
         },
       ],
       options: [],
@@ -294,7 +334,7 @@ export default {
       form2: {
         abstrac: '',
         applyAmount: '',
-        cate: '一级类别/二级类别',
+        cate: 'First level category/Second level category',
         comment: '',
         expenditureNumber: '',
       },
@@ -319,17 +359,21 @@ export default {
       try {
         let time1 =
           this.form.beginTime1
+            .toLocaleString()
             .toLocaleString('zh')
             .split(' ')[0]
             .replaceAll('/', '-') +
           ' ' +
+          this.form.beginTime2.toLocaleString().split(' ')[1]
           this.form.beginTime2.toLocaleString('zh').split(' ')[1]
         let time2 =
           this.form.endTime1
+            .toLocaleString()
             .toLocaleString('zh')
             .split(' ')[0]
             .replaceAll('/', '-') +
           ' ' +
+          this.form.endTime2.toLocaleString().split(' ')[1]
           this.form.endTime2.toLocaleString('zh').split(' ')[1]
         const response = api.submitExpend(
           time1,
@@ -343,7 +387,7 @@ export default {
         response.then((res) => {
           if (res.code === 200) {
             this.centerDialogVisible = false
-            ElMessage.success('发起申请成功')
+            ElMessage.success('Successfully applied')
           } else {
             console.log('error')
             console.log(res)
@@ -369,10 +413,10 @@ export default {
         )
         response.then((res) => {
           if (res.code === 200) {
+            this.appDialogVisible = false
             // this.$router.push('/staff/' + res.data)
-            ElMessage.success("申请提交成功")
+            ElMessage.success("Successfully applied")
             this.appDialogVisible=false;
-
           } else {
             ElMessage.error(res.msg)
             console.log(res)
@@ -385,18 +429,6 @@ export default {
     handleCate() {
       console.log(this.form2.cate)
     },
-    // handleSelect() {
-    //   const response = api.getMyEmail($cookies.get('satoken'))
-    //   response.then((res) => {
-    //     if (res.code === 200) {
-    //       this.$router.push('/staff/' + res.data)
-    //     } else {
-    //       ElMessage.error('身份过期返回主页失败')
-    //       console.log(res)
-    //     }
-    //   })
-    //   this.$router.push('/staff/' + email)
-    // },
     handleReadTable() {
       this.readDialogVisible = true
     },handleChange(file, fileList){
@@ -405,7 +437,6 @@ export default {
     handleRemove(file, fileList) {
       console.log(file, fileList)
       this.fileList=fileList;
-
     },
     submitApplicationTable() {
       let formData = new FormData()
@@ -420,11 +451,11 @@ export default {
       const response = api.uploadFile(formData, $cookies.get('satoken'))
       response.then((res) => {
         if (res.code == 200) {
-          ElMessage.success('上传识别成功!')
+          ElMessage.success('Successfully upload!')
           this.appDialogVisible = true
         } else {
           console.log(res)
-          ElMessage.warning('上传失败，请检查文件内容。')
+          ElMessage.warning('upload failed')
         }
       })
     },
@@ -435,18 +466,39 @@ export default {
     CheckApplication(row) {
       this.$router.push('/expenditureShow/' + row.expenditureNumber)
     },
+    changeQuota(row){
+        this.quotaDiaglogVisible=true;
+        this.form3.expenditureNumber=row.expenditureNumber;
+    },submitQuotaModify(){
+        const response = api.ChangeQuota(this.form3.quotaSet,this.form3.expenditureNumber,$cookies.get('satoken'));
+        response.then((res)=>{
+            if (res.code == 200) {
+          ElMessage.success('Successfully change quota!')
+          this.quotaDiaglogVisible = true
+        } else {
+          console.log(res)
+          ElMessage.warning('change quota failed')
+        } 
+        })
+    }
   },
   mounted() {
     //get all the expenditures
+    const ident1 = api.getMyIdentity($cookies.get('satoken'))
+    ident1.then((res)=>{
+        console.log(res.data);
+        if (res.code === 200) {
+        if(res.data!==0){
+            this.isAdmin=true;
+            console.log("yes")
+        }
+      } else {
+      }
+    })
     const response = api.getAllExpend($cookies.get('satoken'))
     response.then((res) => {
       if (res.code === 200) {
         this.tableData = res.data
-        let array = this.tableData
-        // for (let index = 0; index < array.length; index++) {
-        //   const element = array[index]
-        // //   element.begintime = toLocaleString(element.begintime);
-        // }
         this.loading = false
       } else {
         ElMessage.error(res.data)

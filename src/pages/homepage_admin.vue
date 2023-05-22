@@ -5,6 +5,8 @@ import group_join from './admin/group_join.vue'
 import profile from './staff/profile.vue'
 import { SwitchButton } from '@element-plus/icons-vue'
 import { useDark, useToggle } from '@vueuse/core'
+import group_view from './staff/group_view.vue'
+import expenditures from './staff/expenditures.vue'
 const isDark = useDark(false)
 const toggleDark = useToggle(isDark)
 </script>
@@ -21,6 +23,7 @@ const toggleDark = useToggle(isDark)
           <el-menu-item index="1">Homepage</el-menu-item>
           <el-menu-item index="2">Group Management</el-menu-item>
           <el-menu-item index="3">Fund Management</el-menu-item>
+          <el-menu-item index="4">View Funditures</el-menu-item>
           <el-button
             index="4"
             :icon="SwitchButton"
@@ -46,7 +49,10 @@ const toggleDark = useToggle(isDark)
         <profile v-if="this.activeIndex == 1" />
         <fund_app v-if="this.activeIndex == 3" />
         <fund_create v-if="this.activeIndex == 3" />
+        <group_view v-if="this.activeIndex == 2" />
         <group_join v-if="this.activeIndex == 2" />
+        <expenditures v-if="this.activeIndex == 4" />
+        
       </el-main>
       <el-footer>Powered By Vue @SE 2023</el-footer>
       <el-backtop :right="100" :bottom="100" />

@@ -77,7 +77,7 @@ export default {
           ElMessage.error(res.msg)
           console.log(res)
         } else if (res.code === 200) {
-          ElMessage.success('退出登录成功')
+          ElMessage.success('Quit Login')
           this.$cookies.remove('satoken')
         }
       })
