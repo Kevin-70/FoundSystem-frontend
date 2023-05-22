@@ -2,6 +2,7 @@
 import profile from './staff/profile.vue'
 import group_view from './staff/group_view.vue'
 import group_app from './staff/group_app.vue'
+import expenditures from './staff/expenditures.vue'
 import { SwitchButton } from '@element-plus/icons-vue'
 import { useDark, useToggle } from '@vueuse/core'
 const isDark = useDark(false)
@@ -46,6 +47,8 @@ const toggleDark = useToggle(isDark)
         <profile v-if="this.activeIndex == 1" />
         <group_view v-if="this.activeIndex == 2" />
         <group_app v-if="this.activeIndex == 2" />
+        <expenditures v-if="this.activeIndex == 3" />
+        
       </el-main>
       <el-footer>Powered By Vue @SE 2023</el-footer>
       <el-backtop :right="100" :bottom="100" />
@@ -80,7 +83,8 @@ export default {
       this.$router.push('/login')
     },
     handleCheckExpenditure() {
-      this.$router.push('/expenditure')
+      // this.$router.push('/expenditure')
+      this.activeIndex = 3
     },
   },
 }

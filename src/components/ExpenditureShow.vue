@@ -29,6 +29,7 @@ const info = reactive({
 })
 const dataState = reactive({
   ifDataUpdated: false,
+  PieUpdate: false,
 })
 
 onMounted(async () => {
@@ -61,10 +62,11 @@ onMounted(async () => {
 
   info.y_data = graphHelper.applications2LineY(info.applications)
   info.x_data = graphHelper.applications2LineX(info.applications)
+  dataState.ifDataUpdated = true
 
-      info.catagoryInfo = graphHelper.getCatagoryPie(info.applications)
-      console.log(info.catagoryInfo.name)
-      dataState.ifDataUpdated = true
+  info.catagoryInfo = graphHelper.getCatagoryPie(info.applications)
+  console.log(info.catagoryInfo.name)
+  dataState.PieUpdate = true
 
 })
 </script>
@@ -184,26 +186,6 @@ onMounted(async () => {
             </el-table>
 
 
-            <div class="container">
-              <div class="component">
-                <BarGraph 
-                  v-if="dataState.ifDataUpdated && this.activeIndex === 'Applications'"
-                  :name="'Application Trend'"
-                  :width="'900px'" :height="'400px'" 
-                  :x_data="info.x_data" 
-                  :y_data="info.y_data" >
-                </BarGraph>
-              </div>
-              <div class="component">
-                <PieGraph
-                    v-if="dataState.ifDataUpdated && this.activeIndex === 'Applications'"
-                    :width="'900px'" :height="'400px'" 
-                    :name="'catagory proportion'"
-                    :dataName="info.catagoryInfo.name"
-                    :data="info.catagoryInfo.values"
-                ></PieGraph>
-              </div>
-            </div>
          <!-- <el-row>
           <el-col :span="12">
             <BarGraph 
@@ -226,9 +208,36 @@ onMounted(async () => {
         </el-row> -->
           </div>
         </div>
+       
+              <!-- <div class="component"> -->
+                <PieGraph
+                    v-if="dataState.PieUpdate && this.activeIndex === 'Applications'"
+                    :width="'900px'" :height="'400px'" 
+                    :name="'catagory proportion'"
+                    :dataName="info.catagoryInfo.name"
+                    :data="info.catagoryInfo.values"
+                ></PieGraph>
+                <BarGraph 
+                  v-if="dataState.ifDataUpdated && this.activeIndex === 'Applications'"
+                  :name="'Application Trend'"
+                  :width="'900px'" :height="'400px'" 
+                  :x_data="info.x_data" 
+                  :y_data="info.y_data" >
+                </BarGraph>
+              <!-- </div> -->
+              <!-- <div class="component"> -->
+                
+              <!-- </div> -->
 
-        
-        <el-dialog v-model="dialogVisible" 
+
+
+      </el-main>
+      <el-footer style="color: #000">Powered By Vue @SE 2023</el-footer>
+      <el-backtop :right="100" :bottom="100" />
+    </el-container>
+  </div>
+
+  <el-dialog v-model="dialogVisible" 
                     title="Feedback" >
             <div>
               <span>{{ this.feedBack }}</span>
@@ -241,12 +250,7 @@ onMounted(async () => {
                 </el-button>
               </span>
         </template>
-      </el-dialog>
-      </el-main>
-      <el-footer style="color: #000">Powered By Vue @SE 2023</el-footer>
-      <el-backtop :right="100" :bottom="100" />
-    </el-container>
-  </div>
+        </el-dialog>
 </template>
 
 <script>
