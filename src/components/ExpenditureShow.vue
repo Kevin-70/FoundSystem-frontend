@@ -81,7 +81,11 @@ onMounted(async () => {
           class="el-menu-demo"
           mode="horizontal"
           @select="handleSelect">
-          <el-menu-item index="Back">Back</el-menu-item>
+          <el-button
+            style="height: 60px; border: none"
+            @click="this.$router.go(-1)"
+            >Go Back</el-button
+          >
           <el-menu-item index="Base Info">Base Info</el-menu-item>
           <el-menu-item index="Applications">Applications</el-menu-item>
         </el-menu>
