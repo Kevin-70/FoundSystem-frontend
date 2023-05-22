@@ -5,7 +5,7 @@ import api from '../../utils/api.js'
 import { ref } from 'vue'
 import { ElButton, ElDialog, ElMessage } from 'element-plus'
 import { reactive, onMounted, inject } from 'vue'
-import { Check, Message, CircleClose, Plus, Search } from '@element-plus/icons-vue' 
+import { Check, Message, CircleClose, Plus, Search, Refresh } from '@element-plus/icons-vue' 
 const $cookies = inject('$cookies')
 </script>
 <template>
@@ -30,11 +30,11 @@ const $cookies = inject('$cookies')
         <el-table-column v-if="isAdmin"  label="Change Quota" width="120">
             <template #default="scope">
             <el-button 
-              color="green"
               type="primary"
-              size="small"
+              :icon="Refresh"
+              circle
               @click="changeQuota(scope.row)"
-              >Change Quota</el-button
+              ></el-button
             >
           </template>
         </el-table-column>
@@ -66,12 +66,12 @@ const $cookies = inject('$cookies')
     </el-container>
     <el-row>
         <el-col :span="4">
-          <el-button @click="handleNewExpend" type="primary">
+          <el-button @click="handleNewExpend" type="primary" >
               Apply for a new expenditure
           </el-button>
         </el-col>
         <el-col :span="4">
-          <el-button @click="handleReadTable">
+          <el-button @click="handleReadTable" type="primary">
             Read applications from a table
           </el-button>
         </el-col>
@@ -224,8 +224,9 @@ const $cookies = inject('$cookies')
       <template #footer>
         <span class="dialog-footer">
           <el-button @click="quotaDiaglogVisible = false">Cancel</el-button>
-          <el-button type="primary" @click="submitQuotaModify()">
-            Change Quota
+          <el-button 
+          @click="submitQuotaModify()">
+          submit
           </el-button>
         </span>
       </template>
