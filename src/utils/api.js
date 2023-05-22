@@ -1,5 +1,4 @@
 const BASE_URL = 'http://43.139.159.107:8080'
-
 export default {
     async Login (email, password, identity) {
         try {
@@ -540,7 +539,7 @@ export default {
             return console.error(error)
         }
     },
-    async submitApplication (abstrac, applyAmount, cate1,cate2, comment, expenditureNumber, satoken) {
+    async submitApplication (abstrac, applyAmount, cate1, cate2, comment, expenditureNumber, satoken) {
         try {
             const response = await fetch(`${BASE_URL}/application/edit/submitApplication?abstrac=${abstrac}&applyAmount=${applyAmount}&comment=${comment}&expenditureNumber=${expenditureNumber}&cate1=${cate1}&cate2=${cate2}&`, {
                 method: "POST",
