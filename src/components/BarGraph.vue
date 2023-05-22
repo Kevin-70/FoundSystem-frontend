@@ -1,7 +1,7 @@
 
 <template>
   <div class="echarts-box">
-    <div id="myEcharts" :style="{ width: this.width, height: this.height }"></div>
+    <div id="myEcharts2" :style="{ width: this.width, height: this.height }"></div>
   </div>
 </template>
 
@@ -11,7 +11,6 @@ import {onMounted, onUnmounted, defineComponent, watch, ref, defineProps} from "
 
 export default {
   name: "BarGraph",
-  // props: ["width", "height"],
   props: {
     width: {
       type: String,
@@ -32,42 +31,18 @@ export default {
   },
   
   setup(props) {
-    let myEcharts = echarts;
-    
-    // watch(
-    //     () => props.x_data,
-    //     (val) => {
-    //       props.x_data = val;
-    //     }
-    // );
-
-    // watch(
-    //     () => props.y_data,
-    //     (val) => {
-    //       props.y_data = val;
-    //     }
-    // );
-
-    // console.log(props.width)
-    // console.log(props.x_data)
-
-    // watch(
-    //     () => props.y_data,
-    //     (val) => {
-    //       y_data = val;
-    //     }
-    // );
+    let myEcharts2 = echarts;
 
     onMounted(() => {
       initChart();
     });
 
     onUnmounted(() => {
-      myEcharts.dispose;
+      myEcharts2.dispose;
     });
 
     function initChart() {
-      let chart = myEcharts.init(document.getElementById("myEcharts"), "purple-passion");
+      let chart = myEcharts2.init(document.getElementById("myEcharts2"), "purple-passion");
       chart.setOption({
         title: {
           text: "Expenditure Usage",
@@ -107,10 +82,8 @@ export default {
         chart.resize();
       };
     }
-
     return {
       initChart,
-      //  x_data, y_data
     };
   }
 };

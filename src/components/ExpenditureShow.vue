@@ -50,8 +50,6 @@ onMounted(async () => {
         info.endTime = res.data.endTime
         info.quota = res.data.quota
         info.applications = res.data.applications
-        // console.log(info.applications)
-        // console.log("update info")
       } else {
         console.error(res)
         ElMessage.error(res.msg)
@@ -196,61 +194,41 @@ onMounted(async () => {
               </el-table-column>
             </el-table>
 
-            <PieGraph
-                v-if="dataState.PieUpdate && this.activeIndex === 'Applications'"
-                :width="'900px'" :height="'400px'" 
-                :name="'catagory proportion'"
-                :dataName="info.catagoryInfo.name"
-                :data="info.catagoryInfo.values"
-            ></PieGraph>
-            <BarGraph 
-              v-if="dataState.ifDataUpdated && this.activeIndex === 'Applications'"
-              :name="'Application Trend'"
-              :width="'900px'" :height="'400px'" 
-              :x_data="info.x_data" 
-              :y_data="info.y_data" >
-            </BarGraph>
+            <el-row>
+              <el-col :span="12">
+                <PieGraph
+                  v-if="dataState.PieUpdate && this.activeIndex === 'Applications'"
+                  :width="'900px'" :height="'400px'" 
+                  :name="'catagory proportion'"
+                  :dataName="info.catagoryInfo.name"
+                  :data="info.catagoryInfo.values"
+                  ></PieGraph>
+              </el-col>
+              <el-col :span="12">
+                <BarGraph 
+                  v-if="dataState.ifDataUpdated && this.activeIndex === 'Applications'"
+                  :name="'Application Trend'"
+                  :width="'900px'" :height="'400px'" 
+                  :x_data="info.x_data" 
+                  :y_data="info.y_data" >
+                </BarGraph>
+              </el-col>
 
 
-         <!-- <el-row>
-          <el-col :span="12">
-            <BarGraph 
-              v-if="dataState.ifDataUpdated && this.activeIndex === 'Applications'"
-              :name="'Application Trend'"
-              :width="'900px'" :height="'400px'" 
-              :x_data="info.x_data" 
-              :y_data="info.y_data" >
-            </BarGraph>
-          </el-col>
-          <el-col :span="12">
-            <PieGraph
-                v-if="dataState.ifDataUpdated && this.activeIndex === 'Applications'"
-                :width="'900px'" :height="'400px'" 
-                :name="'catagory proportion'"
-                :dataName="info.catagoryInfo.name"
-                :data="info.catagoryInfo.values"
-            ></PieGraph>     
-          </el-col>
-        </el-row> -->
+            </el-row>
+            
+
+             
+
           </div>
         </div>
-       
-              <!-- <div class="component"> -->
-                
-              <!-- </div> -->
-              <!-- <div class="component"> -->
-                
-              <!-- </div> -->
-
-
-
       </el-main>
       <el-footer style="color: #000">Powered By Vue @SE 2023</el-footer>
       <el-backtop :right="100" :bottom="100" />
     </el-container>
   </div>
 
-  <el-dialog v-model="dialogVisible" 
+        <el-dialog v-model="dialogVisible" 
                     title="Feedback" >
             <div>
               <span>{{ this.feedBack }}</span>
@@ -273,7 +251,6 @@ export default {
       activeIndex: 'Base Info',
       dialogVisible: false,
       feedBack: "",
-      
     }
   },
   methods: {
@@ -287,8 +264,6 @@ export default {
       this.$router.go(-1)
     },
     async handleFeedback(AppId) {
-      console.log("handleFeedback")
-      console.log(AppId) 
       await api.getFeedBackByAppId(
         this.$cookies.get('satoken'),
         AppId).then((res) => {
@@ -308,7 +283,7 @@ export default {
             if(res.code==500){
                 ElMessage.error(res.msg);
             }else if(res.code==200){
-                ElMessage.error("取消申请成功");
+                ElMessage.success("Withdraw App");
             }
         })
     },
