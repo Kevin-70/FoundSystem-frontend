@@ -3,6 +3,9 @@ import api from '../utils/api.js'
 import { reactive, inject } from 'vue'
 import { useRouter } from 'vue-router'
 import backgroud from '../assets/image/diana-KWhdZ2RrDWc-unsplash.jpg'
+import { useDark, useToggle } from '@vueuse/core'
+const isDark = useDark(false)
+const toggleDark = useToggle(isDark)
 const login = reactive({
   email: '',
   identity: '',
@@ -55,10 +58,20 @@ async function handleStaffRegister() {
 }
 </script>
 <template>
-  <el-container>
+  <el-container :class="{ 'dark-class': isDark }">
+    <el-header>
+      <el-switch
+        style="display: flex; margin-top: 20px; left: 90%"
+        v-model="isDark"
+        active-text="Dark"
+        inactive-text="Light"
+        @change="toggleDark"></el-switch>
+    </el-header>
     <el-main>
       <div class="login-container">
-        <el-image :src="backgroud" style="width: 40%; height: 100%" />
+        <div class="image-container" style="width: 100%">
+          <el-image :src="backgroud" style="width: 50%; height: 100%" />
+        </div>
         <div class="login-wrapper">
           <div class="form-wrapper">
             <h1 style="font-size: 50px">Login</h1>
@@ -110,10 +123,9 @@ async function handleStaffRegister() {
     <el-footer>Powered By Vue @SE 2023</el-footer>
   </el-container>
 </template>
-
-<style>
-.body {
-  background-color: aliceblue;
+<style scoped>
+.el-container .dark-class {
+  background-color: #000;
 }
 .login-container {
   display: flex;
