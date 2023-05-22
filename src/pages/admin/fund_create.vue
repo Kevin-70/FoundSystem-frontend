@@ -10,7 +10,7 @@ import { Check, Close } from '@element-plus/icons-vue'
       </div>
     </template>
     <el-table :data="this.msgs" style="width: 100%">
-      <el-table-column prop="expendId" label="expendId" width="100" />
+      <!-- <el-table-column prop="expendId" label="expendId" width="100" /> -->
       <el-table-column prop="expendName" label="expendName" width="180" />
       <el-table-column prop="groupName" label="groupName" width="180" />
       <el-table-column prop="totalAmount" label="totalAmount" width="180" />
