@@ -1,7 +1,7 @@
 <template>
   <div class="echarts-box">
     <div
-      id="myEcharts22"
+      id="myEcharts2"
       :style="{ width: this.width, height: this.height }"></div>
   </div>
 </template>
@@ -46,7 +46,7 @@ export default {
     })
 
     onUnmounted(() => {
-      myEcharts2.dispose
+      myEcharts.dispose
     })
 
     function initChart() {
