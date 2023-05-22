@@ -1,5 +1,5 @@
 <script setup>
-import { Check, Message } from '@element-plus/icons-vue'
+import { Check, Message, CircleClose } from '@element-plus/icons-vue'
 import { ElMessage } from 'element-plus/es'
 import { ref, reactive, onMounted, inject } from 'vue'
 import { useRoute } from 'vue-router'
@@ -7,6 +7,7 @@ import api from '../utils/api'
 import graphHelper from '../utils/graphHelper'
 import BarGraph from '@/components/BarGraph.vue'
 import PieGraph from '@/components/PieGraph.vue'
+
 // import componentLazy from "@/components/componentLazy.vue"
 const route = useRoute()
 const $cookies = inject('$cookies')
@@ -80,7 +81,11 @@ onMounted(async () => {
           class="el-menu-demo"
           mode="horizontal"
           @select="handleSelect">
-          <el-menu-item index="Back">Back</el-menu-item>
+          <el-button
+            style="height: 60px; border: none"
+            @click="this.$router.go(-1)"
+            >Go Back</el-button
+          >
           <el-menu-item index="Base Info">Base Info</el-menu-item>
           <el-menu-item index="Applications">Applications</el-menu-item>
         </el-menu>
@@ -169,7 +174,7 @@ onMounted(async () => {
                 width="180">
               </el-table-column>
 
-              <el-table-column fixed="right" label="Feedback" width="180">
+              <el-table-column fixed="right" label="Feedback" width="90">
                 <template #default="scope">
                   <el-button
                     type="primary"
@@ -178,9 +183,15 @@ onMounted(async () => {
                     @click="this.handleFeedback(scope.row.appId)" />
                 </template>
               </el-table-column>
-              <el-table-column fixed="right" label="Operations" width="180">
+              <el-table-column fixed="right" label="Withdraw" width="90">
                 <template #default="scope">
-		            <el-button v-if="scope.row.status=='Unread'" type="plain" @click="WithdrawApp(scope.row.appId)">取消申请</el-button>
+		            <el-button 
+                    v-if="scope.row.status=='Unread'" 
+                    :icon="CircleClose"
+                    circle
+                    type="danger" 
+                    @click="WithdrawApp(scope.row.appId)">
+                </el-button>
 	            </template>
               </el-table-column>
             </el-table>

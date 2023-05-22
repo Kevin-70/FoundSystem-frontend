@@ -15,18 +15,18 @@ const $cookies = inject('$cookies')
       
       <!-- All expenditures in on table with button "check its application"-->
       <el-table v-loading="loading" :data="tableData" style="width: 100%">
-        <el-table-column prop="expenditureName" label="基金名称" width="120" />
+        <el-table-column prop="expenditureName" label="expenditureName" width="120" />
         <el-table-column
           prop="expenditureNumber"
           label="基金编号"
           width="120" />
-        <el-table-column prop="groupName" label="所属课题组" width="200" />
-        <el-table-column prop="startTime" label="开始时间" width="120" />
-        <el-table-column prop="endTime" label="结束时间" width="120" />
-        <el-table-column prop="totalAmount" label="全部金额" width="120" />
-        <el-table-column prop="remainingAmount" label="剩余金额" width="120" />
-        <el-table-column prop="quota" label="限额" width="120" />
-        <el-table-column prop="status" label="审核状态" width="120" />
+        <el-table-column prop="groupName" label="groupName" width="200" />
+        <el-table-column prop="startTime" label="startTime" width="120" />
+        <el-table-column prop="endTime" label="endTime" width="120" />
+        <el-table-column prop="totalAmount" label="totalAmount" width="120" />
+        <el-table-column prop="remainingAmount" label="remainingAmount" width="120" />
+        <el-table-column prop="quota" label="quota" width="120" />
+        <el-table-column prop="status" label="status" width="120" />
         <el-table-column fixed="right" label="Operations" width="200">
           <template #default="scope">
             <el-button
