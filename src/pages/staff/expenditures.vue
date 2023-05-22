@@ -5,7 +5,6 @@ import api from '../../utils/api.js'
 import { ref } from 'vue'
 import { ElButton, ElDialog, ElMessage } from 'element-plus'
 import { reactive, onMounted, inject } from 'vue'
-const router = useRoute()
 const $cookies = inject('$cookies')
 </script>
 
@@ -224,40 +223,61 @@ export default {
       categories: [
         {
           value: 'Office',
-          label: '工作',
+          label: 'Office',
           children: [
             {
-              value: 'Print',
-              label: '打印费',
+              value: 'officeSupplies',
+              label: 'officeSupplies',
             },
             {
-              value: 'Workers',
-              label: '人工费',
+              value: 'pen',
+              label: 'pen',
             },
             {
-              value: 'Book',
-              label: '书本费',
+              value: 'notebook',
+              label: 'notebook',
             },
           ],
         },
         {
-          value: 'Research',
-          label: '科研费',
+          value: 'Print',
+          label: 'Print',
           children: [
             {
-              value: 'software',
-              label: '计算机软件费',
+              value: 'print',
+              label: 'print',
             },
             {
-              value: 'instrument',
-              label: '仪器设备',
-            },
-            {
-              value: 'lecture',
-              label: '讲座费',
+              value: 'paper',
+              label: 'paper',
             },
           ],
         },
+        {
+          value: 'Postage',
+          label: 'Postage',
+          children: [
+            {
+              value: 'postage',
+              label: 'postage',
+            },
+            {
+              value: 'telephone',
+              label: 'telephone',
+            },
+          ],
+        },
+        {
+          value: 'Train',
+          label: 'Train',
+          children: [
+            {
+              value: 'train',
+              label: 'train',
+            },
+          ],
+        },
+        
       ],
       centerDialogVisible: false,
       form: {
@@ -354,7 +374,6 @@ export default {
             this.appDialogVisible=false;
 
           } else {
-            // ElMessage.error("申请发起失败，请更改信息后重试");
             ElMessage.error(res.msg)
             console.log(res)
           }
@@ -424,13 +443,13 @@ export default {
       if (res.code === 200) {
         this.tableData = res.data
         let array = this.tableData
-        for (let index = 0; index < array.length; index++) {
-          const element = array[index]
-          element.begintime = element.begintime
-        }
+        // for (let index = 0; index < array.length; index++) {
+        //   const element = array[index]
+        // //   element.begintime = toLocaleString(element.begintime);
+        // }
         this.loading = false
       } else {
-        ElMessage.error('加载基金信息失败' + res.data)
+        ElMessage.error(res.data)
       }
     })
   },

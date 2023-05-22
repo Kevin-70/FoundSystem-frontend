@@ -131,7 +131,7 @@ onMounted(async () => {
                 "
                 :width="'900px'"
                 :height="'600px'"
-                :dataName="['Remaining Amount', 'Unused Amount']"
+                :dataName="['Remaining Amount', 'Used Amount']"
                 :name="'Expenditure usage'"
                 :data="[info.remainingAmount, info.totalAmount-info.remainingAmount]"></PieGraph>
             </el-col>
@@ -185,6 +185,21 @@ onMounted(async () => {
               </el-table-column>
             </el-table>
 
+            <PieGraph
+                v-if="dataState.PieUpdate && this.activeIndex === 'Applications'"
+                :width="'900px'" :height="'400px'" 
+                :name="'catagory proportion'"
+                :dataName="info.catagoryInfo.name"
+                :data="info.catagoryInfo.values"
+            ></PieGraph>
+            <BarGraph 
+              v-if="dataState.ifDataUpdated && this.activeIndex === 'Applications'"
+              :name="'Application Trend'"
+              :width="'900px'" :height="'400px'" 
+              :x_data="info.x_data" 
+              :y_data="info.y_data" >
+            </BarGraph>
+
 
          <!-- <el-row>
           <el-col :span="12">
@@ -210,20 +225,7 @@ onMounted(async () => {
         </div>
        
               <!-- <div class="component"> -->
-                <PieGraph
-                    v-if="dataState.PieUpdate && this.activeIndex === 'Applications'"
-                    :width="'900px'" :height="'400px'" 
-                    :name="'catagory proportion'"
-                    :dataName="info.catagoryInfo.name"
-                    :data="info.catagoryInfo.values"
-                ></PieGraph>
-                <BarGraph 
-                  v-if="dataState.ifDataUpdated && this.activeIndex === 'Applications'"
-                  :name="'Application Trend'"
-                  :width="'900px'" :height="'400px'" 
-                  :x_data="info.x_data" 
-                  :y_data="info.y_data" >
-                </BarGraph>
+                
               <!-- </div> -->
               <!-- <div class="component"> -->
                 
