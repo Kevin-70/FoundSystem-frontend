@@ -193,7 +193,6 @@ const $cookies = inject('$cookies')
         :auto-upload="false"
         :action="actionUrl"
         :on-remove="handleRemove"
-        :on-preview="handlePreview"
         :on-change="(file, fileList) => handleChange(file, fileList)"
         :limit="1"
         :on-exceed="handleExceed"
