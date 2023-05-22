@@ -7,7 +7,6 @@ import { ElButton, ElDialog, ElMessage } from 'element-plus'
 import { reactive, onMounted, inject } from 'vue'
 const $cookies = inject('$cookies')
 </script>
-
 <template>
   <div class="common-layout">
     <el-container>
@@ -24,8 +23,20 @@ const $cookies = inject('$cookies')
         <el-table-column prop="endTime" label="endTime" width="120" />
         <el-table-column prop="totalAmount" label="totalAmount" width="120" />
         <el-table-column prop="remainingAmount" label="remainingAmount" width="120" />
-        <el-table-column prop="quota" label="quota" width="120" />
+        <el-table-column prop="quota" label="quota" width="120" >
+        </el-table-column>
         <el-table-column prop="status" label="status" width="120" />
+        <el-table-column v-if="isAdmin"  label="Advanced Operations" width="120">
+            <template #default="scope">
+            <el-button 
+              color="green"
+              type="primary"
+              size="small"
+              @click="changeQuota(scope.row)"
+              >Change Quota</el-button
+            >
+          </template>
+        </el-table-column>
         <el-table-column fixed="right" label="Operations" width="200">
           <template #default="scope">
             <el-button
@@ -40,23 +51,20 @@ const $cookies = inject('$cookies')
             >
           </template>
         </el-table-column>
+        
       </el-table>
-
     </el-container>
-
     <el-row>
         <el-col :span="4">
           <el-button @click="handleNewExpend" type="primary">
               Apply for a new expenditure
           </el-button>
         </el-col>
-
         <el-col :span="4">
           <el-button @click="handleReadTable">
             Read applications from a table
           </el-button>
         </el-col>
-
       </el-row>
     <el-dialog
       v-model="centerDialogVisible"
@@ -140,7 +148,6 @@ const $cookies = inject('$cookies')
             v-model="form2.expenditureNumber"
             placeholder="Expenditure Number" />
         </el-form-item>
-
         <el-form-item label="申请摘要">
           <el-input v-model="form2.abstrac" placeholder="abstract" />
         </el-form-item>
@@ -166,7 +173,6 @@ const $cookies = inject('$cookies')
         </span>
       </template>
     </el-dialog>
-
     <el-dialog
       v-model="readDialogVisible"
       title="Read applications from a table file"
@@ -197,15 +203,38 @@ const $cookies = inject('$cookies')
         </span>
       </template>
     </el-dialog>
+
+    <el-dialog
+      v-model="quotaDiaglogVisible"
+      title="change quota for one expenditure"
+      width="30%"
+      align-center>
+      <el-input v-model="form3.quotaSet" type="number" placeholder="qouta">
+      </el-input>
+      <template #footer>
+        <span class="dialog-footer">
+          <el-button @click="quotaDiaglogVisible = false">Cancel</el-button>
+          <el-button type="primary" @click="submitQuotaModify()">
+            Change Quota
+          </el-button>
+        </span>
+      </template>
+    </el-dialog>
   </div>
 </template>
-
 <script>
 import { toRaw } from 'vue'
 export default {
   name: "expenditure",
   data() {
     return {
+        quotaDiaglogVisible:false,
+        isAdmin:false,
+        form3:{
+            quotaSet:0,
+            expenditureNumber:"",
+        }
+        ,
       tableData: [
         {
           expenditureNumber: 'NN30845KH',
@@ -319,17 +348,21 @@ export default {
       try {
         let time1 =
           this.form.beginTime1
+            .toLocaleString()
             .toLocaleString('zh')
             .split(' ')[0]
             .replaceAll('/', '-') +
           ' ' +
+          this.form.beginTime2.toLocaleString().split(' ')[1]
           this.form.beginTime2.toLocaleString('zh').split(' ')[1]
         let time2 =
           this.form.endTime1
+            .toLocaleString()
             .toLocaleString('zh')
             .split(' ')[0]
             .replaceAll('/', '-') +
           ' ' +
+          this.form.endTime2.toLocaleString().split(' ')[1]
           this.form.endTime2.toLocaleString('zh').split(' ')[1]
         const response = api.submitExpend(
           time1,
@@ -357,6 +390,7 @@ export default {
       try {
         let cate1 = toRaw(this.form2.cate)[0]
         let cate2 = toRaw(this.form2.cate)[1]
+        // console.log(cate1,cate2);
         console.log(cate1,cate2);
         const response = api.submitApplication(
           this.form2.abstrac,
@@ -369,10 +403,10 @@ export default {
         )
         response.then((res) => {
           if (res.code === 200) {
+            this.appDialogVisible = false
             // this.$router.push('/staff/' + res.data)
             ElMessage.success("申请提交成功")
             this.appDialogVisible=false;
-
           } else {
             ElMessage.error(res.msg)
             console.log(res)
@@ -405,7 +439,6 @@ export default {
     handleRemove(file, fileList) {
       console.log(file, fileList)
       this.fileList=fileList;
-
     },
     submitApplicationTable() {
       let formData = new FormData()
@@ -435,13 +468,42 @@ export default {
     CheckApplication(row) {
       this.$router.push('/expenditureShow/' + row.expenditureNumber)
     },
+    changeQuota(row){
+        this.quotaDiaglogVisible=true;
+        this.form3.expenditureNumber=row.expenditureNumber;
+    },submitQuotaModify(){
+        const response = api.ChangeQuota(this.form3.quotaSet,this.form3.expenditureNumber,$cookies.get('satoken'));
+        response.then((res)=>{
+            if (res.code == 200) {
+          ElMessage.success('修改限额成功!')
+          this.quotaDiaglogVisible = true
+        } else {
+          console.log(res)
+          ElMessage.warning('修改限额失败')
+        } 
+        })
+    }
   },
   mounted() {
     //get all the expenditures
+    const ident1 = api.getMyIdentity($cookies.get('satoken'))
+    ident1.then((res)=>{
+        console.log(res.data);
+        if (res.code === 200) {
+        if(res.data!==0){
+            this.isAdmin=true;
+            console.log("yes")
+        }
+      } else {
+        // ElMessage.error(res.data)
+      }
+
+    })
     const response = api.getAllExpend($cookies.get('satoken'))
     response.then((res) => {
       if (res.code === 200) {
         this.tableData = res.data
+        // let array = this.tableData
         let array = this.tableData
         // for (let index = 0; index < array.length; index++) {
         //   const element = array[index]

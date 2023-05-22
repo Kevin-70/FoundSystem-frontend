@@ -651,5 +651,34 @@ export default {
         } catch (error) {
             return console.log(error)
         }
+    },async getMyIdentity(satoken){
+        try{
+            const response = await fetch(`${BASE_URL}/user/getMyIdentity`,{
+                method:"GET",
+                credentials:"include",
+                headers:{
+                        'satoken':satoken,
+                }
+            })
+            // console.log(data)
+            const data= await response.json();
+            return data;
+        }catch(error){
+            return console.log(error)
+        }
+    },async ChangeQuota(quota , expenditureNumber ,satoken){
+        try{
+            const response = await fetch(`${BASE_URL}/expenditure/edit/updateExpenditureQuota?expenditureNumber=${expenditureNumber}&quota=${quota}`,{
+                method:"POST",
+                credentials:"include",
+                headers:{
+                    "satoken":satoken
+                }
+            })
+            const data = await response.json();
+            return data;
+        }catch(error){
+            return console.log(error)
+        }
     }
 }
