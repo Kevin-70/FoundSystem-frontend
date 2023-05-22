@@ -1,0 +1,180 @@
+{
+  "stats": {
+    "suites": 3,
+    "tests": 3,
+    "passes": 3,
+    "pending": 0,
+    "failures": 0,
+    "start": "2023-05-22T06:50:05.804Z",
+    "end": "2023-05-22T06:50:16.766Z",
+    "duration": 10962,
+    "testsRegistered": 3,
+    "passPercent": 100,
+    "pendingPercent": 0,
+    "other": 0,
+    "hasOther": false,
+    "skipped": 0,
+    "hasSkipped": false
+  },
+  "results": [
+    {
+      "uuid": "362abdc5-118c-4fc0-9463-42cf5703374c",
+      "title": "",
+      "fullFile": "cypress\\e2e\\test.cy.js",
+      "file": "cypress\\e2e\\test.cy.js",
+      "beforeHooks": [],
+      "afterHooks": [],
+      "tests": [],
+      "suites": [
+        {
+          "uuid": "7215d274-57a2-42f4-904b-34bc64f03992",
+          "title": "The Home Page Jump",
+          "fullFile": "",
+          "file": "",
+          "beforeHooks": [],
+          "afterHooks": [],
+          "tests": [
+            {
+              "title": "successfully loads",
+              "fullTitle": "The Home Page Jump successfully loads",
+              "timedOut": null,
+              "duration": 3111,
+              "state": "passed",
+              "speed": "fast",
+              "pass": true,
+              "fail": false,
+              "pending": false,
+              "context": null,
+              "code": "cy.visit('http://localhost:5173/'); // change URL to match your dev URL\ncy.url().should('include', '/');\ncy.get(\":nth-child(2) > .el-button\").click();\ncy.url().should('include', \"/login\");\ncy.visit('http://localhost:5173/'); // change URL to match your dev URL\ncy.url().should('include', '/');\ncy.get(\":nth-child(1) > .el-button\").click();\ncy.url().should('include', \"/register\");",
+              "err": {},
+              "uuid": "721546e1-e58f-4c67-80d1-6cd4cb4521cc",
+              "parentUUID": "7215d274-57a2-42f4-904b-34bc64f03992",
+              "isHook": false,
+              "skipped": false
+            }
+          ],
+          "suites": [],
+          "passes": [
+            "721546e1-e58f-4c67-80d1-6cd4cb4521cc"
+          ],
+          "failures": [],
+          "pending": [],
+          "skipped": [],
+          "duration": 3111,
+          "root": false,
+          "rootEmpty": false,
+          "_timeout": 2000
+        },
+        {
+          "uuid": "40191ead-2c07-489c-8644-e1dfeea965ee",
+          "title": "SE front-end test",
+          "fullFile": "",
+          "file": "",
+          "beforeHooks": [],
+          "afterHooks": [],
+          "tests": [
+            {
+              "title": "login as admin",
+              "fullTitle": "SE front-end test login as admin",
+              "timedOut": null,
+              "duration": 2795,
+              "state": "passed",
+              "speed": "fast",
+              "pass": true,
+              "fail": false,
+              "pending": false,
+              "context": null,
+              "code": "cy.visit('http://localhost:5173/login/#/login');\n// cy.url().should('include',\"/login\")\ncy.get(':nth-child(1) > .el-form-item__content > .el-input').type(\"admin@qq.com\");\ncy.get(':nth-child(2) > .el-form-item__content > .el-input').type(\"admin\");\ncy.get(\":nth-child(3) > .el-radio-button__inner\").click();\ncy.get(\".el-button\").click();\ncy.url().should('include', \"/admins\");",
+              "err": {},
+              "uuid": "3d5fafc5-962d-468b-88ef-3900d1954b29",
+              "parentUUID": "40191ead-2c07-489c-8644-e1dfeea965ee",
+              "isHook": false,
+              "skipped": false
+            }
+          ],
+          "suites": [],
+          "passes": [
+            "3d5fafc5-962d-468b-88ef-3900d1954b29"
+          ],
+          "failures": [],
+          "pending": [],
+          "skipped": [],
+          "duration": 2795,
+          "root": false,
+          "rootEmpty": false,
+          "_timeout": 2000
+        },
+        {
+          "uuid": "2236ac40-f2b7-438a-8ce3-3ba66de7ad32",
+          "title": "SE Staff test",
+          "fullFile": "",
+          "file": "",
+          "beforeHooks": [],
+          "afterHooks": [],
+          "tests": [
+            {
+              "title": "login as staff",
+              "fullTitle": "SE Staff test login as staff",
+              "timedOut": null,
+              "duration": 3207,
+              "state": "passed",
+              "speed": "fast",
+              "pass": true,
+              "fail": false,
+              "pending": false,
+              "context": null,
+              "code": "cy.visit('http://localhost:5173/login/#/login');\ncy.get(':nth-child(1) > .el-form-item__content > .el-input >.el-input__wrapper').type(\"1145275381@qq.com\");\ncy.get(':nth-child(2) > .el-form-item__content > .el-input >.el-input__wrapper').type(\"123\");\ncy.get(':nth-child(1) > .el-radio-button__inner').click(); //>表示是什么的child node\ncy.get(\".el-button\").click();\ncy.url().should('include', \"/staff/\"); //get in the user's url\ncy.get(\" .el-menu > :nth-child(3) \").click();\ncy.url().should(\"include\", \"/expenditure\");\ncy.get('.el-container > :nth-child(2)').click();\ncy.get('.el-form');\ncy.get(\":nth-child(1) > .el-form-item__content > .el-input > .el-input__wrapper\").type(\"CY\");\ncy.get(\":nth-child(2) > .el-form-item__content > .el-input > .el-input__wrapper\").type(\"CY1\");\ncy.get(\".dialog-footer > .el-button--primary\").click();\ncy.get('.dialog-footer > :nth-child(1)').click();\ncy.get(\".el-table\");\ncy.get('thead > tr > .el-table_1_column_1');",
+              "err": {},
+              "uuid": "d2a08718-115d-46ba-8b1f-a4ada6698173",
+              "parentUUID": "2236ac40-f2b7-438a-8ce3-3ba66de7ad32",
+              "isHook": false,
+              "skipped": false
+            }
+          ],
+          "suites": [],
+          "passes": [
+            "d2a08718-115d-46ba-8b1f-a4ada6698173"
+          ],
+          "failures": [],
+          "pending": [],
+          "skipped": [],
+          "duration": 3207,
+          "root": false,
+          "rootEmpty": false,
+          "_timeout": 2000
+        }
+      ],
+      "passes": [],
+      "failures": [],
+      "pending": [],
+      "skipped": [],
+      "duration": 0,
+      "root": true,
+      "rootEmpty": true,
+      "_timeout": 2000
+    }
+  ],
+  "meta": {
+    "mocha": {
+      "version": "7.0.1"
+    },
+    "mochawesome": {
+      "options": {
+        "quiet": false,
+        "reportFilename": "mochawesome",
+        "saveHtml": true,
+        "saveJson": true,
+        "consoleReporter": "spec",
+        "useInlineDiffs": false,
+        "code": true
+      },
+      "version": "7.1.3"
+    },
+    "marge": {
+      "options": {
+        "reportDir": "tests/e2e/results"
+      },
+      "version": "6.2.0"
+    }
+  }
+}

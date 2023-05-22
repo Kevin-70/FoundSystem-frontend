@@ -5,7 +5,6 @@ import api from '../../utils/api.js'
 import { ref } from 'vue'
 import { ElButton, ElDialog, ElMessage } from 'element-plus'
 import { reactive, onMounted, inject } from 'vue'
-const router = useRoute()
 const $cookies = inject('$cookies')
 </script>
 
@@ -15,18 +14,18 @@ const $cookies = inject('$cookies')
       
       <!-- All expenditures in on table with button "check its application"-->
       <el-table v-loading="loading" :data="tableData" style="width: 100%">
-        <el-table-column prop="expenditureName" label="基金名称" width="120" />
+        <el-table-column prop="expenditureName" label="expenditureName" width="120" />
         <el-table-column
           prop="expenditureNumber"
           label="基金编号"
           width="120" />
-        <el-table-column prop="groupName" label="所属课题组" width="200" />
-        <el-table-column prop="startTime" label="开始时间" width="120" />
-        <el-table-column prop="endTime" label="结束时间" width="120" />
-        <el-table-column prop="totalAmount" label="全部金额" width="120" />
-        <el-table-column prop="remainingAmount" label="剩余金额" width="120" />
-        <el-table-column prop="quota" label="限额" width="120" />
-        <el-table-column prop="status" label="审核状态" width="120" />
+        <el-table-column prop="groupName" label="groupName" width="200" />
+        <el-table-column prop="startTime" label="startTime" width="120" />
+        <el-table-column prop="endTime" label="endTime" width="120" />
+        <el-table-column prop="totalAmount" label="totalAmount" width="120" />
+        <el-table-column prop="remainingAmount" label="remainingAmount" width="120" />
+        <el-table-column prop="quota" label="quota" width="120" />
+        <el-table-column prop="status" label="status" width="120" />
         <el-table-column fixed="right" label="Operations" width="200">
           <template #default="scope">
             <el-button
@@ -224,40 +223,61 @@ export default {
       categories: [
         {
           value: 'Office',
-          label: '工作',
+          label: 'Office',
           children: [
             {
-              value: 'Print',
-              label: '打印费',
+              value: 'officeSupplies',
+              label: 'officeSupplies',
             },
             {
-              value: 'Workers',
-              label: '人工费',
+              value: 'pen',
+              label: 'pen',
             },
             {
-              value: 'Book',
-              label: '书本费',
+              value: 'notebook',
+              label: 'notebook',
             },
           ],
         },
         {
-          value: 'Research',
-          label: '科研费',
+          value: 'Print',
+          label: 'Print',
           children: [
             {
-              value: 'software',
-              label: '计算机软件费',
+              value: 'print',
+              label: 'print',
             },
             {
-              value: 'instrument',
-              label: '仪器设备',
-            },
-            {
-              value: 'lecture',
-              label: '讲座费',
+              value: 'paper',
+              label: 'paper',
             },
           ],
         },
+        {
+          value: 'Postage',
+          label: 'Postage',
+          children: [
+            {
+              value: 'postage',
+              label: 'postage',
+            },
+            {
+              value: 'telephone',
+              label: 'telephone',
+            },
+          ],
+        },
+        {
+          value: 'Train',
+          label: 'Train',
+          children: [
+            {
+              value: 'train',
+              label: 'train',
+            },
+          ],
+        },
+        
       ],
       centerDialogVisible: false,
       form: {
@@ -299,18 +319,18 @@ export default {
       try {
         let time1 =
           this.form.beginTime1
-            .toLocaleString()
+            .toLocaleString('zh')
             .split(' ')[0]
             .replaceAll('/', '-') +
           ' ' +
-          this.form.beginTime2.toLocaleString().split(' ')[1]
+          this.form.beginTime2.toLocaleString('zh').split(' ')[1]
         let time2 =
           this.form.endTime1
-            .toLocaleString()
+            .toLocaleString('zh')
             .split(' ')[0]
             .replaceAll('/', '-') +
           ' ' +
-          this.form.endTime2.toLocaleString().split(' ')[1]
+          this.form.endTime2.toLocaleString('zh').split(' ')[1]
         const response = api.submitExpend(
           time1,
           time2,
@@ -337,7 +357,7 @@ export default {
       try {
         let cate1 = toRaw(this.form2.cate)[0]
         let cate2 = toRaw(this.form2.cate)[1]
-        // console.log(cate1,cate2);
+        console.log(cate1,cate2);
         const response = api.submitApplication(
           this.form2.abstrac,
           this.form2.applyAmount,
@@ -349,9 +369,11 @@ export default {
         )
         response.then((res) => {
           if (res.code === 200) {
-            this.$router.push('/staff/' + res.data)
+            // this.$router.push('/staff/' + res.data)
+            ElMessage.success("申请提交成功")
+            this.appDialogVisible=false;
+
           } else {
-            // ElMessage.error("申请发起失败，请更改信息后重试");
             ElMessage.error(res.msg)
             console.log(res)
           }
@@ -377,9 +399,13 @@ export default {
     // },
     handleReadTable() {
       this.readDialogVisible = true
+    },handleChange(file, fileList){
+        this.fileList=fileList;
     },
     handleRemove(file, fileList) {
       console.log(file, fileList)
+      this.fileList=fileList;
+
     },
     submitApplicationTable() {
       let formData = new FormData()
@@ -423,7 +449,7 @@ export default {
         // }
         this.loading = false
       } else {
-        ElMessage.error('加载基金信息失败' + res.data)
+        ElMessage.error(res.data)
       }
     })
   },

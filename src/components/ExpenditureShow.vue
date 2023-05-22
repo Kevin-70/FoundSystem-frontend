@@ -1,5 +1,5 @@
 <script setup>
-import { Check, Message } from '@element-plus/icons-vue'
+import { Check, Message, CircleClose } from '@element-plus/icons-vue'
 import { ElMessage } from 'element-plus/es'
 import { ref, reactive, onMounted, inject } from 'vue'
 import { useRoute } from 'vue-router'
@@ -7,6 +7,7 @@ import api from '../utils/api'
 import graphHelper from '../utils/graphHelper'
 import BarGraph from '@/components/BarGraph.vue'
 import PieGraph from '@/components/PieGraph.vue'
+
 // import componentLazy from "@/components/componentLazy.vue"
 const route = useRoute()
 const $cookies = inject('$cookies')
@@ -80,7 +81,11 @@ onMounted(async () => {
           class="el-menu-demo"
           mode="horizontal"
           @select="handleSelect">
-          <el-menu-item index="Back">Back</el-menu-item>
+          <el-button
+            style="height: 60px; border: none"
+            @click="this.$router.go(-1)"
+            >Go Back</el-button
+          >
           <el-menu-item index="Base Info">Base Info</el-menu-item>
           <el-menu-item index="Applications">Applications</el-menu-item>
         </el-menu>
@@ -131,7 +136,7 @@ onMounted(async () => {
                 "
                 :width="'900px'"
                 :height="'600px'"
-                :dataName="['Remaining Amount', 'Unused Amount']"
+                :dataName="['Remaining Amount', 'Used Amount']"
                 :name="'Expenditure usage'"
                 :data="[info.remainingAmount, info.totalAmount-info.remainingAmount]"></PieGraph>
             </el-col>
@@ -169,7 +174,7 @@ onMounted(async () => {
                 width="180">
               </el-table-column>
 
-              <el-table-column fixed="right" label="Feedback" width="180">
+              <el-table-column fixed="right" label="Feedback" width="90">
                 <template #default="scope">
                   <el-button
                     type="primary"
@@ -178,12 +183,33 @@ onMounted(async () => {
                     @click="this.handleFeedback(scope.row.appId)" />
                 </template>
               </el-table-column>
-              <el-table-column fixed="right" label="Operations" width="180">
+              <el-table-column fixed="right" label="Withdraw" width="90">
                 <template #default="scope">
-		            <el-button v-if="scope.row.status=='Unread'" type="plain" @click="WithdrawApp(scope.row.appId)">取消申请</el-button>
+		            <el-button 
+                    v-if="scope.row.status=='Unread'" 
+                    :icon="CircleClose"
+                    circle
+                    type="danger" 
+                    @click="WithdrawApp(scope.row.appId)">
+                </el-button>
 	            </template>
               </el-table-column>
             </el-table>
+
+            <PieGraph
+                v-if="dataState.PieUpdate && this.activeIndex === 'Applications'"
+                :width="'900px'" :height="'400px'" 
+                :name="'catagory proportion'"
+                :dataName="info.catagoryInfo.name"
+                :data="info.catagoryInfo.values"
+            ></PieGraph>
+            <BarGraph 
+              v-if="dataState.ifDataUpdated && this.activeIndex === 'Applications'"
+              :name="'Application Trend'"
+              :width="'900px'" :height="'400px'" 
+              :x_data="info.x_data" 
+              :y_data="info.y_data" >
+            </BarGraph>
 
 
          <!-- <el-row>
@@ -210,20 +236,7 @@ onMounted(async () => {
         </div>
        
               <!-- <div class="component"> -->
-                <PieGraph
-                    v-if="dataState.PieUpdate && this.activeIndex === 'Applications'"
-                    :width="'900px'" :height="'400px'" 
-                    :name="'catagory proportion'"
-                    :dataName="info.catagoryInfo.name"
-                    :data="info.catagoryInfo.values"
-                ></PieGraph>
-                <BarGraph 
-                  v-if="dataState.ifDataUpdated && this.activeIndex === 'Applications'"
-                  :name="'Application Trend'"
-                  :width="'900px'" :height="'400px'" 
-                  :x_data="info.x_data" 
-                  :y_data="info.y_data" >
-                </BarGraph>
+                
               <!-- </div> -->
               <!-- <div class="component"> -->
                 
@@ -288,6 +301,16 @@ export default {
           console.log(res.data.comment)
         }
       })
+    },async WithdrawApp(AppId){
+         console.log(AppId);
+        await api.WithdrawApplication(AppId,this.$cookies.get('satoken'))
+        .then((res)=>{
+            if(res.code==500){
+                ElMessage.error(res.msg);
+            }else if(res.code==200){
+                ElMessage.error("取消申请成功");
+            }
+        })
     },
   },
   components: {
