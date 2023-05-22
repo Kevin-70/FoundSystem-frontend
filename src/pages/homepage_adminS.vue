@@ -4,6 +4,10 @@ import group_join from './admin/group_join.vue'
 import fund_create from './admin/fund_create.vue'
 import fund_app from './admin/fund_app.vue'
 import profile from './staff/profile.vue'
+import { SwitchButton } from '@element-plus/icons-vue'
+import { useDark, useToggle } from '@vueuse/core'
+const isDark = useDark(false)
+const toggleDark = useToggle(isDark)
 </script>
 
 <template>
@@ -18,9 +22,24 @@ import profile from './staff/profile.vue'
           <el-menu-item index="1">Homepage</el-menu-item>
           <el-menu-item index="2">Group Management</el-menu-item>
           <el-menu-item index="3">Fund Management</el-menu-item>
-          <el-menu-item index="4" @click="handleQuitLogin"
-            >Quit Login</el-menu-item
+          <el-button
+            index="4"
+            :icon="SwitchButton"
+            @click="handleQuitLogin"
+            style="display: flex; height: auto; margin-left: auto; border: none"
+            >Log out</el-button
           >
+          <el-switch
+            style="
+              display: flex;
+              height: auto;
+              margin-left: 20px;
+              margin-right: 20px;
+            "
+            v-model="isDark"
+            active-text="Dark"
+            inactive-text="Light"
+            @change="toggleDark"></el-switch>
         </el-menu>
       </el-header>
       <el-main>
@@ -48,6 +67,7 @@ export default {
       this.activeIndex = key
     },
     async handleQuitLogin() {
+      this.$router.push('/login')
       await api.QuitLogin(this.$cookies.get('satoken')).then((res) => {
         if (res.code === 500) {
           ElMessage.error(res.msg)
@@ -57,7 +77,6 @@ export default {
           this.$cookies.remove('satoken')
         }
       })
-      this.$router.push('/login')
     },
   },
 }

@@ -2,6 +2,7 @@
 import api from '../utils/api.js'
 import { reactive, inject } from 'vue'
 import { useRouter } from 'vue-router'
+import backgroud from '../assets/image/diana-KWhdZ2RrDWc-unsplash.jpg'
 const login = reactive({
   email: '',
   identity: '',
@@ -56,16 +57,18 @@ async function handleStaffRegister() {
 <template>
   <el-container>
     <el-main>
-      <div class="container">
+      <div class="login-container">
+        <el-image :src="backgroud" style="width: 40%; height: 100%" />
         <div class="login-wrapper">
           <div class="form-wrapper">
-            <el-text class="login-text" truncated>Login</el-text>
+            <h1 style="font-size: 50px">Login</h1>
             <el-form :model="register" label-position="top" :label-width="70">
               <el-form-item label="Email"
                 ><el-input
                   name="email"
                   placeholder="email"
                   v-model="login.email"
+                  clearable
                   required
               /></el-form-item>
               <el-form-item label="Password"
@@ -74,6 +77,7 @@ async function handleStaffRegister() {
                   placeholder="password"
                   show-password
                   v-model="login.password"
+                  clearable
                   required
               /></el-form-item>
               <el-form-item label="Login as">
@@ -93,10 +97,12 @@ async function handleStaffRegister() {
             <el-button class="btn" @click.native.prevent="handleLogin">
               Login
             </el-button>
-          </div>
-          <div class="msg">
-            Don't have account?
-            <a href="#" @click.native.prevent="handleStaffRegister">Sign up</a>
+            <span>
+              Don't have an account?
+              <a href="#" @click.native.prevent="handleStaffRegister"
+                >Sign up</a
+              >
+            </span>
           </div>
         </div>
       </div>
@@ -105,4 +111,18 @@ async function handleStaffRegister() {
   </el-container>
 </template>
 
-<style></style>
+<style>
+.body {
+  background-color: aliceblue;
+}
+.login-container {
+  display: flex;
+}
+.login-wrapper {
+  width: 70%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  right: auto;
+}
+</style>
