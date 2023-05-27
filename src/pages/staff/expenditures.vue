@@ -5,77 +5,93 @@ import api from '../../utils/api.js'
 import { ref } from 'vue'
 import { ElButton, ElDialog, ElMessage } from 'element-plus'
 import { reactive, onMounted, inject } from 'vue'
-import { Check, Message, CircleClose, Plus, Search, Refresh } from '@element-plus/icons-vue' 
+import {
+  Check,
+  Message,
+  CircleClose,
+  Plus,
+  Search,
+  Refresh,
+} from '@element-plus/icons-vue'
 const $cookies = inject('$cookies')
 </script>
 <template>
   <div class="common-layout">
     <el-container>
-      
       <!-- All expenditures in on table with button "check its application"-->
       <el-table v-loading="loading" :data="tableData" style="width: 100%">
-        <el-table-column prop="expenditureName" label="expenditureName" width="120" />
+        <el-table-column
+          prop="expenditureName"
+          label="expenditureName"
+          width="120" />
         <el-table-column
           prop="expenditureNumber"
-          label="基金编号"
-          width="120" />
-        <el-table-column prop="groupName" label="groupName" width="200" />
-        <el-table-column prop="startTime" label="startTime" width="120" />
-        <el-table-column prop="endTime" label="endTime" width="120" />
+          label="expenditureNumber"
+          width="180" />
+        <el-table-column prop="groupName" label="groupName" width="100" />
+        <el-table-column
+          prop="startTime"
+          label="startTime"
+          :formatter="formattedDate_starttime"
+          width="180" />
+        <el-table-column
+          prop="endTime"
+          label="endTime"
+          width="180"
+          :formatter="formattedDate_endtime" />
         <el-table-column prop="totalAmount" label="totalAmount" width="120" />
-        <el-table-column prop="remainingAmount" label="remainingAmount" width="120" />
-        <el-table-column prop="quota" label="quota" width="120" >
+        <el-table-column
+          prop="remainingAmount"
+          label="remainingAmount"
+          width="120" />
+        <el-table-column prop="quota" label="quota" width="120">
         </el-table-column>
         <el-table-column prop="status" label="status" width="120" />
-        <el-table-column v-if="isAdmin"  label="Change Quota" width="120">
-            <template #default="scope">
-            <el-button 
+        <el-table-column v-if="isAdmin" label="Change Quota" width="120">
+          <template #default="scope">
+            <el-button
               type="primary"
               :icon="Refresh"
               circle
-              @click="changeQuota(scope.row)"
-              ></el-button
-            >
+              @click="changeQuota(scope.row)"></el-button>
           </template>
         </el-table-column>
-        <el-table-column fixed="right" label="Create an application" width="200">
+        <el-table-column
+          fixed="right"
+          label="Create an application"
+          width="200">
           <template #default="scope">
             <el-button
-            :icon="Plus"
-            type="primary"
-            circle
-              @click="CreateNewApplication(scope.row)"
-              ></el-button
-            >
+              :icon="Plus"
+              type="primary"
+              circle
+              @click="CreateNewApplication(scope.row)"></el-button>
           </template>
         </el-table-column>
 
         <el-table-column fixed="right" label="Check Application" width="200">
           <template #default="scope">
-            <el-button 
-            :icon="Search"
-            type="primary"
-            circle
-            @click="CheckApplication(scope.row)"
-              ></el-button
-            >
+            <el-button
+              :icon="Search"
+              type="primary"
+              circle
+              @click="CheckApplication(scope.row)"></el-button>
           </template>
         </el-table-column>
-
       </el-table>
     </el-container>
     <el-row>
-        <el-col :span="4">
-          <el-button @click="handleNewExpend" type="primary" >
-              Apply for a new expenditure
-          </el-button>
-        </el-col>
-        <el-col :span="4">
-          <el-button @click="handleReadTable" type="primary">
-            Read applications from a table
-          </el-button>
-        </el-col>
-      </el-row>
+      <el-col :span="4">
+        <el-button @click="handleNewExpend" type="primary">
+          Apply for a new expenditure
+        </el-button>
+      </el-col>
+      <el-col :span="4">
+        <el-button @click="handleReadTable" type="primary">
+          Read applications from a table
+        </el-button>
+      </el-col>
+    </el-row>
     <el-dialog
       v-model="centerDialogVisible"
       title="Apply for a Expenditure"
@@ -223,10 +239,7 @@ const $cookies = inject('$cookies')
       <template #footer>
         <span class="dialog-footer">
           <el-button @click="quotaDiaglogVisible = false">Cancel</el-button>
-          <el-button 
-          @click="submitQuotaModify()">
-          submit
-          </el-button>
+          <el-button @click="submitQuotaModify()"> submit </el-button>
         </span>
       </template>
     </el-dialog>
@@ -235,16 +248,15 @@ const $cookies = inject('$cookies')
 <script>
 import { toRaw } from 'vue'
 export default {
-  name: "expenditure",
+  name: 'expenditure',
   data() {
     return {
-        quotaDiaglogVisible:false,
-        isAdmin:false,
-        form3:{
-            quotaSet:0,
-            expenditureNumber:"",
-        }
-        ,
+      quotaDiaglogVisible: false,
+      isAdmin: false,
+      form3: {
+        quotaSet: 0,
+        expenditureNumber: '',
+      },
       tableData: [
         {
           expenditureNumber: 'NN30845KH',
@@ -316,7 +328,6 @@ export default {
             },
           ],
         },
-        
       ],
       centerDialogVisible: false,
       form: {
@@ -344,6 +355,34 @@ export default {
     }
   },
   methods: {
+    formattedDate_starttime(originalDate) {
+      const date = new Date(String(originalDate.startTime))
+      const options = {
+        year: 'numeric',
+        month: '2-digit',
+        day: '2-digit',
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit',
+        hour12: false,
+      }
+      console.log(originalDate)
+      return date.toLocaleString('en-US', options)
+    },
+    formattedDate_endtime(originalDate) {
+      const date = new Date(String(originalDate.endTime))
+      const options = {
+        year: 'numeric',
+        month: '2-digit',
+        day: '2-digit',
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit',
+        hour12: false,
+      }
+      console.log(originalDate)
+      return date.toLocaleString('en-US', options)
+    },
     handleNewExpend() {
       api.getOneUserGroups(this.$cookies.get('satoken')).then((res) => {
         if (res.code === 500) {
@@ -364,7 +403,7 @@ export default {
             .replaceAll('/', '-') +
           ' ' +
           this.form.beginTime2.toLocaleString().split(' ')[1]
-          this.form.beginTime2.toLocaleString('zh').split(' ')[1]
+        this.form.beginTime2.toLocaleString('zh').split(' ')[1]
         let time2 =
           this.form.endTime1
             .toLocaleString()
@@ -373,7 +412,7 @@ export default {
             .replaceAll('/', '-') +
           ' ' +
           this.form.endTime2.toLocaleString().split(' ')[1]
-          this.form.endTime2.toLocaleString('zh').split(' ')[1]
+        this.form.endTime2.toLocaleString('zh').split(' ')[1]
         const response = api.submitExpend(
           time1,
           time2,
@@ -400,7 +439,7 @@ export default {
       try {
         let cate1 = toRaw(this.form2.cate)[0]
         let cate2 = toRaw(this.form2.cate)[1]
-        console.log(cate1,cate2);
+        console.log(cate1, cate2)
         const response = api.submitApplication(
           this.form2.abstrac,
           this.form2.applyAmount,
@@ -414,8 +453,8 @@ export default {
           if (res.code === 200) {
             this.appDialogVisible = false
             // this.$router.push('/staff/' + res.data)
-            ElMessage.success("Successfully applied")
-            this.appDialogVisible=false;
+            ElMessage.success('Successfully applied')
+            this.appDialogVisible = false
           } else {
             ElMessage.error(res.msg)
             console.log(res)
@@ -430,12 +469,13 @@ export default {
     },
     handleReadTable() {
       this.readDialogVisible = true
-    },handleChange(file, fileList){
-        this.fileList=fileList;
+    },
+    handleChange(file, fileList) {
+      this.fileList = fileList
     },
     handleRemove(file, fileList) {
       console.log(file, fileList)
-      this.fileList=fileList;
+      this.fileList = fileList
     },
     submitApplicationTable() {
       let formData = new FormData()
@@ -465,31 +505,36 @@ export default {
     CheckApplication(row) {
       this.$router.push('/expenditureShow/' + row.expenditureNumber)
     },
-    changeQuota(row){
-        this.quotaDiaglogVisible=true;
-        this.form3.expenditureNumber=row.expenditureNumber;
-    },submitQuotaModify(){
-        const response = api.ChangeQuota(this.form3.quotaSet,this.form3.expenditureNumber,$cookies.get('satoken'));
-        response.then((res)=>{
-            if (res.code == 200) {
+    changeQuota(row) {
+      this.quotaDiaglogVisible = true
+      this.form3.expenditureNumber = row.expenditureNumber
+    },
+    submitQuotaModify() {
+      const response = api.ChangeQuota(
+        this.form3.quotaSet,
+        this.form3.expenditureNumber,
+        $cookies.get('satoken')
+      )
+      response.then((res) => {
+        if (res.code == 200) {
           ElMessage.success('Successfully change quota!')
           this.quotaDiaglogVisible = true
         } else {
           console.log(res)
           ElMessage.warning('change quota failed')
-        } 
-        })
-    }
+        }
+      })
+    },
   },
   mounted() {
     //get all the expenditures
     const ident1 = api.getMyIdentity($cookies.get('satoken'))
-    ident1.then((res)=>{
-        console.log(res.data);
-        if (res.code === 200) {
-        if(res.data!==0){
-            this.isAdmin=true;
-            console.log("yes")
+    ident1.then((res) => {
+      console.log(res.data)
+      if (res.code === 200) {
+        if (res.data !== 0) {
+          this.isAdmin = true
+          console.log('yes')
         }
       } else {
       }

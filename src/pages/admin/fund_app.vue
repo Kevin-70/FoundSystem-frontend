@@ -10,9 +10,8 @@ import { Check, Close, QuestionFilled } from '@element-plus/icons-vue'
       </div>
     </template>
     <el-table :data="this.msgs" style="width: 100%">
-      <!-- <el-table-column prop="appId" label="appId" width="180" /> -->
       <el-table-column prop="userName" label="userName" width="180" />
-      <el-table-column prop="groupName" label="groupName" width="180" />
+      <el-table-column prop="groupName" label="groupName" width="100" />
       <el-table-column prop="status" label="status" width="80" />
       <el-table-column prop="expendName" label="expendName" width="180" />
       <el-table-column
